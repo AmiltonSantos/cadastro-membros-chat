@@ -1,8 +1,6 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title class="ion-text-center">
-      <strong>Cadastro</strong>Chat
-    </ion-title>
+<ion-header>
+  <ion-toolbar color="primary">
+    <span style="display: flex; justify-content: center; font-weight: bold;">Cadastro Chat</span>
   </ion-toolbar>
 </ion-header>
 
@@ -13,13 +11,14 @@
     <h4>Bem vindos?</h4>
   </div>
 
-  <ion-item lines="none" [ngClass]="{'bot': m.sender !== 'me'}" class="chat-item" *ngFor="let m of messages; index as i">
+  <ion-item lines="none" [ngClass]="{'bot': m.sender !== 'me'}" class="chat-item"
+    *ngFor="let m of messages; index as i">
     <ion-badge slot="start" [color]="m.sender ===  'me' ? 'success' : 'light'" mode="ios">
       <ion-icon class="chat-icon" [src]="m.sender ===  'me' ? 'assets/user.svg' : 'assets/bot.svg'"></ion-icon>
     </ion-badge>
     <ion-label class="ion-text-wrap">
       <p class="w-space" [style]="m.sender ===  'me' ? 'color: #8a2be2; font-weight: bold;' : ''">{{ m.content }}</p>
-    <ion-spinner *ngIf="loading && (i+1 === messages.length)" color="tertiary" name="dots"></ion-spinner>
+      <ion-spinner *ngIf="loading && (i+1 === messages.length)" color="tertiary" name="dots"></ion-spinner>
     </ion-label>
   </ion-item>
 
@@ -27,18 +26,19 @@
 
 <ion-footer class="ion-padding">
 
-<form [formGroup]="form" (ngSubmit)="submit()" (keyup.enter)="submit()">
+  <form [formGroup]="form" (ngSubmit)="submit()" (keyup.enter)="submit()">
 
-  <ion-item [disabled]="isMensage" class="text-box-item">
-    <ion-textarea #focustextarea formControlName="prompt" auto-grow="true" placeholder="Mensagem" style="text-transform: uppercase;"></ion-textarea>
+    <ion-item [disabled]="isMensage" class="text-box-item">
+      <ion-textarea #focustextarea formControlName="prompt" auto-grow="true" placeholder="Mensagem"
+        style="text-transform: uppercase;"></ion-textarea>
 
-    <ion-buttons slot="end">
-      <ion-button  color="tertiary" type="submit" [disabled]="form.invalid">
-        <ion-icon class="submit-icon" name="send">
-          Click me
-        </ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-item>
-</form>
+      <ion-buttons slot="end">
+        <ion-button color="tertiary" type="submit" [disabled]="form.invalid">
+          <ion-icon class="submit-icon" name="send">
+            Click me
+          </ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </form>
 </ion-footer>
