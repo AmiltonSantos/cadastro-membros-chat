@@ -23,25 +23,6 @@ export class HomePage implements OnInit {
 
     index = 0;
 
-    mensagemBot = [
-        { mensagem: 'Onde você congrega?' },
-        { mensagem: 'Qual o número do seu CPF?' },
-        { mensagem: 'Qual o DIA do nascimento?' },
-        { mensagem: 'Qual o MÊS do nascimento?' },
-        { mensagem: 'Qual o ANO do nascimento?' },
-        { mensagem: 'Masculino ou Feminino?' },
-        { mensagem: 'Seu estado civil?' },
-        { mensagem: 'Sua nacionalidade?' },
-        { mensagem: 'Cidade que você nasceu?' },
-        { mensagem: 'Estado que você nasceu?' },
-        { mensagem: 'Qual o seu E-mail?' },
-        { mensagem: 'Nome da mãe?' },
-        { mensagem: 'Nome da pai?' },
-        { mensagem: 'Sua escolaridade?' },
-        { mensagem: 'Telefone para contato?' },
-        { mensagem: 'Whatsapp?' },
-    ];
-
     public strCongregacao = [
         {
             regional: 'REGIONAL 01',
@@ -226,6 +207,25 @@ export class HomePage implements OnInit {
         { nome: 'NAO' },
     ];
 
+    mensagemBot = [
+        { mensagem: 'Onde você congrega?' },
+        { mensagem: 'Qual o número do seu CPF?' },
+        { mensagem: 'Qual o DIA do nascimento?' },
+        { mensagem: 'Qual o MÊS do nascimento?' },
+        { mensagem: 'Qual o ANO do nascimento?' },
+        { mensagem: 'Masculino ou Feminino?' },
+        { mensagem: 'Seu estado civil?' },
+        { mensagem: 'Sua nacionalidade?' },
+        { mensagem: 'Cidade que você nasceu?' },
+        { mensagem: 'Estado que você nasceu?' },
+        { mensagem: 'Qual o seu E-mail?' },
+        { mensagem: 'Nome completo da mãe?' },
+        { mensagem: 'Nome completo do pai?' },
+        { mensagem: 'Sua escolaridade?' },
+        { mensagem: 'Telefone para contato?' },
+        { mensagem: 'Whatsapp?' },
+    ];
+
     constructor(
         private alertController: AlertController,
         private modalController: ModalController
@@ -286,6 +286,14 @@ export class HomePage implements OnInit {
                     } else if (this.index === 7) {
                         setTimeout(() => {
                             this.showAlert(7, 'NACIONALIDADE');
+                        }, 500);
+                    } else if (this.index === 9) {
+                        setTimeout(() => {
+                            this.showAlert(9, 'UF');
+                        }, 500);
+                    } else if (this.index === 13) {
+                        setTimeout(() => {
+                            this.showAlert(13, 'UF');
                         }, 500);
                     }
                     this.index++;
@@ -370,6 +378,22 @@ export class HomePage implements OnInit {
             }
         } else if (numero === 7) {
             for (const str of this.strNacionalidade) {
+                inputs.push({
+                    type: 'radio',
+                    label: str.nome,
+                    value: str.nome
+                });
+            }
+        } else if (numero === 9) {
+            for (const str of this.strEstados) {
+                inputs.push({
+                    type: 'radio',
+                    label: (str.nome + ' - ' + str.sigla),
+                    value: str.sigla
+                });
+            }
+        } else if (numero === 13) {
+            for (const str of this.strEscolaridade) {
                 inputs.push({
                     type: 'radio',
                     label: str.nome,
