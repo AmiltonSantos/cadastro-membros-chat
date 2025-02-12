@@ -1,0 +1,46 @@
+.text-box-item {
+  --border-radius: 15px;
+  --background: var(--ion-color-light);
+}
+
+.bot {
+  --background: transparent;
+}
+
+.chat-icon {
+  font-size: 32px;
+
+}
+
+.chat-item {
+  --padding-top: 10px;
+  --padding-bottom: 10px;
+}
+
+ion-badge {
+  padding: 15px;
+}
+
+.w-space {
+  white-space: pre-line;
+}
+
+.submit-icon {
+  font-size: 25px;
+}
+
+.empty {
+  text-align: center;
+  padding-top: 20vh;
+  opacity: 30%;
+
+  ion-icon {
+    font-size: 120px;
+  }
+}
+
+.message-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
