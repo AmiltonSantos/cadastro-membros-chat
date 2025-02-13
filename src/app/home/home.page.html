@@ -42,7 +42,7 @@
   <form [formGroup]="form" (ngSubmit)="submit()" (keyup.enter)="submit()">
 
     <ion-item [disabled]="isMensage" class="text-box-item">
-      <ion-textarea [inputmode]="inputmode" #focustextarea formControlName="prompt" auto-grow="true" placeholder="Mensagem"
+      <ion-textarea #focustextarea formControlName="prompt" auto-grow="true" placeholder="Mensagem"
         style="text-transform: uppercase;"></ion-textarea>
 
       <ion-buttons slot="end">
