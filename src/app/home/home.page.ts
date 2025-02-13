@@ -21,7 +21,7 @@ export class HomePage implements OnInit {
         prompt: new FormControl('', [Validators.required, CustomValidators.noWhiteSpace])
     })
 
-    index = 0;
+    index = -1;
 
     public strCongregacao = [
         {
@@ -164,7 +164,7 @@ export class HomePage implements OnInit {
         { nome: 'BRASILEIRO(a)' },
         { nome: 'ESTRANGEIRO(a)' }
     ]
-    
+
     public strEstados = [
         { sigla: 'AC', nome: 'ACRE' },
         { sigla: 'AL', nome: 'ALAGOAS' },
@@ -214,32 +214,59 @@ export class HomePage implements OnInit {
     ];
 
     mensagemBot = [
-        { mensagem: 'Onde você congrega?' },
-        { mensagem: 'Qual o número do seu CPF?' },
-        { mensagem: 'Qual o DIA do nascimento?' },
-        { mensagem: 'Qual o MÊS do nascimento?' },
-        { mensagem: 'Qual o ANO do nascimento?' },
-        { mensagem: 'Masculino ou Feminino?' },
-        { mensagem: 'Seu estado civil?' },
-        { mensagem: 'Sua nacionalidade?' },
-        { mensagem: 'Cidade que você nasceu?' },
-        { mensagem: 'Estado que você nasceu?' },
-        { mensagem: 'Qual o seu E-mail?' },
-        { mensagem: 'Nome completo da mãe?' },
-        { mensagem: 'Nome completo do pai?' },
-        { mensagem: 'Sua escolaridade?' },
-        { mensagem: 'Telefone para contato?' },
-        { mensagem: 'Whatsapp?' },
+        { value: 0, mensagem: 'Qual seu nome completo?' },
+        { value: 1, mensagem: 'Onde você congrega?' },
+        { value: 2, mensagem: 'Qual o número do seu CPF?' },
+        { value: 3, mensagem: 'Qual o número do seu RG?' },
+        { value: 4, mensagem: 'Qual o orgao expedidor do RG e Estado?' },
+        { value: 5, mensagem: 'Qual o DIA do nascimento?' },
+        { value: 6, mensagem: 'Qual o MÊS do nascimento?' },
+        { value: 7, mensagem: 'Qual o ANO do nascimento?' },
+        { value: 8, mensagem: 'Masculino ou Feminino?' },
+        { value: 9, mensagem: 'Seu estado civil?' },
+        { value: 10, mensagem: 'Sua nacionalidade?' },
+        { value: 11, mensagem: 'Cidade que você nasceu?' },
+        { value: 12, mensagem: 'Estado que você nasceu?' },
+        { value: 13, mensagem: 'Qual o seu E-mail?' },
+        { value: 14, mensagem: 'Nome completo da mãe?' },
+        { value: 15, mensagem: 'Nome completo do pai?' },
+        { value: 16, mensagem: 'Sua escolaridade?' },
+        { value: 17, mensagem: 'Telefone para contato?' },
+        { value: 18, mensagem: 'Whatsapp?' },
+        { value: 19, mensagem: 'Qual o seu CEP?' },
+        { value: 20, mensagem: 'Nome da sua rua?' },
+        { value: 21, mensagem: 'Qual número da casa?' },
+        { value: 22, mensagem: 'Nome do bairro?' },
+        { value: 23, mensagem: 'Complemento (Especifique)?' },
+        { value: 24, mensagem: 'Estado onde mora?' },
+        { value: 25, mensagem: 'Cidade onde mora?' },
+        { value: 26, mensagem: 'Qual a data batismo nas águas?' },
+        { value: 27, mensagem: 'Qual a data batismo no Espirito Santo?' },
+        { value: 28, mensagem: 'É Obreiro?' },
+        { value: 29, mensagem: 'Qual seu Cargo?' },
+        { value: 30, mensagem: 'Qual data da consagração a Diácono?' },
+        { value: 31, mensagem: 'Local da consagração há Diácono?' },
+        { value: 32, mensagem: 'Qual data da consagração a Presbitero?' },
+        { value: 33, mensagem: 'Local da consagração há Presbitero?' },
+        { value: 34, mensagem: 'Qual data da consagração a Evangelista?' },
+        { value: 35, mensagem: 'Local da consagração há Evangelista?' },
+        { value: 36, mensagem: 'Qual data da consagração a Pastor?' },
+        { value: 37, mensagem: 'Local da consagração há Pastor?' },
+        { value: 38, mensagem: 'Data do Registro no campo Jardim América?' },
+        { value: 39, mensagem: 'Data do Registro na CADESGO?' },
+        { value: 40, mensagem: 'Data do Registro na CGADB?' }
     ];
 
     constructor(private alertController: AlertController) { }
 
     ngOnInit() {
+        this.index = 0;
         setTimeout(() => {
             this.messages.push({ sender: 'bot', content: '' });
-            this.typeText('Qual seu nome completo?');
+            this.typeText(this.mensagemBot[this.index].mensagem);
             this.isMensage = false;
             this.loading = true;
+            this.index++;
             this.focustextarea.setFocus();
         }, 3500);
     }
@@ -248,12 +275,14 @@ export class HomePage implements OnInit {
         this.messages = [];
         this.isMensage = true;
         this.loading = false;
+        this.index = 0;
 
         setTimeout(() => {
             this.messages.push({ sender: 'bot', content: '' });
-            this.typeText('Qual seu nome completo?');
+            this.typeText(this.mensagemBot[this.index].mensagem);
             this.isMensage = false;
             this.loading = true;
+            this.index++;
             this.focustextarea.setFocus();
         }, 3000);
     }
@@ -284,33 +313,33 @@ export class HomePage implements OnInit {
                     this.messages.push(botMsg);
                     this.typeText(msg);
                     this.loading = true;
-                    if (this.index === 0) {
+                    if (this.index === 1) {
                         setTimeout(() => {
-                            this.showAlert(1, 'CONGREGAÇÃO');
-                        }, 500);
-                    } else if (this.index === 3) {
-                        setTimeout(() => {
-                            this.showAlert(3, 'MÊS');
-                        }, 500);
-                    } else if (this.index === 5) {
-                        setTimeout(() => {
-                            this.showAlert(5, 'SEXO');
+                            this.showAlert(this.mensagemBot[this.index].value, 'CONGREGAÇÃO');
                         }, 500);
                     } else if (this.index === 6) {
                         setTimeout(() => {
-                            this.showAlert(6, 'ESTADO CIVIL');
+                            this.showAlert(this.mensagemBot[this.index].value, 'MÊS');
                         }, 500);
-                    } else if (this.index === 7) {
+                    } else if (this.index === 8) {
                         setTimeout(() => {
-                            this.showAlert(7, 'NACIONALIDADE');
+                            this.showAlert(this.mensagemBot[this.index].value, 'SEXO');
                         }, 500);
                     } else if (this.index === 9) {
                         setTimeout(() => {
-                            this.showAlert(9, 'UF');
+                            this.showAlert(this.mensagemBot[this.index].value, 'ESTADO CIVIL');
                         }, 500);
-                    } else if (this.index === 13) {
+                    } else if (this.index === 10) {
                         setTimeout(() => {
-                            this.showAlert(13, 'UF');
+                            this.showAlert(this.mensagemBot[this.index].value, 'NACIONALIDADE');
+                        }, 500);
+                    } else if (this.index === 12) {
+                        setTimeout(() => {
+                            this.showAlert(this.mensagemBot[this.index].value, 'UF');
+                        }, 500);
+                    } else if (this.index === 16) {
+                        setTimeout(() => {
+                            this.showAlert(this.mensagemBot[this.index].value, 'ESCOLARIDADE');
                         }, 500);
                     }
                     this.index++;
@@ -353,7 +382,7 @@ export class HomePage implements OnInit {
 
     async showAlert(numero: number, str: string) {
         const inputs: { type?: 'radio'; label?: string; value?: string; disabled?: boolean; }[] = [];
-        if (numero === 1) {
+        if (numero === 2) {
             for (const regional of this.strCongregacao) {
                 inputs.push({
                     type: 'radio',
@@ -369,7 +398,7 @@ export class HomePage implements OnInit {
                     });
                 }
             }
-        } else if (numero === 3) {
+        } else if (numero === 6) {
             for (const str of this.strMeses) {
                 inputs.push({
                     type: 'radio',
@@ -377,7 +406,7 @@ export class HomePage implements OnInit {
                     value: str.nome
                 });
             }
-        } else if (numero === 5) {
+        } else if (numero === 8) {
             for (const str of this.strSexo) {
                 inputs.push({
                     type: 'radio',
@@ -385,7 +414,7 @@ export class HomePage implements OnInit {
                     value: str.nome
                 });
             }
-        } else if (numero === 6) {
+        } else if (numero === 9) {
             for (const str of this.strEstadoCivil) {
                 inputs.push({
                     type: 'radio',
@@ -393,7 +422,7 @@ export class HomePage implements OnInit {
                     value: str.nome
                 });
             }
-        } else if (numero === 7) {
+        } else if (numero === 10) {
             for (const str of this.strNacionalidade) {
                 inputs.push({
                     type: 'radio',
@@ -401,7 +430,7 @@ export class HomePage implements OnInit {
                     value: str.nome
                 });
             }
-        } else if (numero === 9) {
+        } else if (numero === 12) {
             for (const str of this.strEstados) {
                 inputs.push({
                     type: 'radio',
@@ -409,7 +438,7 @@ export class HomePage implements OnInit {
                     value: str.sigla
                 });
             }
-        } else if (numero === 13) {
+        } else if (numero === 16) {
             for (const str of this.strEscolaridade) {
                 inputs.push({
                     type: 'radio',
@@ -429,7 +458,7 @@ export class HomePage implements OnInit {
                 handler: (res) => {
                     let value = '';
                     if (typeof res === 'object') {
-                       value = res[0];
+                        value = res[0];
                     } else {
                         value = res;
                     }
