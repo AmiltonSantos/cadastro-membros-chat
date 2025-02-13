@@ -292,7 +292,7 @@ export class HomePage implements OnInit {
                             this.showAlert(1, 'CONGREGAÇÃO');
                         }, 500);
                     } else if (this.index === 2) {
-                        this.inputmode = 'number';
+                        this.inputmode = 'numeric';
                     } else if (this.index === 3) {
                         setTimeout(() => {
                             this.showAlert(3, 'MÊS');
