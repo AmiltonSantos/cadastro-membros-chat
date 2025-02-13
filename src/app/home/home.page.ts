@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IMessage } from '../models/methods.models';
-import { AlertController, IonContent, IonTextarea, ModalController } from '@ionic/angular';
+import { AlertController, IonContent, IonTextarea } from '@ionic/angular';
 import { CustomValidators } from 'src/utils/custom-validators';
 
 @Component({
@@ -24,6 +24,12 @@ export class HomePage implements OnInit {
     index = 0;
 
     public strCongregacao = [
+        {
+            regional: '',
+            options: [
+                { value: 'SEDE' }
+            ],
+        },
         {
             regional: 'REGIONAL 01',
             options: [
@@ -226,12 +232,23 @@ export class HomePage implements OnInit {
         { mensagem: 'Whatsapp?' },
     ];
 
-    constructor(
-        private alertController: AlertController,
-        private modalController: ModalController
-    ) { }
+    constructor(private alertController: AlertController) { }
 
     ngOnInit() {
+        setTimeout(() => {
+            this.messages.push({ sender: 'bot', content: '' });
+            this.typeText('Qual seu nome completo?');
+            this.isMensage = false;
+            this.loading = true;
+            this.focustextarea.setFocus();
+        }, 3500);
+    }
+
+    novoCadastro() {
+        this.messages = [];
+        this.isMensage = true;
+        this.loading = false;
+
         setTimeout(() => {
             this.messages.push({ sender: 'bot', content: '' });
             this.typeText('Qual seu nome completo?');
