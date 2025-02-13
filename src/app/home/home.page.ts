@@ -22,6 +22,7 @@ export class HomePage implements OnInit {
     })
 
     index = 0;
+    inputmode!: string;
 
     public strCongregacao = [
         {
@@ -248,6 +249,7 @@ export class HomePage implements OnInit {
         this.messages = [];
         this.isMensage = true;
         this.loading = false;
+        this.index = 0;
 
         setTimeout(() => {
             this.messages.push({ sender: 'bot', content: '' });
@@ -259,6 +261,7 @@ export class HomePage implements OnInit {
     }
 
     submit(res?: string) {
+        this.inputmode = 'string';
         if (this.form.valid || res !== undefined) {
             let prompt = res !== undefined ? res : this.form.value.prompt as string;
 
@@ -288,6 +291,8 @@ export class HomePage implements OnInit {
                         setTimeout(() => {
                             this.showAlert(1, 'CONGREGAÇÃO');
                         }, 500);
+                    } else if (this.index === 2) {
+                        this.inputmode = 'number';
                     } else if (this.index === 3) {
                         setTimeout(() => {
                             this.showAlert(3, 'MÊS');
