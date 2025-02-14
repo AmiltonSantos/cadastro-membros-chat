@@ -242,16 +242,16 @@ export class HomePage implements OnInit {
         { value: 25, mensagem: 'Cidade onde mora?' },
         { value: 26, mensagem: 'Qual a data batismo nas águas?' },
         { value: 27, mensagem: 'Qual a data batismo no Espirito Santo?' },
-        { value: 28, mensagem: 'É Obreiro?' },
+        { value: 28, mensagem: 'É obreiro?' },
         { value: 29, mensagem: 'Qual seu Cargo?' },
         { value: 30, mensagem: 'Qual data da consagração a Diácono?' },
-        { value: 31, mensagem: 'Local da consagração há Diácono?' },
+        { value: 31, mensagem: 'Local da consagração a Diácono?' },
         { value: 32, mensagem: 'Qual data da consagração a Presbitero?' },
-        { value: 33, mensagem: 'Local da consagração há Presbitero?' },
+        { value: 33, mensagem: 'Local da consagração a Presbitero?' },
         { value: 34, mensagem: 'Qual data da consagração a Evangelista?' },
-        { value: 35, mensagem: 'Local da consagração há Evangelista?' },
+        { value: 35, mensagem: 'Local da consagração a Evangelista?' },
         { value: 36, mensagem: 'Qual data da consagração a Pastor?' },
-        { value: 37, mensagem: 'Local da consagração há Pastor?' },
+        { value: 37, mensagem: 'Local da consagração a Pastor?' },
         { value: 38, mensagem: 'Data do Registro no campo Jardim América?' },
         { value: 39, mensagem: 'Data do Registro na CADESGO?' },
         { value: 40, mensagem: 'Data do Registro na CGADB?' }
@@ -341,6 +341,14 @@ export class HomePage implements OnInit {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'ESCOLARIDADE');
                         }, 500);
+                    } else if (this.index === 24) {
+                        setTimeout(() => {
+                            this.showAlert(this.mensagemBot[this.index].value, 'ESTADO');
+                        }, 500);
+                    } else if (this.index === 28) {
+                        setTimeout(() => {
+                            this.showAlert(this.mensagemBot[this.index].value, 'OBREIRO');
+                        }, 500);
                     }
                     this.index++;
                 }, 1000);
@@ -398,7 +406,7 @@ export class HomePage implements OnInit {
                     });
                 }
             }
-        } else if (numero === 6) {
+        } else if (numero === 7) {
             for (const str of this.strMeses) {
                 inputs.push({
                     type: 'radio',
@@ -406,7 +414,7 @@ export class HomePage implements OnInit {
                     value: str.nome
                 });
             }
-        } else if (numero === 8) {
+        } else if (numero === 9) {
             for (const str of this.strSexo) {
                 inputs.push({
                     type: 'radio',
@@ -414,7 +422,7 @@ export class HomePage implements OnInit {
                     value: str.nome
                 });
             }
-        } else if (numero === 9) {
+        } else if (numero === 10) {
             for (const str of this.strEstadoCivil) {
                 inputs.push({
                     type: 'radio',
@@ -422,7 +430,7 @@ export class HomePage implements OnInit {
                     value: str.nome
                 });
             }
-        } else if (numero === 10) {
+        } else if (numero === 11) {
             for (const str of this.strNacionalidade) {
                 inputs.push({
                     type: 'radio',
@@ -430,7 +438,7 @@ export class HomePage implements OnInit {
                     value: str.nome
                 });
             }
-        } else if (numero === 12) {
+        } else if (numero === 13) {
             for (const str of this.strEstados) {
                 inputs.push({
                     type: 'radio',
@@ -438,8 +446,24 @@ export class HomePage implements OnInit {
                     value: str.sigla
                 });
             }
-        } else if (numero === 16) {
+        } else if (numero === 17) {
             for (const str of this.strEscolaridade) {
+                inputs.push({
+                    type: 'radio',
+                    label: str.nome,
+                    value: str.nome
+                });
+            }
+        } else if (numero === 25) {
+            for (const str of this.strEstados) {
+                inputs.push({
+                    type: 'radio',
+                    label: (str.nome + ' - ' + str.sigla),
+                    value: str.nome
+                });
+            }
+        } else if (numero === 29) {
+            for (const str of this.strObreiro) {
                 inputs.push({
                     type: 'radio',
                     label: str.nome,
