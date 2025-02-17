@@ -24,7 +24,7 @@
     <h4>Bem vindos ao <strong>Chat</strong> do cadastro de membros da Assembleia de Deus Missão - Jardim América...</h4>
   </div>
 
-  <ion-item lines="none" [ngClass]="{'bot': m.sender !== 'me'}" class="chat-item"
+  <ion-item lines="none" [ngClass]="{'bot': m.sender !== 'me'}" [class]="messages.length === 1 ? 'chat-item1' : 'chat-item'"
     *ngFor="let m of messages; index as i">
     <ion-badge slot="start" [color]="m.sender ===  'me' ? 'success' : 'light'" mode="ios">
       <ion-icon class="chat-icon" [src]="m.sender ===  'me' ? 'assets/images/user.svg' : 'assets/images/bot.svg'"></ion-icon>
@@ -56,6 +56,7 @@
       </ion-item>
     </div>
   </form>
+
   <ion-toolbar *ngIf="isEnabledButtons">
     <ion-row>
       <ion-col>
