@@ -1,8 +1,16 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IMessage } from '../models/methods.models';
-import { AlertController, IonContent, IonTextarea } from '@ionic/angular';
+import { AlertController, IonContent, IonTextarea, Platform } from '@ionic/angular';
 import { CustomValidators } from 'src/utils/custom-validators';
+
+import * as pdfMake from 'pdfmake/build/pdfmake';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+(pdfMake as any).vfs = pdfFonts.vfs;
+
+import { Filesystem, Directory } from '@capacitor/filesystem';
+import { FileOpener } from '@awesome-cordova-plugins/file-opener/ngx';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
     selector: 'app-home',
@@ -13,15 +21,59 @@ export class HomePage implements OnInit {
     @ViewChild(IonContent, { static: false }) content!: IonContent;
     @ViewChild('focustextarea', { static: false }) focustextarea!: IonTextarea;
 
-    messages: IMessage[] = [];
-    loading: boolean = false;
-    isMensage: boolean = true;
+    public messages: IMessage[] = [];
+    public loading: boolean = false;
+    public isMensage: boolean = true;
+    private index = -1;
+    public pdfObj!: pdfMake.TCreatedPdf;
+    private logoData!: string | ArrayBuffer | null;
+    public photoPreview!: string;
+    public isEnabledButtons: boolean = false;
+
+    private urlPdf: string = '';
+    private congregacao: string = '';
+    private cpf: string = '';
+    private rg: string = '';
+    private expedidorRg: string = '';
+    private nome: string = '';
+    private dataNascimento: string = '';
+    private sexo: string = '';
+    private estadoCivil: string = '';
+    private nacionalidade: string = '';
+    private naturalidade: string = '';
+    private uf: string = '';
+    private email: string = '';
+    private nomeMae: string = '';
+    private nomePai: string = '';
+    private escolaridade: string = '';
+    private telefone1: string = '';
+    private telefone2: string = '';
+    private cep: string = '';
+    private rua: string = '';
+    private numero: string = '';
+    private bairro: string = '';
+    private complemento: string = '';
+    private estado: string = '';
+    private cidade: string = '';
+    private batismoAgua: string = '';
+    private batismoEspiritoSanto: string = '';
+    private isObreiro: string = '';
+    private obreiroCargo: string = '';
+    private consDiacono: string = '';
+    private localDiacono: string = '';
+    private consPresbitero: string = '';
+    private localPresbitero: string = '';
+    private consEvangelista: string = '';
+    private localEvangelista: string = '';
+    private consPastor: string = '';
+    private localPastor: string = '';
+    private regCampo: string = '';
+    private regCadesgo: string = '';
+    private regCgadb: string = '';
 
     form = new FormGroup({
         prompt: new FormControl('', [Validators.required, CustomValidators.noWhiteSpace])
     })
-
-    index = -1;
 
     public strCongregacao = [
         {
@@ -213,7 +265,7 @@ export class HomePage implements OnInit {
         { nome: 'NAO' },
     ];
 
-    mensagemBot = [
+    private mensagemBot = [
         { value: 0, mensagem: 'Qual seu nome completo ?' },
         { value: 1, mensagem: 'Onde você congrega ?' },
         { value: 2, mensagem: 'Qual o número do seu CPF ?' },
@@ -257,7 +309,7 @@ export class HomePage implements OnInit {
         { value: 40, mensagem: 'Data do Registro na CGADB ?' }
     ];
 
-    constructor(private alertController: AlertController) { }
+    constructor(private alertController: AlertController, public fileOpener: FileOpener, public plt: Platform, public http: HttpClient,) { }
 
     ngOnInit() {
         this.index = 0;
@@ -267,11 +319,24 @@ export class HomePage implements OnInit {
             this.isMensage = false;
             this.loading = true;
             this.index++;
-            this.focustextarea.setFocus();
+            this.focustextarea?.setFocus();
         }, 3500);
+
+        this.loadLocalAssetToBase64();
     }
 
-    novoCadastro() {
+    loadLocalAssetToBase64() {
+        this.http.get('./assets/images/header-igreja.png', { responseType: 'blob' })
+            .subscribe(res => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    this.logoData = reader.result;
+                }
+                reader.readAsDataURL(res);
+            });
+    }
+
+    public novoCadastro() {
         this.messages = [];
         this.isMensage = true;
         this.loading = false;
@@ -287,7 +352,7 @@ export class HomePage implements OnInit {
         }, 3000);
     }
 
-    submit(res?: string) {
+    public submit(res?: string) {
         if (this.form.valid || res !== undefined) {
             let prompt = res !== undefined ? res : this.form.value.prompt as string;
 
@@ -354,6 +419,7 @@ export class HomePage implements OnInit {
                 }, 1000);
 
             } else {
+                this.isEnabledButtons = true;
                 this.loading = false;
                 this.form.disable();
                 this.content.scrollEvents = false;
@@ -364,7 +430,7 @@ export class HomePage implements OnInit {
         }
     }
 
-    typeText(text: string) {
+    private typeText(text: string) {
         if (!text) {
             return;
         }
@@ -383,10 +449,9 @@ export class HomePage implements OnInit {
         }, 15);
     }
 
-    usaScrollToBottom() {
+    public usaScrollToBottom() {
         this.content.scrollToBottom(10);
     }
-
 
     async showAlert(numero: number, str: string) {
         const inputs: { type?: 'radio'; label?: string; value?: string; disabled?: boolean; }[] = [];
@@ -479,7 +544,7 @@ export class HomePage implements OnInit {
             buttons: [{
                 text: 'OK',
                 cssClass: 'okButton',
-                handler: (res) => {
+                handler: (res: any) => {
                     let value = '';
                     if (typeof res === 'object') {
                         value = res[0];
@@ -493,5 +558,1188 @@ export class HomePage implements OnInit {
 
         presentAlert.overlayIndex = 9;
         await presentAlert.present();
+    }
+
+    public createPdf() {
+        let logo = { image: this.logoData, width: 450, margin: [30, 0, 0, 0] };
+
+        const content = [];
+
+        // Verifica se this.photoPreview existe e é uma string não vazia
+        if (this.photoPreview) {
+            content.push({
+                image: this.photoPreview ?? '',
+                width: 98, // Largura da imagem
+                height: 120, // Altura da imagem
+                margin: [0, -120, 0, 0]
+            });
+        } else {
+            content.push({
+                text: 'Imagem não disponível',
+                alignment: 'center',
+                margin: [0, -50, 0, 0]
+            });
+        }
+
+        const docDefinition: any = {
+            header: {
+                // Definindo o cabeçalho com uma moldura
+                canvas: [
+                    {
+                        type: 'rect',
+                        x: 30, // Margem esquerda
+                        y: 35, // Margem superior
+                        w: 535, // Largura da moldura (595 - 30 - 30)
+                        h: 778, // Altura da moldura (842 - 32 - 32)
+                        lineWidth: 3, // Espessura da linha
+                        fill: 'none' // Sem preenchimento
+                    }
+                ],
+                absolutePosition: { x: 0, y: 0 } // Posição absoluta para garantir que a moldura fique no fundo
+            },
+            watermark: { text: 'AD MISSÃO JARDIM AMÉRICA', color: 'red', opacity: 0.05, bold: true },
+            content: [
+                {
+                    columns: [
+                        logo
+                    ]
+                },
+
+                { // Linha horizontal abaixo da imagem
+                    canvas: [
+                        {
+                            type: 'line',
+                            x1: 0,
+                            y1: 0,
+                            x2: 515, // largura da linha
+                            y2: 0,
+                            lineWidth: 1.5,
+                            lineColor: 'black' // cor da linha
+                        }
+                    ],
+                    margin: [0, 2, 0, 2] // margens em torno da linha
+                },
+
+                {
+                    text: 'FICHA DE CADASTRO',
+                    style: 'header',
+                    alignment: 'center',
+                    margin: [0, 5, 0, 5]
+                },
+
+                // Inicio dos Inputs table de cadastro
+                {
+                    columns: [
+                        {
+                            width: '80%', // Ajuste a largura conforme necessário
+                            stack: [
+                                {
+                                    text: 'CONGREGAÇÃO',
+                                    bold: true,
+                                    margin: [0, 0, 0, 10]
+                                },
+                                {
+                                    table: {
+                                        widths: [380],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.congregacao.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    }
+                                },
+                                {
+                                    text: 'Dados Pessoais',
+                                    bold: true,
+                                    margin: [0, 10, 0, 10]
+                                },
+                                {
+                                    columns: [
+                                        {
+                                            width: '45%',
+                                            stack: [
+                                                { text: 'CPF', bold: true, margin: [0, 0, 0, 0] },
+                                                {
+                                                    table: {
+                                                        widths: [170],
+                                                        heights: 13,
+                                                        body: [
+                                                            [
+                                                                {
+                                                                    text: this.cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4')
+                                                                }
+                                                            ]
+                                                        ]
+                                                    },
+                                                    margin: [0, 0, 0, 5]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            width: '30%',
+                                            stack: [
+                                                { text: 'RG', bold: true, margin: [0, 0, 0, 0] },
+                                                {
+                                                    table: {
+                                                        widths: [109],
+                                                        heights: 13,
+                                                        body: [
+                                                            [
+                                                                {
+                                                                    text: this.rg
+                                                                }
+                                                            ]
+                                                        ]
+                                                    },
+                                                    margin: [0, 0, 10, 0]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            width: '20%',
+                                            stack: [
+                                                { text: 'ORG. EXPED.', bold: true, margin: [0, 0, 0, 0] },
+                                                {
+                                                    table: {
+                                                        widths: [70],
+                                                        heights: 13,
+                                                        body: [
+                                                            [
+                                                                {
+                                                                    text: this.expedidorRg
+                                                                }
+                                                            ]
+                                                        ]
+                                                    },
+                                                    margin: [0, 0, 10, 0]
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    margin: [0, 0, 0, 5]
+                                }                                
+                            ]
+                        },
+                        // Quadrado da foto
+                        {
+                            width: '20%', // Ajuste a largura conforme necessário
+                            stack: [
+                                {
+                                    canvas: [
+                                        {
+                                            type: 'rect',
+                                            x: 0,
+                                            y: 0,
+                                            w: 98, // Largura do quadrado
+                                            h: 120, // Altura do quadrado
+                                            lineWidth: 1,
+                                            lineColor: 'black',
+                                            fill: 'none' // Sem preenchimento
+                                        }
+                                    ],
+                                    margin: [0, 0, 0, 0] // Margem à direita do quadrado
+                                },
+                                // Variavel da imagem
+                                content
+                            ]
+                        }
+                    ],
+                    margin: [0, 0, 0, 0] // Margem em torno do conjunto de colunas
+                },
+                {
+                    text: 'Nome',
+                    bold: true
+                },
+                {
+                    table: {
+                        widths: [500],
+                        heights: 13,
+                        body: [
+                            [
+                                {
+                                    text: this.nome.toUpperCase()
+                                }
+                            ]
+                        ]
+                    },
+                    margin: [0, 0, 0, 5]
+                },
+                {
+                    columns: [
+                        {
+                            width: '35%',
+                            stack: [
+                                { text: 'Data de Nascimento', bold: true, margin: [0, 0, 0, 0] },
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.dataNascimento.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 10, 0]
+                                }
+                            ]
+                        },
+                        {
+                            width: '15%',
+                            stack: [
+                                { text: 'Masculino', bold: true, margin: [0, 0, 0, 0] },
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.sexo === 'MASCULINO' ? 'X' : '',
+                                                    alignment: 'center'
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 10, 0]
+                                }
+                            ]
+                        },
+                        {
+                            width: '15%',
+                            stack: [
+                                { text: 'Feminino', bold: true, margin: [0, 0, 0, 0] },
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.sexo === 'FEMININO' ? 'X' : '',
+                                                    alignment: 'center'
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 10, 0]
+                                }
+                            ]
+                        },
+                        {
+                            width: '34%',
+                            stack: [
+                                { text: 'Estado Civil', bold: true, margin: [0, 0, 0, 0] },
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.estadoCivil.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 0, 0]
+                                }
+                            ]
+                        }
+                    ],
+                    margin: [0, 0, 0, 5]
+                },
+                {
+                    columns: [
+                        {
+                            width: '20%',
+                            stack: [
+                                { text: 'Nacionalidade', bold: true, margin: [0, 0, 0, 0] },
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.nacionalidade.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 10, 0]
+                                }
+                            ]
+                        },
+                        {
+                            width: '35%',
+                            stack: [
+                                { text: 'Naturalidade', bold: true, margin: [0, 0, 0, 0] },
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.naturalidade.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 10, 0]
+                                }
+                            ]
+                        },
+                        {
+                            width: '10%',
+                            stack: [
+                                { text: 'UF', bold: true, margin: [0, 0, 0, 0] },
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.uf.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 10, 0]
+                                }
+                            ]
+                        },
+                        {
+                            width: '34%',
+                            stack: [
+                                { text: 'E-mail', bold: true, margin: [0, 0, 0, 0] },
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.email.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 0, 0]
+                                }
+                            ]
+                        }
+                    ],
+                    margin: [0, 0, 0, 5]
+                },
+                {
+                    columns: [
+                        {
+                            width: '49.5%',
+                            stack: [
+                                { text: 'Nome Mãe', bold: true, margin: [0, 0, 0, 0] },
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.nomeMae.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 10, 0]
+                                }
+                            ]
+                        },
+                        {
+                            width: '49.5%',
+                            stack: [
+                                { text: 'Nome Pai', bold: true, margin: [0, 0, 0, 0] },
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.nomePai.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 0, 0]
+                                }
+                            ]
+                        }
+                    ],
+                    margin: [0, 0, 0, 5]
+                },
+                {
+                    columns: [
+                        {
+                            width: '37%',
+                            stack: [
+                                { text: 'Escolaridade', bold: true, margin: [0, 0, 0, 0] },
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.escolaridade.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 10, 0]
+                                }
+                            ]
+                        },
+                        {
+                            width: '31%',
+                            stack: [
+                                { text: 'Telefone 1', bold: true, margin: [0, 0, 0, 0] },
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.telefone1.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 10, 0]
+                                }
+                            ]
+                        },
+                        {
+                            width: '31%',
+                            stack: [
+                                { text: 'Telefone 2', bold: true, margin: [0, 0, 0, 0] },
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.telefone2.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 0, 0]
+                                }
+                            ]
+                        }
+                    ],
+                    margin: [0, 0, 0, 5]
+                },
+
+                { // Linha horizontal abaixo da imagem
+                    canvas: this.createDottedLine(0, 0, 515, 0, 5),
+                    margin: [0, 2, 0, 2] // margens em torno da linha
+                },
+                {
+                    text: 'Endereço',
+                    bold: true,
+                    margin: [0, 0, 0, 10]
+                },
+                {
+                    columns: [
+                        {
+                            width: '30%',
+                            stack: [
+                                { text: 'Cep', bold: true, margin: [0, 0, 0, 0] },
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.cep.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 10, 0]
+                                }
+                            ]
+                        },
+                        {
+                            width: '49%',
+                            stack: [
+                                { text: 'Rua', bold: true, margin: [0, 0, 0, 0] },
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.rua.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 10, 0]
+                                }
+                            ]
+                        },
+                        {
+                            width: '20%',
+                            stack: [
+                                { text: 'Número', bold: true, margin: [0, 0, 0, 0] },
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.numero.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 0, 0]
+                                }
+                            ]
+                        }
+                    ],
+                    margin: [0, 0, 0, 5]
+                },
+                {
+                    columns: [
+                        {
+                            width: '39.5%',
+                            stack: [
+                                { text: 'Bairro', bold: true, margin: [0, 0, 0, 0] },
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.bairro.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 10, 0]
+                                }
+                            ]
+                        },
+                        {
+                            width: '59.5%',
+                            stack: [
+                                { text: 'Complemento', bold: true, margin: [0, 0, 0, 0] },
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.complemento.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 0, 0]
+                                }
+                            ]
+                        }
+                    ],
+                    margin: [0, 0, 0, 5]
+                },
+                {
+                    columns: [
+                        {
+                            width: '39.5%',
+                            stack: [
+                                { text: 'Estado', bold: true, margin: [0, 0, 0, 0] },
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.estado.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 10, 0]
+                                }
+                            ]
+                        },
+                        {
+                            width: '59.5%',
+                            stack: [
+                                { text: 'Cidade', bold: true, margin: [0, 0, 0, 0] },
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.cidade.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 0, 0]
+                                }
+                            ]
+                        }
+                    ],
+                    margin: [0, 0, 0, 5]
+                },
+
+                { // Linha horizontal abaixo da imagem
+                    canvas: this.createDottedLine(0, 0, 515, 0, 5),
+                    margin: [0, 2, 0, 2] // margens em torno da linha
+                },
+                {
+                    text: 'Ministério',
+                    bold: true,
+                    margin: [0, 0, 0, 10]
+                },
+                {
+                    columns: [
+                        {
+                            width: '21%',
+                            stack: [
+                                { text: 'Batismo nas águas:', bold: true, margin: [0, 0, 0, 0] },
+                            ]
+                        },
+                        {
+                            width: '27%',
+                            stack: [
+                                {
+                                    text: this.batismoAgua.toUpperCase(),
+                                    color: 'gray',
+                                    fontSize: 12,
+                                    decoration: 'underline',
+                                    bold: true,
+                                    margin: [0, 0, 0, 0]
+                                },
+                            ]
+                        },
+                        {
+                            width: '28%',
+                            stack: [
+                                { text: 'Batismo no Espírito Santo:', bold: true, margin: [0, 0, 0, 0] },
+                            ]
+                        },
+                        {
+                            width: '25%',
+                            stack: [
+                                {
+                                    text: this.batismoEspiritoSanto.toUpperCase(),
+                                    color: 'gray',
+                                    fontSize: 12,
+                                    decoration: 'underline',
+                                    bold: true,
+                                    margin: [0, 0, 0, 0]
+                                },
+                            ]
+                        },
+                    ],
+                    margin: [0, 0, 0, 5]
+                },
+                {
+                    columns: [
+                        {
+                            width: '15%',
+                            bold: true,
+                            stack: [
+                                { text: 'Obreiro?', margin: [0, 5, 0, 0] }
+                            ]
+                        },
+                        {
+                            width: '5%',
+                            bold: true,
+                            stack: [
+                                { text: 'Sim', margin: [0, 5, 0, 0] }
+                            ]
+                        },
+                        {
+                            width: '8%',
+                            stack: [
+                                {
+                                    table: {
+                                        widths: [25],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.isObreiro === 'SIM' ? 'X' : '',
+                                                    alignment: 'center'
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 10, 0]
+                                }
+                            ]
+                        },
+                        {
+                            width: '5%',
+                            bold: true,
+                            stack: [
+                                { text: 'Não', margin: [0, 5, 0, 0] }
+                            ]
+                        },
+                        {
+                            width: '20%',
+                            stack: [
+                                {
+                                    table: {
+                                        widths: [25],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.isObreiro === 'NÃO' ? 'X' : '',
+                                                    alignment: 'center'
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 10, 0]
+                                }
+                            ]
+                        },
+                        {
+                            width: '8%',
+                            bold: true,
+                            stack: [
+                                { text: 'Cargo:', margin: [0, 5, 0, 0] }
+                            ]
+                        },
+                        {
+                            width: '40.5%',
+                            stack: [
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.obreiroCargo.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 10, 0]
+                                }
+                            ]
+                        }
+                    ],
+                    margin: [0, 0, 0, 5]
+                },
+                {
+                    columns: [
+                        {
+                            width: '15%',
+                            bold: true,
+                            stack: [
+                                { text: 'Diácono', margin: [0, 5, 0, 0] }
+                            ]
+                        },
+                        {
+                            width: '13%',
+                            bold: true,
+                            stack: [
+                                { text: 'Data Início:', margin: [0, 5, 0, 0] }
+                            ]
+                        },
+                        {
+                            width: '25%',
+                            stack: [
+                                {
+                                    text: this.consDiacono.toUpperCase(),
+                                    color: 'gray',
+                                    fontSize: 12,
+                                    decoration: 'underline',
+                                    bold: true,
+                                    margin: [0, 3, 0, 0]
+                                }
+                            ]
+                        },
+                        {
+                            width: '6.5%',
+                            bold: true,
+                            stack: [
+                                { text: 'Local:', margin: [0, 5, 0, 0] }
+                            ]
+                        },
+                        {
+                            width: '42%',
+                            stack: [
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.localDiacono.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 10, 0]
+                                }
+                            ]
+                        }
+                    ],
+                    margin: [0, 0, 0, 5]
+                },
+                {
+                    columns: [
+                        {
+                            width: '15%',
+                            bold: true,
+                            stack: [
+                                { text: 'Presbítero', margin: [0, 5, 0, 0] }
+                            ]
+                        },
+                        {
+                            width: '13%',
+                            bold: true,
+                            stack: [
+                                { text: 'Data Início:', margin: [0, 5, 0, 0] }
+                            ]
+                        },
+                        {
+                            width: '25%',
+                            stack: [
+                                {
+                                    text: this.consPresbitero.toUpperCase(),
+                                    color: 'gray',
+                                    fontSize: 12,
+                                    decoration: 'underline',
+                                    bold: true,
+                                    margin: [0, 3, 0, 0]
+                                }
+                            ]
+                        },
+                        {
+                            width: '6.5%',
+                            bold: true,
+                            stack: [
+                                { text: 'Local:', margin: [0, 5, 0, 0] }
+                            ]
+                        },
+                        {
+                            width: '42%',
+                            stack: [
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.localPresbitero.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 10, 0]
+                                }
+                            ]
+                        }
+                    ],
+                    margin: [0, 0, 0, 5]
+                },
+                {
+                    columns: [
+                        {
+                            width: '15%',
+                            bold: true,
+                            stack: [
+                                { text: 'Evangelista', margin: [0, 5, 0, 0] }
+                            ]
+                        },
+                        {
+                            width: '13%',
+                            bold: true,
+                            stack: [
+                                { text: 'Data Início:', margin: [0, 5, 0, 0] }
+                            ]
+                        },
+                        {
+                            width: '25%',
+                            stack: [
+                                {
+                                    text: this.consEvangelista.toUpperCase(),
+                                    color: 'gray',
+                                    fontSize: 12,
+                                    decoration: 'underline',
+                                    bold: true,
+                                    margin: [0, 3, 0, 0]
+                                }
+                            ]
+                        },
+                        {
+                            width: '6.5%',
+                            bold: true,
+                            stack: [
+                                { text: 'Local:', margin: [0, 5, 0, 0] }
+                            ]
+                        },
+                        {
+                            width: '42%',
+                            stack: [
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.localEvangelista.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 10, 0]
+                                }
+                            ]
+                        }
+                    ],
+                    margin: [0, 0, 0, 5]
+                },
+                {
+                    columns: [
+                        {
+                            width: '15%',
+                            bold: true,
+                            stack: [
+                                { text: 'Pastor', margin: [0, 5, 0, 0] }
+                            ]
+                        },
+                        {
+                            width: '13%',
+                            bold: true,
+                            stack: [
+                                { text: 'Data Início:', margin: [0, 5, 0, 0] }
+                            ]
+                        },
+                        {
+                            width: '25%',
+                            stack: [
+                                {
+                                    text: this.consPastor.toUpperCase(),
+                                    color: 'gray',
+                                    fontSize: 12,
+                                    decoration: 'underline',
+                                    bold: true,
+                                    margin: [0, 3, 0, 0]
+                                }
+                            ]
+                        },
+                        {
+                            width: '6.5%',
+                            bold: true,
+                            stack: [
+                                { text: 'Local:', margin: [0, 5, 0, 0] }
+                            ]
+                        },
+                        {
+                            width: '42%',
+                            stack: [
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.localPastor.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 10, 0]
+                                }
+                            ]
+                        }
+                    ],
+                    margin: [0, 0, 0, 10]
+                },
+                {
+                    columns: [
+                        {
+                            width: '33%',
+                            stack: [
+                                { text: 'Registro Campo Jd. América', bold: true, margin: [0, 0, 0, 0] },
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.regCampo.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 10, 0]
+                                }
+                            ]
+                        },
+                        {
+                            width: '33%',
+                            stack: [
+                                { text: 'Registro CADESGO', bold: true, margin: [0, 0, 0, 0] },
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.regCadesgo.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 10, 0]
+                                }
+                            ]
+                        },
+                        {
+                            width: '33.5%',
+                            stack: [
+                                { text: 'Registro CGADB', bold: true, margin: [0, 0, 0, 0] },
+                                {
+                                    table: {
+                                        widths: ['*'],
+                                        heights: 13,
+                                        body: [
+                                            [
+                                                {
+                                                    text: this.regCgadb.toUpperCase()
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    margin: [0, 0, 0, 0]
+                                }
+                            ]
+                        }
+                    ],
+                    margin: [0, 0, 0, 5]
+                }
+            ],
+
+            // Rodapé
+            footer(currentPage: any, pageCount: any) {
+                return {
+                    columns: [
+                        { text: 'APP a1000ton Tecnologia - Todos os direitos reservados Copyright' + ' | ' + new Date().toLocaleString(), alignment: 'center', fontSize: 6 }
+                    ]
+                };
+            },
+            styles: {
+                header: {
+                    fontSize: 14,
+                    bold: true,
+                    margin: [0, 15, 0, 0]
+                },
+                subheader: {
+                    fontSize: 14,
+                    bold: true,
+                    margin: [0, 15, 0, 0]
+                }
+            }
+        }
+        this.urlPdf = '';
+        this.pdfObj = pdfMake.createPdf(docDefinition);
+        setTimeout(async () => {
+            await this.pdfObj.getBuffer(async (buffer) => {
+                const blob = new Blob([buffer], { type: 'application/pdf' });
+                this.urlPdf = URL.createObjectURL(blob);
+            });
+        }, 100);
+    }
+
+    public downloadPdf() {
+        if (this.plt.is('cordova')) {
+            this.pdfObj.getBase64(async (data) => {
+                try {
+                    let path = `pdf/myletter_${Date.now()}.pdf`;
+
+                    const result = await Filesystem.writeFile({
+                        path,
+                        data: data,
+                        directory: Directory.Documents,
+                        recursive: true
+                        // encoding: Encoding.UTF8
+                    });
+                    this.fileOpener.open(`${result.uri}`, 'application/pdf');
+
+                } catch (e) {
+                    console.error('Unable to write file', e);
+                }
+            });
+        } else {
+            const newTab = window.open(this.urlPdf, '_blank');
+            if (newTab) {
+                newTab.focus();
+            } else { // O bloqueador de pop-ups pode estar ativo
+                alert('Por favor, permita pop-ups para visualizar o PDF.');
+            }
+        }
+    }
+
+    // Função para criar uma linha pontilhada
+    private createDottedLine(x1: number, y1: number, x2: number, y2: number, dashLength: number) {
+        const lines = [];
+        const totalLength = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+        const dashCount = Math.floor(totalLength / dashLength);
+
+        for (let i = 0; i < dashCount; i++) {
+            const startX = x1 + (x2 - x1) * (i / dashCount);
+            const startY = y1 + (y2 - y1) * (i / dashCount);
+            const endX = x1 + (x2 - x1) * ((i + 0.5) / dashCount);
+            const endY = y1 + (y2 - y1) * ((i + 0.5) / dashCount);
+
+            lines.push({
+                type: 'line',
+                x1: startX,
+                y1: startY,
+                x2: endX,
+                y2: endY,
+                lineWidth: 1.5,
+                lineColor: 'black'
+            });
+        }
+        return lines;
     }
 }

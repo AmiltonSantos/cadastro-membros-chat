@@ -2,7 +2,7 @@
   <ion-toolbar color="primary">
     <ion-row>
       <ion-col size="2.5">
-        <ion-img src="assets/bot.svg" style="height: 30px;"></ion-img>
+        <ion-img src="assets/images/bot.svg" style="height: 30px;"></ion-img>
       </ion-col>
       <ion-col size="6" style="text-align: left; padding-top: 12px;">
         Cadastro Chat
@@ -20,14 +20,14 @@
 
 <ion-content [scrollEvents]="true" #content (ionScrollEnd)="usaScrollToBottom()">
   <div *ngIf="!messages.length" class="empty">
-    <ion-icon class="chat-icon" src="assets/bot.svg"></ion-icon>
+    <ion-icon class="chat-icon" src="assets/images/bot.svg"></ion-icon>
     <h4>Bem vindos ao <strong>Chat</strong> do cadastro de membros da Assembleia de Deus Missão - Jardim América...</h4>
   </div>
 
   <ion-item lines="none" [ngClass]="{'bot': m.sender !== 'me'}" class="chat-item"
     *ngFor="let m of messages; index as i">
     <ion-badge slot="start" [color]="m.sender ===  'me' ? 'success' : 'light'" mode="ios">
-      <ion-icon class="chat-icon" [src]="m.sender ===  'me' ? 'assets/user.svg' : 'assets/bot.svg'"></ion-icon>
+      <ion-icon class="chat-icon" [src]="m.sender ===  'me' ? 'assets/images/user.svg' : 'assets/images/bot.svg'"></ion-icon>
     </ion-badge>
     <ion-label class="ion-text-wrap">
       <p class="w-space" [style]="m.sender ===  'me' ? 'color: #8a2be2; font-weight: bold;' : ''">{{ m.content }}</p>
@@ -39,19 +39,31 @@
 
 <ion-footer class="ion-padding">
 
-  <form [formGroup]="form" (ngSubmit)="submit()" (keyup.enter)="submit()">
-
-    <ion-item [disabled]="isMensage" class="text-box-item">
-      <ion-textarea #focustextarea formControlName="prompt" auto-grow="true" placeholder="Mensagem"
-        style="text-transform: uppercase;"></ion-textarea>
-
-      <ion-buttons slot="end">
-        <ion-button color="tertiary" type="submit" [disabled]="form.invalid">
-          <ion-icon class="submit-icon" name="send">
-            Click me
-          </ion-icon>
-        </ion-button>
-      </ion-buttons>
-    </ion-item>
+  <form [formGroup]="form" (ngSubmit)="submit()" (keyup.enter)="submit()" *ngIf="!isEnabledButtons">
+    <div style="display: flex;">
+      <ion-button style="padding-right: 5px; font-size: xx-small; --padding-start: 10px; --padding-end: 10px; --padding-top: 0; --padding-bottom: 0; padding-top: 10px; padding-bottom: 10px;">
+        <ion-icon name="keypad-outline"></ion-icon>
+      </ion-button>
+      <ion-item [disabled]="isMensage" class="text-box-item">
+        <ion-textarea #focustextarea formControlName="prompt" auto-grow="true" placeholder="Mensagem"
+          style="text-transform: uppercase;"></ion-textarea>
+  
+        <ion-buttons slot="end">
+          <ion-button color="tertiary" type="submit" [disabled]="form.invalid">
+            <ion-icon class="submit-icon" name="send"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+    </div>
   </form>
+  <ion-toolbar *ngIf="isEnabledButtons">
+    <ion-row>
+      <ion-col>
+        <ion-button expand="full" shape="round" (click)="createPdf()" type="submit"> Salvar </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button expand="full" shape="round" (click)="downloadPdf()" color="success"> PDF </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
 </ion-footer>
