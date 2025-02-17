@@ -20,6 +20,7 @@ import { HttpClient } from '@angular/common/http';
 export class HomePage implements OnInit {
     @ViewChild(IonContent, { static: false }) content!: IonContent;
     @ViewChild('focustextarea', { static: false }) focustextarea!: IonTextarea;
+    @ViewChild('focusinput', { static: false }) focusinput!: any;
 
     public messages: IMessage[] = [];
     public loading: boolean = false;
@@ -321,6 +322,7 @@ export class HomePage implements OnInit {
             this.loading = true;
             this.index++;
             this.focustextarea?.setFocus();
+            this.focusinput?.setFocus();
         }, 3500);
 
         this.loadLocalAssetToBase64();
@@ -349,7 +351,8 @@ export class HomePage implements OnInit {
             this.isMensage = false;
             this.loading = true;
             this.index++;
-            this.focustextarea.setFocus();
+            this.focustextarea?.setFocus();
+            this.focusinput?.setFocus();
         }, 3000);
     }
 
@@ -371,7 +374,7 @@ export class HomePage implements OnInit {
                 content: ''
             };
             this.messages.push(userMsg);
-            this.typeText(prompt?.toLocaleUpperCase());
+            this.typeText(String(prompt)?.toLocaleUpperCase());
 
             if (this.index >= 0 && this.index < this.mensagemBot.length) {
                 setTimeout(() => {
@@ -430,7 +433,8 @@ export class HomePage implements OnInit {
                 this.content.scrollEvents = false;
             }
 
-            this.focustextarea.setFocus();
+            this.focustextarea?.setFocus();
+            this.focusinput?.setFocus();
             this.form.reset();
         }
     }
