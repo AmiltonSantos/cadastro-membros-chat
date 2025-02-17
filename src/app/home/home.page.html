@@ -24,7 +24,7 @@
     <h4>Bem vindos ao <strong>Chat</strong> do cadastro de membros da Assembleia de Deus Missão - Jardim América...</h4>
   </div>
 
-  <ion-item lines="none" [ngClass]="{'bot': m.sender !== 'me'}" [class]="messages.length === 1 ? 'chat-item1' : 'chat-item'"
+  <ion-item lines="none" [ngClass]="{'bot': m.sender !== 'me'}" [class]="messages.length < 4 ? 'chat-item1' : 'chat-item'"
     *ngFor="let m of messages; index as i">
     <ion-badge slot="start" [color]="m.sender ===  'me' ? 'success' : 'light'" mode="ios">
       <ion-icon class="chat-icon" [src]="m.sender ===  'me' ? 'assets/images/user.svg' : 'assets/images/bot.svg'"></ion-icon>
@@ -41,9 +41,6 @@
 
   <form [formGroup]="form" (ngSubmit)="submit()" (keyup.enter)="submit()" *ngIf="!isEnabledButtons">
     <div style="display: flex;">
-      <ion-button (click)="aplicarTypeButton()" style="padding-right: 5px; font-size: xx-small; --padding-start: 10px; --padding-end: 10px; --padding-top: 0; --padding-bottom: 0; padding-top: 10px; padding-bottom: 10px;">
-        <ion-icon name="keypad-outline"></ion-icon>
-      </ion-button>
       <ion-item [disabled]="isMensage" class="text-box-item">
         <ion-input *ngIf="isUsaInput" type="number" #focusinput formControlName="prompt" placeholder="MENSAGEM"></ion-input>
 
@@ -63,7 +60,7 @@
         <ion-button expand="full" shape="round" (click)="createPdf()" type="submit"> Salvar </ion-button>
       </ion-col>
       <ion-col>
-        <ion-button expand="full" shape="round" (click)="downloadPdf()" color="success"> PDF </ion-button>
+        <ion-button [disabled]="isDesabledPdf" expand="full" shape="round" (click)="downloadPdf()" color="success"> PDF </ion-button>
       </ion-col>
     </ion-row>
   </ion-toolbar>

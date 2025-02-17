@@ -31,13 +31,14 @@ export class HomePage implements OnInit {
     public photoPreview!: string;
     public isEnabledButtons: boolean = false;
     public isUsaInput: boolean = false;
+    public isDesabledPdf: boolean = true;
 
     private urlPdf: string = '';
+    private nome: string = '';
     private congregacao: string = '';
     private cpf: string = '';
     private rg: string = '';
     private expedidorRg: string = '';
-    private nome: string = '';
     private dataNascimento: string = '';
     private sexo: string = '';
     private estadoCivil: string = '';
@@ -188,18 +189,18 @@ export class HomePage implements OnInit {
     ];
 
     public strMeses = [
-        { nome: 'JANEIRO' },
-        { nome: 'FEVEREIRO' },
-        { nome: 'MARÇO' },
-        { nome: 'ABRIL' },
-        { nome: 'MAIO' },
-        { nome: 'JUNHO' },
-        { nome: 'JULHO' },
-        { nome: 'AGOSTO' },
-        { nome: 'SETEMBRO' },
-        { nome: 'OUTUBRO' },
-        { nome: 'NOVEMBRO' },
-        { nome: 'DEZEMBRO' }
+        { value: '01', nome: 'JANEIRO' },
+        { value: '02', nome: 'FEVEREIRO' },
+        { value: '03', nome: 'MARÇO' },
+        { value: '04', nome: 'ABRIL' },
+        { value: '05', nome: 'MAIO' },
+        { value: '06', nome: 'JUNHO' },
+        { value: '07', nome: 'JULHO' },
+        { value: '08', nome: 'AGOSTO' },
+        { value: '09', nome: 'SETEMBRO' },
+        { value: '10', nome: 'OUTUBRO' },
+        { value: '11', nome: 'NOVEMBRO' },
+        { value: '12', nome: 'DEZEMBRO' }
     ];
 
     public strSexo = [
@@ -328,22 +329,12 @@ export class HomePage implements OnInit {
         this.loadLocalAssetToBase64();
     }
 
-    private loadLocalAssetToBase64() {
-        this.http.get('./assets/images/header-igreja.png', { responseType: 'blob' })
-            .subscribe(res => {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    this.logoData = reader.result;
-                }
-                reader.readAsDataURL(res);
-            });
-    }
-
     public novoCadastro() {
         this.messages = [];
         this.isMensage = true;
         this.loading = false;
         this.index = 0;
+        this.isDesabledPdf = true;
 
         setTimeout(() => {
             this.messages.push({ sender: 'bot', content: '' });
@@ -356,8 +347,20 @@ export class HomePage implements OnInit {
         }, 3000);
     }
 
+    private loadLocalAssetToBase64() {
+        this.http.get('./assets/images/header-igreja.png', { responseType: 'blob' })
+            .subscribe(res => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    this.logoData = reader.result;
+                }
+                reader.readAsDataURL(res);
+            });
+    }
+
     public aplicarTypeButton() {
         this.isUsaInput = !this.isUsaInput;
+        this.focusinput?.setFocus();
     }
 
     public submit(res?: string) {
@@ -375,6 +378,86 @@ export class HomePage implements OnInit {
             };
             this.messages.push(userMsg);
             this.typeText(String(prompt)?.toLocaleUpperCase());
+
+            if (this.index === 1) {
+                this.nome = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 2) {
+                this.congregacao = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 3) {
+                this.cpf = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 4) {
+                this.rg = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 5) {
+                this.expedidorRg = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 6 || this.index === 7 || this.index === 8) {
+                this.dataNascimento = (this.dataNascimento === '' ? String(prompt)?.toLocaleUpperCase() : this.dataNascimento.concat('/',String(prompt)?.toLocaleUpperCase())).replace('\n', '');
+            } else if (this.index === 9) {
+                this.sexo = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 10) {
+                this.estadoCivil = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 11) {
+                this.nacionalidade = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 12) {
+                this.naturalidade = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 13) {
+                this.uf = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 14) {
+                this.email = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 15) {
+                this.nomeMae = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 16) {
+                this.nomePai = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 17) {
+                this.escolaridade = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 18) {
+                this.telefone1 = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 19) {
+                this.telefone2 = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 20) {
+                this.cep = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 21) {
+                this.rua = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 22) {
+                this.numero = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 23) {
+                this.bairro = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 24) {
+                this.complemento = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 25) {
+                this.estado = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 26) {
+                this.cidade = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 27) {
+                this.batismoAgua = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 28) {
+                this.batismoEspiritoSanto = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 29) {
+                this.isObreiro = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 30) {
+                this.obreiroCargo = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 31) {
+                this.consDiacono = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 32) {
+                this.localDiacono = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 33) {
+                this.consPresbitero = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 34) {
+                this.localPresbitero = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 35) {
+                this.consEvangelista = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 36) {
+                this.localEvangelista = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 37) {
+                this.consPastor = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 38) {
+                this.localPastor = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 39) {
+                this.regCampo = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 40) {
+                this.regCadesgo = String(prompt)?.toLocaleUpperCase();
+            } else if (this.index === 41) {
+                this.regCgadb = String(prompt)?.toLocaleUpperCase();
+            }
 
             if (this.index >= 0 && this.index < this.mensagemBot.length) {
                 setTimeout(() => {
@@ -485,7 +568,7 @@ export class HomePage implements OnInit {
                 inputs.push({
                     type: 'radio',
                     label: str.nome,
-                    value: str.nome
+                    value: str.value
                 });
             }
         } else if (numero === 9) {
@@ -532,7 +615,7 @@ export class HomePage implements OnInit {
             for (const str of this.strEstados) {
                 inputs.push({
                     type: 'radio',
-                    label: (str.nome + ' - ' + str.sigla),
+                    label: str.nome,
                     value: str.nome
                 });
             }
@@ -579,7 +662,7 @@ export class HomePage implements OnInit {
             content.push({
                 image: this.photoPreview ?? '',
                 width: 98, // Largura da imagem
-                height: 120, // Altura da imagem
+                height: 115, // Altura da imagem
                 margin: [0, -120, 0, 0]
             });
         } else {
@@ -645,7 +728,7 @@ export class HomePage implements OnInit {
                                 {
                                     text: 'CONGREGAÇÃO',
                                     bold: true,
-                                    margin: [0, 0, 0, 10]
+                                    margin: [0, 0, 0, 2]
                                 },
                                 {
                                     table: {
@@ -663,7 +746,7 @@ export class HomePage implements OnInit {
                                 {
                                     text: 'Dados Pessoais',
                                     bold: true,
-                                    margin: [0, 10, 0, 10]
+                                    margin: [0, 5, 0, 8]
                                 },
                                 {
                                     columns: [
@@ -743,7 +826,7 @@ export class HomePage implements OnInit {
                                             x: 0,
                                             y: 0,
                                             w: 98, // Largura do quadrado
-                                            h: 120, // Altura do quadrado
+                                            h: 115, // Altura do quadrado
                                             lineWidth: 1,
                                             lineColor: 'black',
                                             fill: 'none' // Sem preenchimento
@@ -1066,7 +1149,7 @@ export class HomePage implements OnInit {
                 {
                     text: 'Endereço',
                     bold: true,
-                    margin: [0, 0, 0, 10]
+                    margin: [0, 0, 0, 5]
                 },
                 {
                     columns: [
@@ -1694,6 +1777,7 @@ export class HomePage implements OnInit {
             await this.pdfObj.getBuffer(async (buffer) => {
                 const blob = new Blob([buffer], { type: 'application/pdf' });
                 this.urlPdf = URL.createObjectURL(blob);
+                this.isDesabledPdf = false;
             });
         }, 100);
     }
