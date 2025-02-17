@@ -29,6 +29,7 @@ export class HomePage implements OnInit {
     private logoData!: string | ArrayBuffer | null;
     public photoPreview!: string;
     public isEnabledButtons: boolean = false;
+    public isUsaInput: boolean = false;
 
     private urlPdf: string = '';
     private congregacao: string = '';
@@ -325,7 +326,7 @@ export class HomePage implements OnInit {
         this.loadLocalAssetToBase64();
     }
 
-    loadLocalAssetToBase64() {
+    private loadLocalAssetToBase64() {
         this.http.get('./assets/images/header-igreja.png', { responseType: 'blob' })
             .subscribe(res => {
                 const reader = new FileReader();
@@ -350,6 +351,10 @@ export class HomePage implements OnInit {
             this.index++;
             this.focustextarea.setFocus();
         }, 3000);
+    }
+
+    public aplicarTypeButton() {
+        this.isUsaInput = !this.isUsaInput;
     }
 
     public submit(res?: string) {
