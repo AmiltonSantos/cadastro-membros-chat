@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IMessage } from '../models/methods.models';
-import { AlertController, IonContent, IonTextarea, Platform } from '@ionic/angular';
+import { AlertController, IonContent, IonSearchbar, IonTextarea, Platform } from '@ionic/angular';
 import { CustomValidators } from 'src/utils/custom-validators';
 
 import * as pdfMake from 'pdfmake/build/pdfmake';
@@ -20,7 +20,7 @@ import { HttpClient } from '@angular/common/http';
 export class HomePage implements OnInit {
     @ViewChild(IonContent, { static: false }) content!: IonContent;
     @ViewChild('focustextarea', { static: false }) focustextarea!: IonTextarea;
-    @ViewChild('focusinput', { static: false }) focusinput!: any;
+    @ViewChild('focusinput', { static: false }) focusinput!: IonSearchbar;
 
     public messages: IMessage[] = [];
     public loading: boolean = false;
@@ -312,7 +312,7 @@ export class HomePage implements OnInit {
         { value: 40, mensagem: 'Data do Registro na CGADB ?' }
     ];
 
-    constructor(private alertController: AlertController, public fileOpener: FileOpener, public plt: Platform, public http: HttpClient,) { }
+    constructor(private alertController: AlertController, public fileOpener: FileOpener, public plt: Platform, public http: HttpClient) { }
 
     ngOnInit() {
         this.index = 0;
@@ -322,8 +322,6 @@ export class HomePage implements OnInit {
             this.isMensage = false;
             this.loading = true;
             this.index++;
-            this.focustextarea?.setFocus();
-            this.focusinput?.setFocus();
         }, 3500);
 
         this.loadLocalAssetToBase64();
@@ -343,7 +341,6 @@ export class HomePage implements OnInit {
             this.loading = true;
             this.index++;
             this.focustextarea?.setFocus();
-            this.focusinput?.setFocus();
         }, 3000);
     }
 
@@ -356,11 +353,6 @@ export class HomePage implements OnInit {
                 }
                 reader.readAsDataURL(res);
             });
-    }
-
-    public aplicarTypeButton() {
-        this.isUsaInput = !this.isUsaInput;
-        this.focusinput?.setFocus();
     }
 
     public submit(res?: string) {
@@ -379,6 +371,9 @@ export class HomePage implements OnInit {
             this.messages.push(userMsg);
             this.typeText(String(prompt)?.toLocaleUpperCase());
 
+            const valoresVerificar = [2, 3, 5, 6, 7, 17, 18, 19];
+            this.isUsaInput = valoresVerificar.includes(this.index);
+            
             if (this.index === 1) {
                 this.nome = String(prompt)?.toLocaleUpperCase();
             } else if (this.index === 2) {
@@ -516,8 +511,15 @@ export class HomePage implements OnInit {
                 this.content.scrollEvents = false;
             }
 
-            this.focustextarea?.setFocus();
-            this.focusinput?.setFocus();
+            if (this.isUsaInput) {
+                setTimeout(() => {
+                    this.focusinput.setFocus();
+                }, 400);                
+            } else {
+                setTimeout(() => {
+                    this.focustextarea.setFocus();
+                }, 400); 
+            }
             this.form.reset();
         }
     }
