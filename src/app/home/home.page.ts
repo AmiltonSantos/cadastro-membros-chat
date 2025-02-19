@@ -458,7 +458,7 @@ export class HomePage implements OnInit {
             }
 
             if (this.index === 29) {
-                if (prompt === 'SIM') {
+                if (prompt === 'NAO') {
                     this.isEnabledButtons = true;
                     this.loading = false;
                     this.form.disable();
