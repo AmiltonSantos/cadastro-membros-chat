@@ -42,9 +42,7 @@
   <form [formGroup]="form" (ngSubmit)="submit()" (keyup.enter)="submit()" *ngIf="!isEnabledButtons">
     <div style="display: flex;">
       <ion-item [disabled]="isMensage" class="text-box-item">
-        <ion-input #input *ngIf="isUsaInput" type="number" formControlName="prompt" placeholder="MENSAGEM"></ion-input>
-
-        <ion-textarea #focustextarea *ngIf="!isUsaInput" type="text" inputmode="numeric" formControlName="prompt" auto-grow="true" placeholder="MENSAGEM" style="text-transform: uppercase;"></ion-textarea>  
+        <ion-textarea #focustextarea type="text" [inputmode]="isUsaInput" formControlName="prompt" auto-grow="true" placeholder="MENSAGEM" style="text-transform: uppercase;"></ion-textarea>  
         <ion-buttons slot="end">
           <ion-button color="tertiary" type="submit" [disabled]="form.invalid">
             <ion-icon class="submit-icon" name="send"></ion-icon>

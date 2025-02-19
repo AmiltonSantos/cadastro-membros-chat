@@ -20,7 +20,6 @@ import { HttpClient } from '@angular/common/http';
 export class HomePage implements OnInit {
     @ViewChild(IonContent, { static: false }) content!: IonContent;
     @ViewChild('focustextarea', { static: false }) focustextarea!: IonTextarea;
-    @ViewChild(IonInput, { static: false }) input!: IonInput;
 
     public messages: IMessage[] = [];
     public loading: boolean = false;
@@ -30,7 +29,7 @@ export class HomePage implements OnInit {
     private logoData!: string | ArrayBuffer | null;
     public photoPreview!: string;
     public isEnabledButtons: boolean = false;
-    public isUsaInput: boolean = false;
+    public isUsaInput: string = 'text'
     public isDesabledPdf: boolean = true;
 
     private urlPdf: string = '';
@@ -340,7 +339,7 @@ export class HomePage implements OnInit {
             this.typeText(this.mensagemBot[this.index].mensagem);
             this.isMensage = false;
             this.loading = true;
-            this.isUsaInput = false;
+            this.isUsaInput = 'text';
             this.index++;
             this.form.enable();
             this.focustextarea?.setFocus();
@@ -375,7 +374,7 @@ export class HomePage implements OnInit {
             this.typeText(String(prompt)?.toLocaleUpperCase());
 
             const valoresVerificar = [2, 3, 5, 6, 7, 17, 18, 19];
-            this.isUsaInput = valoresVerificar.includes(this.index);
+            this.isUsaInput = valoresVerificar.includes(this.index) ? 'numeric' : 'text';            
 
             if (this.index === 1) {
                 this.nome = String(prompt)?.toLocaleUpperCase();
@@ -525,15 +524,10 @@ export class HomePage implements OnInit {
                 this.content.scrollEvents = false;
             }
 
-            if (this.isUsaInput) {
-                setTimeout(() => {
-                    this.input.setFocus();
-                }, 400);
-            } else {
-                setTimeout(() => {
-                    this.focustextarea?.setFocus();
-                }, 400);
-            }
+            setTimeout(() => {
+                this.focustextarea?.setFocus();
+            }, 400);
+
             this.form.reset();
         }
     }
