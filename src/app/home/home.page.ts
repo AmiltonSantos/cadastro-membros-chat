@@ -430,6 +430,22 @@ export class HomePage implements OnInit {
                 this.batismoEspiritoSanto = String(prompt)?.toLocaleUpperCase();
             } else if (this.index === 29) {
                 this.isObreiro = String(prompt)?.toLocaleUpperCase();
+                if (prompt === 'NAO') {
+                    this.isEnabledButtons = true;
+                    this.form.disable();
+                    this.content.scrollEvents = false;
+                    this.mensagemBot.slice(0, 29);
+                    setTimeout(() => {
+                        let botMsg: IMessage = {
+                            sender: 'bot',
+                            content: ''
+                        };
+                        this.messages.push(botMsg);
+                        this.typeText('Cadastro concluído com sucesso...');
+                        this.loading = false;
+                    }, 300);
+                    return
+                }
             } else if (this.index === 30) {
                 this.obreiroCargo = String(prompt)?.toLocaleUpperCase();
             } else if (this.index === 31) {
@@ -456,17 +472,6 @@ export class HomePage implements OnInit {
                 this.regCgadb = String(prompt)?.toLocaleUpperCase();
             }
 
-            if (this.index === 29) {
-                if (prompt === 'NAO') {
-                    this.isEnabledButtons = true;
-                    this.loading = false;
-                    this.form.disable();
-                    this.content.scrollEvents = false;
-                    this.mensagemBot.slice(0, 2);
-                    return
-                }
-            }
-
             if (this.index >= 0 && this.index < this.mensagemBot.length) {
                 setTimeout(() => {
                     let msg = this.mensagemBot[this.index].mensagem;
@@ -480,39 +485,39 @@ export class HomePage implements OnInit {
                     if (this.index === 1) {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'CONGREGAÇÃO');
-                        }, 500);
+                        }, 300);
                     } else if (this.index === 6) {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'MÊS');
-                        }, 500);
+                        }, 300);
                     } else if (this.index === 8) {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'SEXO');
-                        }, 500);
+                        }, 300);
                     } else if (this.index === 9) {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'ESTADO CIVIL');
-                        }, 500);
+                        }, 300);
                     } else if (this.index === 10) {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'NACIONALIDADE');
-                        }, 500);
+                        }, 300);
                     } else if (this.index === 12) {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'UF');
-                        }, 500);
+                        }, 300);
                     } else if (this.index === 16) {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'ESCOLARIDADE');
-                        }, 500);
+                        }, 300);
                     } else if (this.index === 24) {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'ESTADO');
-                        }, 500);
+                        }, 300);
                     } else if (this.index === 28) {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'OBREIRO');
-                        }, 500);
+                        }, 300);
                     }
                     this.index++;
                 }, 1000);
@@ -1422,7 +1427,7 @@ export class HomePage implements OnInit {
                                         body: [
                                             [
                                                 {
-                                                    text: this.isObreiro === 'NÃO' ? 'X' : '',
+                                                    text: this.isObreiro === 'NAO' ? 'X' : '',
                                                     alignment: 'center'
                                                 }
                                             ]
@@ -1819,6 +1824,7 @@ export class HomePage implements OnInit {
                 alert('Por favor, permita pop-ups para visualizar o PDF.');
             }
         }
+        this.novoCadastro();
     }
 
     // Função para criar uma linha pontilhada
