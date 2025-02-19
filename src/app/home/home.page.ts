@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IMessage } from '../models/methods.models';
-import { AlertController, IonContent, IonSearchbar, IonTextarea, Platform } from '@ionic/angular';
+import { AlertController, IonContent, IonInput, IonTextarea, Platform } from '@ionic/angular';
 import { CustomValidators } from 'src/utils/custom-validators';
 
 import * as pdfMake from 'pdfmake/build/pdfmake';
@@ -20,7 +20,7 @@ import { HttpClient } from '@angular/common/http';
 export class HomePage implements OnInit {
     @ViewChild(IonContent, { static: false }) content!: IonContent;
     @ViewChild('focustextarea', { static: false }) focustextarea!: IonTextarea;
-    @ViewChild('focusinput', { static: false }) focusinput!: IonSearchbar;
+    @ViewChild(IonInput, { static: false }) input!: IonInput;
 
     public messages: IMessage[] = [];
     public loading: boolean = false;
@@ -328,6 +328,7 @@ export class HomePage implements OnInit {
     }
 
     public novoCadastro() {
+        this.isEnabledButtons = false;
         this.messages = [];
         this.isMensage = true;
         this.loading = false;
@@ -339,7 +340,9 @@ export class HomePage implements OnInit {
             this.typeText(this.mensagemBot[this.index].mensagem);
             this.isMensage = false;
             this.loading = true;
+            this.isUsaInput = false;
             this.index++;
+            this.form.enable();
             this.focustextarea?.setFocus();
         }, 3000);
     }
@@ -373,7 +376,7 @@ export class HomePage implements OnInit {
 
             const valoresVerificar = [2, 3, 5, 6, 7, 17, 18, 19];
             this.isUsaInput = valoresVerificar.includes(this.index);
-            
+
             if (this.index === 1) {
                 this.nome = String(prompt)?.toLocaleUpperCase();
             } else if (this.index === 2) {
@@ -385,7 +388,7 @@ export class HomePage implements OnInit {
             } else if (this.index === 5) {
                 this.expedidorRg = String(prompt)?.toLocaleUpperCase();
             } else if (this.index === 6 || this.index === 7 || this.index === 8) {
-                this.dataNascimento = (this.dataNascimento === '' ? String(prompt)?.toLocaleUpperCase() : this.dataNascimento.concat('/',String(prompt)?.toLocaleUpperCase())).replace('\n', '');
+                this.dataNascimento = (this.dataNascimento === '' ? String(prompt)?.toLocaleUpperCase() : this.dataNascimento.concat('/', String(prompt)?.toLocaleUpperCase())).replace('\n', '');
             } else if (this.index === 9) {
                 this.sexo = String(prompt)?.toLocaleUpperCase();
             } else if (this.index === 10) {
@@ -397,7 +400,7 @@ export class HomePage implements OnInit {
             } else if (this.index === 13) {
                 this.uf = String(prompt)?.toLocaleUpperCase();
             } else if (this.index === 14) {
-                this.email = String(prompt)?.toLocaleUpperCase();
+                this.email = prompt;
             } else if (this.index === 15) {
                 this.nomeMae = String(prompt)?.toLocaleUpperCase();
             } else if (this.index === 16) {
@@ -452,6 +455,17 @@ export class HomePage implements OnInit {
                 this.regCadesgo = String(prompt)?.toLocaleUpperCase();
             } else if (this.index === 41) {
                 this.regCgadb = String(prompt)?.toLocaleUpperCase();
+            }
+
+            if (this.index === 29) {
+                if (prompt === 'SIM') {
+                    this.isEnabledButtons = true;
+                    this.loading = false;
+                    this.form.disable();
+                    this.content.scrollEvents = false;
+                    this.mensagemBot.slice(0, 2);
+                    return
+                }
             }
 
             if (this.index >= 0 && this.index < this.mensagemBot.length) {
@@ -513,12 +527,12 @@ export class HomePage implements OnInit {
 
             if (this.isUsaInput) {
                 setTimeout(() => {
-                    this.focusinput.setFocus();
-                }, 400);                
+                    this.input.setFocus();
+                }, 400);
             } else {
                 setTimeout(() => {
-                    this.focustextarea.setFocus();
-                }, 400); 
+                    this.focustextarea?.setFocus();
+                }, 400);
             }
             this.form.reset();
         }
@@ -601,7 +615,7 @@ export class HomePage implements OnInit {
             for (const str of this.strEstados) {
                 inputs.push({
                     type: 'radio',
-                    label: (str.nome + ' - ' + str.sigla),
+                    label: str.nome,
                     value: str.sigla
                 });
             }
@@ -814,7 +828,7 @@ export class HomePage implements OnInit {
                                         }
                                     ],
                                     margin: [0, 0, 0, 5]
-                                }                                
+                                }
                             ]
                         },
                         // Quadrado da foto
@@ -1021,7 +1035,7 @@ export class HomePage implements OnInit {
                                         body: [
                                             [
                                                 {
-                                                    text: this.email.toUpperCase()
+                                                    text: this.email?.slice(0, 30)
                                                 }
                                             ]
                                         ]
