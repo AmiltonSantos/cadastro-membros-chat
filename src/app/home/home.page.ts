@@ -1124,7 +1124,7 @@ export class HomePage implements OnInit {
                                         body: [
                                             [
                                                 {
-                                                    text: this.telefone1.toUpperCase()
+                                                    text: this.telefone1.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3')
                                                 }
                                             ]
                                         ]
@@ -1144,7 +1144,7 @@ export class HomePage implements OnInit {
                                         body: [
                                             [
                                                 {
-                                                    text: this.telefone2.toUpperCase()
+                                                    text: this.telefone2.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3')
                                                 }
                                             ]
                                         ]
@@ -1179,7 +1179,7 @@ export class HomePage implements OnInit {
                                         body: [
                                             [
                                                 {
-                                                    text: this.cep.toUpperCase()
+                                                    text: this.cep.replace(/^(\d{5})(\d{3})$/, '$1-$2')
                                                 }
                                             ]
                                         ]
