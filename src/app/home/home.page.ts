@@ -374,7 +374,7 @@ export class HomePage implements OnInit {
             this.typeText(String(prompt)?.toLocaleUpperCase());
 
             const valoresVerificar = [2, 3, 5, 6, 7, 17, 18, 19];
-            this.isUsaInput = valoresVerificar.includes(this.index) ? 'numeric' : 'text';            
+            this.isUsaInput = valoresVerificar.includes(this.index) ? 'numeric' : 'text';
 
             if (this.index === 1) {
                 this.nome = String(prompt)?.toLocaleUpperCase();
@@ -1786,6 +1786,9 @@ export class HomePage implements OnInit {
                 }
             }
         }
+        setTimeout(async () => {
+            await this.salvarGoogleSheets();
+        }, 100);
         this.urlPdf = '';
         this.pdfObj = pdfMake.createPdf(docDefinition);
         setTimeout(async () => {
@@ -1850,5 +1853,77 @@ export class HomePage implements OnInit {
             });
         }
         return lines;
+    }
+
+    public async salvarGoogleSheets() {
+        // Obtém a data e hora atual
+        const dataAtual = new Date();
+
+        // Formata a data e hora no formato desejado
+        const dia = String(dataAtual.getDate()).padStart(2, '0'); // Preenche com zero à esquerda se necessário
+        const mes = String(dataAtual.getMonth() + 1).padStart(2, '0'); // Mês começa do zero
+        const ano = dataAtual.getFullYear();
+        const horas = String(dataAtual.getHours()).padStart(2, '0');
+        const minutos = String(dataAtual.getMinutes()).padStart(2, '0');
+        const segundos = String(dataAtual.getSeconds()).padStart(2, '0');
+
+        const response = await fetch("https://sheetdb.io/api/v1/9lv20jihax310", {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                id: "=ROW()-1",
+                datainscricao: `${dia}/${mes}/${ano} ${horas}:${minutos}:${segundos}`,
+                nome: this.nome,
+                congregacao: this.congregacao,
+                cpf: this.cpf,
+                rg: this.rg,
+                expedidorRg: this.expedidorRg,
+                dataNascimento: this.dataNascimento,
+                sexo: this.sexo,
+                estadoCivil: this.estadoCivil,
+                nacionalidade: this.nacionalidade,
+                naturalidade: this.naturalidade,
+                uf: this.uf,
+                email: this.email,
+                nomeMae: this.nomeMae,
+                nomePai: this.nomePai,
+                escolaridade: this.escolaridade,
+                telefone1: this.telefone1,
+                telefone2: this.telefone2,
+                cep: this.cep,
+                rua: this.rua,
+                numero: this.numero,
+                bairro: this.bairro,
+                complemento: this.complemento,
+                estado: this.estado,
+                cidade: this.cidade,
+                batismoAgua: this.batismoAgua,
+                batismoEspiritoSanto: this.batismoEspiritoSanto,
+                isObreiro: this.isObreiro,
+                obreiroCargo: this.obreiroCargo,
+                consDiacono: this.consDiacono,
+                localDiacono: this.localDiacono,
+                consPresbitero: this.consPresbitero,
+                localPresbitero: this.localPresbitero,
+                consEvangelista: this.consEvangelista,
+                localEvangelista: this.localEvangelista,
+                consPastor: this.consPastor,
+                localPastor: this.localPastor,
+                regCampo: this.regCampo,
+                regCadesgo: this.regCadesgo,
+                regCgadb: this.regCgadb
+            }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert(`${data.created === 1 ? 'Cadastrado com sucesso' : 'Error ao cadastrar'}`);
+        } else {
+            alert('Erro ao cadastrar!')
+        }
     }
 }
