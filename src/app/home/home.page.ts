@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IMessage } from '../models/methods.models';
-import { AlertController, IonContent, IonInput, IonTextarea, Platform } from '@ionic/angular';
+import { AlertController, IonContent, IonTextarea, Platform } from '@ionic/angular';
 import { CustomValidators } from 'src/utils/custom-validators';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
@@ -1853,6 +1854,36 @@ export class HomePage implements OnInit {
             });
         }
         return lines;
+    }
+
+    async takePicture() {
+        try {
+            /* const image = await Camera.getPhoto({
+                quality: 100,
+                allowEditing: false,
+                resultType: CameraResultType.Base64,
+                source: CameraSource.Camera,
+                promptLabelHeader: 'Custom Header Text',
+                promptLabelPhoto: 'Custom Camera Text',
+                promptLabelPicture: 'Custom Gallery Text'
+            }); */
+            const image = await Camera.getPhoto({
+                quality: 90,
+                allowEditing: true,
+                resultType: CameraResultType.Uri
+            });
+
+            this.photoPreview = `data:image/jpeg;base64,${image.webPath}`;
+            this.urlPdf = '';
+        } catch (error) {
+            this.photoPreview = '';
+            this.urlPdf = '';
+            if (error instanceof Error) {
+                console.log('Erro:', error.message);
+            } else {
+                console.log('Erro desconhecido:', error);
+            }
+        }
     }
 
     public async salvarGoogleSheets() {

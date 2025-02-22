@@ -52,8 +52,11 @@
     </div>
   </form>
 
-  <ion-toolbar *ngIf="isEnabledButtons">
+  <ion-toolbar *ngIf="!isEnabledButtons">
     <ion-row>
+      <ion-col>
+        <ion-button expand="full" shape="round" (click)="takePicture()"> Foto </ion-button>
+      </ion-col>
       <ion-col>
         <ion-button expand="full" shape="round" (click)="createPdf()" type="submit"> Salvar </ion-button>
       </ion-col>
