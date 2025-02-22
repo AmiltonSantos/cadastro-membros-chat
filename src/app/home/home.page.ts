@@ -382,11 +382,11 @@ export class HomePage implements OnInit {
             } else if (this.index === 2) {
                 this.congregacao = String(prompt)?.toLocaleUpperCase();
             } else if (this.index === 3) {
-                this.cpf = String(prompt)?.toLocaleUpperCase();
+                this.cpf = prompt;
             } else if (this.index === 4) {
-                this.rg = String(prompt)?.toLocaleUpperCase();
+                this.rg = prompt;
             } else if (this.index === 5) {
-                this.expedidorRg = String(prompt)?.toLocaleUpperCase();
+                this.expedidorRg = prompt;
             } else if (this.index === 6 || this.index === 7 || this.index === 8) {
                 this.dataNascimento = (this.dataNascimento === '' ? String(prompt)?.toLocaleUpperCase() : this.dataNascimento.concat('/', String(prompt)?.toLocaleUpperCase())).replace('\n', '');
             } else if (this.index === 9) {
@@ -408,11 +408,11 @@ export class HomePage implements OnInit {
             } else if (this.index === 17) {
                 this.escolaridade = String(prompt)?.toLocaleUpperCase();
             } else if (this.index === 18) {
-                this.telefone1 = String(prompt)?.toLocaleUpperCase();
+                this.telefone1 = prompt;
             } else if (this.index === 19) {
-                this.telefone2 = String(prompt)?.toLocaleUpperCase();
+                this.telefone2 = prompt;
             } else if (this.index === 20) {
-                this.cep = String(prompt)?.toLocaleUpperCase();
+                this.cep = prompt;
             } else if (this.index === 21) {
                 this.rua = String(prompt)?.toLocaleUpperCase();
             } else if (this.index === 22) {
@@ -1858,19 +1858,14 @@ export class HomePage implements OnInit {
 
     async takePicture() {
         try {
-            /* const image = await Camera.getPhoto({
-                quality: 100,
-                allowEditing: false,
-                resultType: CameraResultType.Base64,
-                source: CameraSource.Camera,
-                promptLabelHeader: 'Custom Header Text',
-                promptLabelPhoto: 'Custom Camera Text',
-                promptLabelPicture: 'Custom Gallery Text'
-            }); */
             const image = await Camera.getPhoto({
                 quality: 90,
                 allowEditing: true,
-                resultType: CameraResultType.Uri
+                resultType: CameraResultType.Uri,
+                source: CameraSource.Camera,
+                promptLabelHeader: 'Tirar foto',
+                promptLabelPhoto: 'Camera',
+                promptLabelPicture: 'Galeria'
             });
 
             this.photoPreview = `data:image/jpeg;base64,${image.webPath}`;
@@ -1887,16 +1882,6 @@ export class HomePage implements OnInit {
     }
 
     public async salvarGoogleSheets() {
-        // Obtém a data e hora atual
-        const dataAtual = new Date();
-
-        // Formata a data e hora no formato desejado
-        const dia = String(dataAtual.getDate()).padStart(2, '0'); // Preenche com zero à esquerda se necessário
-        const mes = String(dataAtual.getMonth() + 1).padStart(2, '0'); // Mês começa do zero
-        const ano = dataAtual.getFullYear();
-        const horas = String(dataAtual.getHours()).padStart(2, '0');
-        const minutos = String(dataAtual.getMinutes()).padStart(2, '0');
-        const segundos = String(dataAtual.getSeconds()).padStart(2, '0');
 
         const response = await fetch("https://sheetdb.io/api/v1/9lv20jihax310", {
             method: 'POST',
@@ -1906,7 +1891,7 @@ export class HomePage implements OnInit {
             },
             body: JSON.stringify({
                 id: "=ROW()-1",
-                datainscricao: `${dia}/${mes}/${ano} ${horas}:${minutos}:${segundos}`,
+                datainscricao: (new Date().toLocaleString()).toString().replace(',', ''),
                 nome: this.nome,
                 congregacao: this.congregacao,
                 cpf: this.cpf,
