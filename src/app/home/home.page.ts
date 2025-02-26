@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IMessage } from '../models/methods.models';
-import { AlertController, IonContent, IonTextarea, Platform } from '@ionic/angular';
+import { AlertController, IonContent, IonTextarea, Platform, ToastController } from '@ionic/angular';
 import { CustomValidators } from 'src/utils/custom-validators';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 
@@ -273,7 +273,7 @@ export class HomePage implements OnInit {
         { value: 1, mensagem: 'Onde você congrega ?' },
         { value: 2, mensagem: 'Qual o número do seu CPF ?' },
         { value: 3, mensagem: 'Qual o número do seu RG ?' },
-        { value: 4, mensagem: 'Qual o orgao expedidor do RG e Estado ?' },
+        { value: 4, mensagem: 'Qual o orgao expedidor do RG e UF ?' },
         { value: 5, mensagem: 'Qual o DIA do nascimento ?' },
         { value: 6, mensagem: 'Qual o MÊS do nascimento ?' },
         { value: 7, mensagem: 'Qual o ANO do nascimento ?' },
@@ -312,7 +312,12 @@ export class HomePage implements OnInit {
         { value: 40, mensagem: 'Data do Registro na CGADB ?' }
     ];
 
-    constructor(private alertController: AlertController, public fileOpener: FileOpener, public plt: Platform, public http: HttpClient) { }
+    constructor(
+        private alertController: AlertController, 
+        public fileOpener: FileOpener, 
+        public plt: Platform,
+        private toastController: ToastController,
+        public http: HttpClient) { }
 
     ngOnInit() {
         this.index = 0;
@@ -386,7 +391,7 @@ export class HomePage implements OnInit {
             } else if (this.index === 4) {
                 this.rg = prompt;
             } else if (this.index === 5) {
-                this.expedidorRg = prompt;
+                this.expedidorRg = String(prompt)?.toLocaleUpperCase();
             } else if (this.index === 6 || this.index === 7 || this.index === 8) {
                 this.dataNascimento = (this.dataNascimento === '' ? String(prompt)?.toLocaleUpperCase() : this.dataNascimento.concat('/', String(prompt)?.toLocaleUpperCase())).replace('\n', '');
             } else if (this.index === 9) {
@@ -436,7 +441,8 @@ export class HomePage implements OnInit {
                     this.form.disable();
                     this.content.scrollEvents = false;
                     this.mensagemBot.slice(0, 29);
-                    setTimeout(() => {
+                    setTimeout(async () => {
+                        await this.presentToast('top', 'Cadastro concluído com sucesso...');
                         let botMsg: IMessage = {
                             sender: 'bot',
                             content: ''
@@ -528,7 +534,16 @@ export class HomePage implements OnInit {
                 this.loading = false;
                 this.form.disable();
                 this.content.scrollEvents = false;
-                this.typeText('Cadastro concluído com sucesso...');
+                setTimeout(async () => {
+                    await this.presentToast('top', 'Cadastro concluído com sucesso...');
+                    let botMsg: IMessage = {
+                        sender: 'bot',
+                        content: ''
+                    };
+                    this.messages.push(botMsg);
+                    this.typeText('Cadastro concluído com sucesso...');
+                    this.loading = false;
+                }, 300);
             }
 
             setTimeout(() => {
@@ -818,7 +833,7 @@ export class HomePage implements OnInit {
                                                         body: [
                                                             [
                                                                 {
-                                                                    text: this.expedidorRg
+                                                                    text: this.expedidorRg.toUpperCase()
                                                                 }
                                                             ]
                                                         ]
@@ -1826,7 +1841,9 @@ export class HomePage implements OnInit {
             if (newTab) {
                 newTab.focus();
             } else { // O bloqueador de pop-ups pode estar ativo
-                alert('Por favor, permita pop-ups para visualizar o PDF.');
+                setTimeout(async () => {
+                    await this.presentToast('top', 'Por favor, permita pop-ups para visualizar o PDF.');
+                }, 100);
             }
         }
         this.novoCadastro();
@@ -1938,9 +1955,19 @@ export class HomePage implements OnInit {
         const data = await response.json();
 
         if (response.ok) {
-            alert(`${data.created === 1 ? 'Cadastrado com sucesso' : 'Error ao cadastrar'}`);
+            await this.presentToast('top', `${data.created === 1 ? 'Salvo com sucesso' : 'Error ao cadastrar'}`);
         } else {
-            alert('Erro ao cadastrar!')
+            await this.presentToast('top', 'Erro ao cadastrar!');
         }
+    }
+
+    async presentToast(position: 'top' | 'middle' | 'bottom', msg: string) {
+        const toast = await this.toastController.create({
+          message: msg,
+          duration: 1500,
+          position: position,
+        });
+    
+        await toast.present();
     }
 }
