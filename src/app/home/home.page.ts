@@ -528,6 +528,7 @@ export class HomePage implements OnInit {
                 this.loading = false;
                 this.form.disable();
                 this.content.scrollEvents = false;
+                this.typeText('Cadastro concluído com sucesso...');
             }
 
             setTimeout(() => {
@@ -679,7 +680,7 @@ export class HomePage implements OnInit {
                 image: this.photoPreview ?? '',
                 width: 98, // Largura da imagem
                 height: 115, // Altura da imagem
-                margin: [0, -120, 0, 0]
+                margin: [0, -115, 0, 0]
             });
         } else {
             content.push({
@@ -1861,14 +1862,14 @@ export class HomePage implements OnInit {
             const image = await Camera.getPhoto({
                 quality: 90,
                 allowEditing: true,
-                resultType: CameraResultType.Uri,
+                resultType: CameraResultType.Base64,
                 source: CameraSource.Camera,
                 promptLabelHeader: 'Tirar foto',
                 promptLabelPhoto: 'Camera',
                 promptLabelPicture: 'Galeria'
             });
 
-            this.photoPreview = `data:image/jpeg;base64,${image.webPath}`;
+            this.photoPreview = `data:image/jpeg;base64,${image.base64String}`;
             this.urlPdf = '';
         } catch (error) {
             this.photoPreview = '';

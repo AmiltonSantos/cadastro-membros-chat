@@ -9,9 +9,11 @@ import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { FileOpener } from '@awesome-cordova-plugins/file-opener/ngx';
 
+import { AngularCropperjsModule } from 'angular-cropperjs';
+
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, IonicModule.forRoot({mode: 'md'}), AppRoutingModule, HttpClientModule],
+  imports: [BrowserModule, IonicModule.forRoot({mode: 'md'}), AppRoutingModule, HttpClientModule, AngularCropperjsModule],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     FileOpener
   ],
