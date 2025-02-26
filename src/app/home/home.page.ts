@@ -221,6 +221,7 @@ export class HomePage implements OnInit {
     ]
 
     public strEstados = [
+        { sigla: 'GO', nome: 'GOIÁS' },
         { sigla: 'AC', nome: 'ACRE' },
         { sigla: 'AL', nome: 'ALAGOAS' },
         { sigla: 'AP', nome: 'AMAPÁ' },
@@ -229,7 +230,6 @@ export class HomePage implements OnInit {
         { sigla: 'CE', nome: 'CEARÁ' },
         { sigla: 'DF', nome: 'DISTRITO FEDERAL' },
         { sigla: 'ES', nome: 'ESPÍRITO SANTO' },
-        { sigla: 'GO', nome: 'GOIÁS' },
         { sigla: 'MA', nome: 'MARANHÃO' },
         { sigla: 'MT', nome: 'MATO GROSSO' },
         { sigla: 'MS', nome: 'MATO GROSSO DO SUL' },
