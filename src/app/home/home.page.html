@@ -1,14 +1,21 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-row>
-      <ion-col size="2.5">
+      <ion-col size="2">
         <ion-img src="assets/images/bot.svg" style="height: 30px;"></ion-img>
       </ion-col>
-      <ion-col size="6" style="text-align: left; padding-top: 12px;">
+      <ion-col size="5" style="text-align: left; padding-top: 12px;">
         Cadastro Chat
       </ion-col>
-      <ion-col size="3.5">
-        <ion-chip style="background-color: #ffffff; color: black;" id="open-loading" (click)="novoCadastro()" [disabled]="isMensage">
+      <ion-col size="2">
+        <ion-chip style="background-color: #ffd900; color: black;" id="open-loading" (click)="recortarImagem($event)"
+          [disabled]="isMensage">
+          <span><b>Foto</b></span>
+        </ion-chip>
+      </ion-col>
+      <ion-col size="2">
+        <ion-chip style="background-color: #ffffff; color: black;" id="open-loading" (click)="novoCadastro()"
+          [disabled]="isMensage">
           <span><b>Reiniciar</b></span>
         </ion-chip>
         <ion-loading class="custom-loading" trigger="open-loading" message="Iniciando..." [duration]="1000"
@@ -36,6 +43,40 @@
     </ion-label>
   </ion-item>
 
+  <ion-popover #popOverImageCrop id="popoverDate" [side]="'bottom'" [alignment]="'start'" id="popoverDate">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar color="primary">
+          <ion-title style="text-align: center;">RECORTAR IMAGEM</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-row>
+          <ion-col>
+            <ion-button style="--border-radius: 30px !important;" color="success" expand="block"
+              (click)="takePicture()">
+              <ion-icon name="camera"></ion-icon> TIRAR FOTO
+            </ion-button>
+          </ion-col>
+          <ion-col>
+            <input #exportimg type="file" (change)="fileChangeEvent($event)" accept="image/*" hidden="true" />
+            <ion-button (click)="exportimg.click()" style="--border-radius: 30px !important;" color="warning"
+              expand="block">
+              <span>GALERIA</span>
+              <ion-icon name="cloud-upload"></ion-icon>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+        <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="false" [aspectRatio]="4 / 3"
+          (imageCropped)="imageCropped($event)">
+        </image-cropper>
+      </ion-content>
+      <ion-footer class="ion-padding">
+        <ion-button expand="full" shape="round" type="submit"> Salvar </ion-button>
+      </ion-footer>
+    </ng-template>
+  </ion-popover>
+
 </ion-content>
 
 <ion-footer class="ion-padding">
@@ -56,9 +97,6 @@
 
   <ion-toolbar *ngIf="!isEnabledButtons">
     <ion-row>
-      <ion-col>
-        <ion-button expand="full" shape="round" (click)="recortarImagem()"> Foto </ion-button>
-      </ion-col>
       <ion-col>
         <ion-button expand="full" shape="round" (click)="createPdf()" type="submit"> Salvar </ion-button>
       </ion-col>

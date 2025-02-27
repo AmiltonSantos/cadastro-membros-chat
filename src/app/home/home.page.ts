@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IMessage } from '../models/methods.models';
-import { AlertController, IonContent, IonTextarea, ModalController, Platform, ToastController } from '@ionic/angular';
+import { AlertController, IonContent, IonTextarea, Platform, ToastController, IonPopover } from '@ionic/angular';
 import { CustomValidators } from 'src/utils/custom-validators';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
@@ -10,7 +10,9 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { FileOpener } from '@awesome-cordova-plugins/file-opener/ngx';
 import { HttpClient } from '@angular/common/http';
-import { ImageCropComponent } from '../components/image-crop/image-crop.component';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { ImageCroppedEvent } from 'ngx-image-cropper';
 
 @Component({
     selector: 'app-home',
@@ -20,6 +22,10 @@ import { ImageCropComponent } from '../components/image-crop/image-crop.componen
 export class HomePage implements OnInit {
     @ViewChild(IonContent, { static: false }) content!: IonContent;
     @ViewChild('focustextarea', { static: false }) focustextarea!: IonTextarea;
+    @ViewChild('popOverImageCrop', { static: false }) popOverImageCrop!: IonPopover;
+    
+    imageChangedEvent: any = '';
+    croppedImage: SafeUrl = '';
 
     public messages: IMessage[] = [];
     public loading: boolean = false;
@@ -316,7 +322,7 @@ export class HomePage implements OnInit {
         public fileOpener: FileOpener,
         public plt: Platform,
         private toastController: ToastController,
-        private modalCtrl: ModalController,
+        private sanitizer: DomSanitizer,
         public http: HttpClient) { }
 
     ngOnInit() {
@@ -1874,17 +1880,8 @@ export class HomePage implements OnInit {
         return lines;
     }
 
-    public async recortarImagem() {
-        const modal = await this.modalCtrl.create({
-            component: ImageCropComponent,
-            cssClass: 'modalInterno',
-        });
-
-        await modal.present();
-
-        await modal.onDidDismiss().then(async (data) => {
-            console.log(data);
-        });
+    public async recortarImagem(event: MouseEvent) {
+        await this.popOverImageCrop.present(event); 
     }
 
     public async salvarGoogleSheets() {
@@ -1957,5 +1954,68 @@ export class HomePage implements OnInit {
         });
 
         await toast.present();
+    }
+
+    async takePicture() {
+        try {
+            const image = await Camera.getPhoto({
+                quality: 90,
+                allowEditing: true,
+                resultType: CameraResultType.Uri,
+                source: CameraSource.Camera,
+                promptLabelHeader: 'Tirar foto',
+                promptLabelPhoto: 'Camera',
+                promptLabelPicture: 'Galeria'
+            });
+
+            let imageUrl = image.webPath;
+
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+
+            // Adicionar o listener de evento
+            input.addEventListener('change', (event: any) => {                
+                this.fileChangeEvent(event);
+            });
+
+            // Criar um objeto File a partir da URL da imagem
+            const file = await fetch(imageUrl!).then(res => res.blob()).then(blob => new File([blob], 'photo.jpg', { type: blob.type }));
+
+            // Criar um objeto DataTransfer e adicionar o arquivo
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+
+            input.files = dataTransfer.files;
+
+            // Criar o evento de mudança
+            const event = new Event('change', {
+                bubbles: true,
+                cancelable: false,
+                composed: false
+            });
+
+            // Disparar o evento de mudança
+            input.dispatchEvent(event);
+
+        } catch (error) {
+            if (error instanceof Error) {
+                console.log('Erro:', error.message);
+            } else {
+                console.log('Erro desconhecido:', error);
+            }
+        }
+    }
+
+    fileChangeEvent(event: any): void {
+        this.imageChangedEvent = event; // Armazena o evento da imagem
+    }
+
+    imageCropped(event: ImageCroppedEvent) {
+        if (event.base64) {
+            this.croppedImage = this.sanitizer.bypassSecurityTrustUrl(event.base64);
+        } else {
+            this.croppedImage = '';
+        }
     }
 }

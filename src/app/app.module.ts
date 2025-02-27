@@ -9,10 +9,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { FileOpener } from '@awesome-cordova-plugins/file-opener/ngx';
 import { ImageCropperModule } from 'ngx-image-cropper';
-import { ImageCropComponent } from './components/image-crop/image-crop.component';
 
 @NgModule({
-  declarations: [AppComponent, ImageCropComponent],
+  declarations: [AppComponent],
   imports: [
         BrowserModule, 
         IonicModule.forRoot({mode: 'md'}), 
