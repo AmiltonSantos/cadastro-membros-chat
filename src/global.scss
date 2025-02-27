@@ -31,3 +31,10 @@ ion-loading.custom-loading {
 
   color: #d400ff;
 }
+
+.modalInterno {
+  &::part(content) {
+    width: 100% !important;
+    height: 100% !important;
+  }
+}

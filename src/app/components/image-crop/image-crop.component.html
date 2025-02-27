@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-icon name="arrow-back"
+        style="zoom:0.7; padding-left: 15px; padding-right: 15px; font-size: 2em; display: block;"
+        (click)="touchVoltarModal()"></ion-icon>
+    </ion-buttons>
+    <ion-row>
+      <ion-col size="2">
+        <ion-img src="assets/images/bot.svg" style="height: 30px;"></ion-img>
+      </ion-col>
+      <ion-col size="10" style="text-align: left; padding-top: 12px;">
+        Recorte de Imagem
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row>
+    <ion-col>
+      <ion-button style="--border-radius: 30px !important;" color="success" expand="block" (click)="takePicture()">
+        <ion-icon name="camera"></ion-icon> TIRAR FOTO
+      </ion-button>
+    </ion-col>
+    <ion-col>
+      <input #exportimg type="file" (change)="fileChangeEvent($event)" accept="image/*" hidden="true" />
+      <ion-button (click)="exportimg.click()" style="--border-radius: 30px !important;" color="warning" expand="block">
+        <span>GALERIA</span>
+        <ion-icon name="cloud-upload"></ion-icon>
+      </ion-button>
+    </ion-col>
+  </ion-row>
+
+  <ion-popover #popOverImageCrop show-backdrop="false" id="popoverDate">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar color="primary">
+          <ion-title style="text-align: center;">RECORTAR IMAGEM</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <image-cropper 
+          [imageChangedEvent]="imageChangedEvent" 
+          [maintainAspectRatio]="false" 
+          [aspectRatio]="4 / 3"
+          (imageCropped)="imageCropped($event)">
+        </image-cropper>
+      </ion-content>
+    </ng-template>
+  </ion-popover>
+
+  <div *ngIf="imageRecortada">
+    <img [src]="imageRecortada" />
+  </div>
+</ion-content>

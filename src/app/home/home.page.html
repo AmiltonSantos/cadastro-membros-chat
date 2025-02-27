@@ -24,10 +24,11 @@
     <h4>Bem vindos ao <strong>Chat</strong> do cadastro de membros da Assembleia de Deus Missão - Jardim América...</h4>
   </div>
 
-  <ion-item lines="none" [ngClass]="{'bot': m.sender !== 'me'}" [class]="messages.length < 4 ? 'chat-item1' : 'chat-item'"
-    *ngFor="let m of messages; index as i">
+  <ion-item lines="none" [ngClass]="{'bot': m.sender !== 'me'}"
+    [class]="messages.length < 4 ? 'chat-item1' : 'chat-item'" *ngFor="let m of messages; index as i">
     <ion-badge slot="start" [color]="m.sender ===  'me' ? 'success' : 'light'" mode="ios">
-      <ion-icon class="chat-icon" [src]="m.sender ===  'me' ? 'assets/images/user.svg' : 'assets/images/bot.svg'"></ion-icon>
+      <ion-icon class="chat-icon"
+        [src]="m.sender ===  'me' ? 'assets/images/user.svg' : 'assets/images/bot.svg'"></ion-icon>
     </ion-badge>
     <ion-label class="ion-text-wrap">
       <p class="w-space" [style]="m.sender ===  'me' ? 'color: #8a2be2; font-weight: bold;' : ''">{{ m.content }}</p>
@@ -39,10 +40,11 @@
 
 <ion-footer class="ion-padding">
 
-  <form [formGroup]="form" (ngSubmit)="submit()" (keyup.enter)="submit()" *ngIf="!isEnabledButtons">
+  <form [formGroup]="form" (ngSubmit)="submit()" (keyup.enter)="submit()" *ngIf="isEnabledButtons">
     <div style="display: flex;">
       <ion-item [disabled]="isMensage" class="text-box-item">
-        <ion-textarea #focustextarea type="text" [inputmode]="isUsaInput" formControlName="prompt" auto-grow="true" placeholder="MENSAGEM" style="text-transform: uppercase;"></ion-textarea>  
+        <ion-textarea #focustextarea type="text" [inputmode]="isUsaInput" formControlName="prompt" auto-grow="true"
+          placeholder="MENSAGEM" style="text-transform: uppercase;"></ion-textarea>
         <ion-buttons slot="end">
           <ion-button color="tertiary" type="submit" [disabled]="form.invalid">
             <ion-icon class="submit-icon" name="send"></ion-icon>
@@ -52,10 +54,10 @@
     </div>
   </form>
 
-  <ion-toolbar *ngIf="isEnabledButtons">
+  <ion-toolbar *ngIf="!isEnabledButtons">
     <ion-row>
       <ion-col>
-        <ion-button expand="full" shape="round" (click)="takePicture()"> Foto </ion-button>
+        <ion-button expand="full" shape="round" (click)="recortarImagem()"> Foto </ion-button>
       </ion-col>
       <ion-col>
         <ion-button expand="full" shape="round" (click)="createPdf()" type="submit"> Salvar </ion-button>
