@@ -2032,6 +2032,9 @@ export class HomePage implements OnInit {
     saveImageCropped() {
         this.imageChangedEvent = '';
         this.popOverImageCrop.dismiss();
+        setTimeout(async () => {
+            await this.presentToast('middle', 'Imagem salva com sucesso...');
+        }, 200);
     }
 
     blobToBase64(blob: Blob): Promise<string> {
