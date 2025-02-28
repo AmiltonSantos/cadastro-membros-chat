@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IMessage } from '../models/methods.models';
 import { AlertController, IonContent, IonTextarea, Platform, ToastController, IonPopover } from '@ionic/angular';
@@ -33,7 +33,7 @@ export class HomePage implements OnInit {
     private index = -1;
     public pdfObj!: pdfMake.TCreatedPdf;
     private logoData!: string | ArrayBuffer | null;
-    public photoPreview!: string;
+    public photoPreview: string = '';
     public isEnabledButtons: boolean = false;
     public isUsaInput: string = 'text'
     public isDesabledPdf: boolean = true;
@@ -323,6 +323,7 @@ export class HomePage implements OnInit {
         public plt: Platform,
         private toastController: ToastController,
         private sanitizer: DomSanitizer,
+        private cd: ChangeDetectorRef,
         public http: HttpClient) { }
 
     ngOnInit() {
@@ -1977,6 +1978,7 @@ export class HomePage implements OnInit {
             // Adicionar o listener de evento
             input.addEventListener('change', (event: any) => {                
                 this.fileChangeEvent(event);
+                this.cd.detectChanges();
             });
 
             // Criar um objeto File a partir da URL da imagem
@@ -2012,10 +2014,36 @@ export class HomePage implements OnInit {
     }
 
     imageCropped(event: ImageCroppedEvent) {
-        if (event.base64) {
-            this.croppedImage = this.sanitizer.bypassSecurityTrustUrl(event.base64);
+        if (event.objectUrl) {
+            fetch(event.objectUrl).then(response => response.blob())
+            .then(blob => this.blobToBase64(blob))
+            .then(base64Data => {
+                this.photoPreview = base64Data; 
+            }).catch(error => {
+                console.error('Erro ao converter Blob para Base64:', error);
+            });
+
+            this.croppedImage = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
         } else {
             this.croppedImage = '';
         }
+    }
+
+    saveImageCropped() {
+        this.imageChangedEvent = '';
+        this.popOverImageCrop.dismiss();
+    }
+
+    blobToBase64(blob: Blob): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = error => reject(error);
+            reader.readAsDataURL(blob);
+        });
+    }
+
+    clearImage() {
+        this.imageChangedEvent = '';
     }
 }

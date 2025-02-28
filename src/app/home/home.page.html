@@ -43,18 +43,17 @@
     </ion-label>
   </ion-item>
 
-  <ion-popover #popOverImageCrop id="popoverDate" [side]="'bottom'" [alignment]="'start'" id="popoverDate">
+  <ion-popover #popOverImageCrop id="popoverDate" [side]="'bottom'" [alignment]="'start'" id="popoverDate" (ionPopoverDidDismiss)="clearImage()">
     <ng-template>
       <ion-header>
         <ion-toolbar color="primary">
-          <ion-title style="text-align: center;">RECORTAR IMAGEM</ion-title>
+          <ion-title style="text-align: center;">IMPORTAR IMAGEM</ion-title>
         </ion-toolbar>
       </ion-header>
       <ion-content>
         <ion-row>
           <ion-col>
-            <ion-button style="--border-radius: 30px !important;" color="success" expand="block"
-              (click)="takePicture()">
+            <ion-button style="--border-radius: 30px !important;" color="success" expand="block" (click)="takePicture()">
               <ion-icon name="camera"></ion-icon> TIRAR FOTO
             </ion-button>
           </ion-col>
@@ -67,12 +66,15 @@
             </ion-button>
           </ion-col>
         </ion-row>
-        <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="false" [aspectRatio]="4 / 3"
+        <image-cropper 
+          [imageChangedEvent]="imageChangedEvent" 
+          [maintainAspectRatio]="false" 
+          [aspectRatio]="4 / 3"
           (imageCropped)="imageCropped($event)">
         </image-cropper>
       </ion-content>
       <ion-footer class="ion-padding">
-        <ion-button expand="full" shape="round" type="submit"> Salvar </ion-button>
+        <ion-button expand="full" shape="round" type="submit" (click)="saveImageCropped()"> Salvar </ion-button>
       </ion-footer>
     </ng-template>
   </ion-popover>
@@ -81,7 +83,7 @@
 
 <ion-footer class="ion-padding">
 
-  <form [formGroup]="form" (ngSubmit)="submit()" (keyup.enter)="submit()" *ngIf="isEnabledButtons">
+  <form [formGroup]="form" (ngSubmit)="submit()" (keyup.enter)="submit()" *ngIf="!isEnabledButtons">
     <div style="display: flex;">
       <ion-item [disabled]="isMensage" class="text-box-item">
         <ion-textarea #focustextarea type="text" [inputmode]="isUsaInput" formControlName="prompt" auto-grow="true"
@@ -95,7 +97,7 @@
     </div>
   </form>
 
-  <ion-toolbar *ngIf="!isEnabledButtons">
+  <ion-toolbar *ngIf="isEnabledButtons">
     <ion-row>
       <ion-col>
         <ion-button expand="full" shape="round" (click)="createPdf()" type="submit"> Salvar </ion-button>
