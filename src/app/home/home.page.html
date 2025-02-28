@@ -83,7 +83,7 @@
 
 <ion-footer class="ion-padding">
 
-  <form [formGroup]="form" (ngSubmit)="submit()" (keyup.enter)="submit()" *ngIf="!isEnabledButtons">
+  <form [formGroup]="form" (ngSubmit)="submit()" (keyup.enter)="submit()" *ngIf="isEnabledButtons">
     <div style="display: flex;">
       <ion-item [disabled]="isMensage" class="text-box-item">
         <ion-textarea #focustextarea type="text" [inputmode]="isUsaInput" formControlName="prompt" auto-grow="true"
@@ -97,7 +97,7 @@
     </div>
   </form>
 
-  <ion-toolbar *ngIf="isEnabledButtons">
+  <ion-toolbar *ngIf="!isEnabledButtons">
     <ion-row>
       <ion-col>
         <ion-button expand="full" shape="round" (click)="createPdf()" type="submit"> Salvar </ion-button>
