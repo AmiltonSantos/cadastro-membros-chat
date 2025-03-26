@@ -2037,6 +2037,10 @@ export class HomePage implements OnInit {
         }, 200);
     }
 
+    limpaImageCropped() {
+        this.imageChangedEvent = '';
+    }
+
     blobToBase64(blob: Blob): Promise<string> {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();

@@ -72,10 +72,11 @@
           [aspectRatio]="4 / 3"
           (imageCropped)="imageCropped($event)">
         </image-cropper>
-        <ion-img *ngIf="imageChangedEvent === ''" src="./../../assets/images/foto.png"></ion-img>
+        <ion-img *ngIf="imageChangedEvent === ''" src="./../../assets/images/foto.png" (click)="takePicture()"></ion-img>
       </ion-content>
-      <ion-footer class="ion-padding">
-        <ion-button expand="full" shape="round" type="submit" (click)="saveImageCropped()" [disabled]="imageChangedEvent === ''"> Salvar </ion-button>
+      <ion-footer class="ion-padding" style="display: flex; justify-content: space-between;">
+        <ion-button shape="round" (click)="saveImageCropped()" [disabled]="imageChangedEvent === ''"> Salvar </ion-button>
+        <ion-button shape="round" (click)="limpaImageCropped()" [disabled]="imageChangedEvent === ''" color="warning"> LIMPAR </ion-button>
       </ion-footer>
     </ng-template>
   </ion-popover>
