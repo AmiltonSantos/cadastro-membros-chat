@@ -30,7 +30,7 @@
     <ion-icon class="chat-icon" src="assets/images/bot.svg"></ion-icon>
     <h4>Bem vindos ao <strong>Chat</strong> do cadastro de membros da Assembleia de Deus Missão - Jardim América...</h4>
   </div>
-
+    
   <ion-item lines="none" [ngClass]="{'bot': m.sender !== 'me'}"
     [class]="messages.length < 4 ? 'chat-item1' : 'chat-item'" *ngFor="let m of messages; index as i">
     <ion-badge slot="start" [color]="m.sender ===  'me' ? 'success' : 'light'" mode="ios">
@@ -66,15 +66,16 @@
             </ion-button>
           </ion-col>
         </ion-row>
-        <image-cropper 
+        <image-cropper *ngIf="imageChangedEvent !== ''"
           [imageChangedEvent]="imageChangedEvent" 
           [maintainAspectRatio]="false" 
           [aspectRatio]="4 / 3"
           (imageCropped)="imageCropped($event)">
         </image-cropper>
+        <ion-img *ngIf="imageChangedEvent === ''" src="./../../assets/images/foto.png"></ion-img>
       </ion-content>
       <ion-footer class="ion-padding">
-        <ion-button expand="full" shape="round" type="submit" (click)="saveImageCropped()"> Salvar </ion-button>
+        <ion-button expand="full" shape="round" type="submit" (click)="saveImageCropped()" [disabled]="imageChangedEvent === ''"> Salvar </ion-button>
       </ion-footer>
     </ng-template>
   </ion-popover>
