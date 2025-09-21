@@ -330,7 +330,7 @@ export class HomePage implements OnInit {
             this.messages.push(userMsg);
             this.typeText(String(prompt)?.toLocaleUpperCase().trim());
 
-            const valoresVerificar = [2, 3, 5, 6, 7, 17, 18, 19];
+            const valoresVerificar = [2, 3, 7, 13, 14];
             this.isUsaInput = valoresVerificar.includes(this.index) ? 'numeric' : 'text';
 
             if (this.index === 1) {
