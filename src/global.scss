@@ -38,3 +38,20 @@ ion-loading.custom-loading {
     height: 100% !important;
   }
 }
+
+/* Estilos para o cropper dentro de popovers */
+.custom-cropper {
+  .ngx-ic-resize .ngx-ic-square {
+    width: 16px !important;
+    height: 16px !important;
+    background: white !important;
+    border: 2px solid var(--ion-color-primary) !important;
+    border-radius: 2px !important;
+  }
+  
+  /* Efeito hover */
+  .ngx-ic-resize .ngx-ic-square:hover {
+    background: var(--ion-color-primary) !important;
+    transform: scale(1.2);
+  }
+}

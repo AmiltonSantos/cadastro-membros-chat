@@ -47,37 +47,21 @@ export class HomePage implements OnInit {
     private dataNascimento: string = '';
     private sexo: string = '';
     private estadoCivil: string = '';
-    private nacionalidade: string = '';
+    private profissao: string = '';
     private naturalidade: string = '';
     private uf: string = '';
-    private email: string = '';
     private nomeMae: string = '';
     private nomePai: string = '';
     private escolaridade: string = '';
-    private telefone1: string = '';
-    private telefone2: string = '';
+    private whatsapp: string = '';
     private cep: string = '';
     private rua: string = '';
     private numero: string = '';
     private bairro: string = '';
-    private complemento: string = '';
     private estado: string = '';
     private cidade: string = '';
     private batismoAgua: string = '';
-    private batismoEspiritoSanto: string = '';
     private isObreiro: string = '';
-    private obreiroCargo: string = '';
-    private consDiacono: string = '';
-    private localDiacono: string = '';
-    private consPresbitero: string = '';
-    private localPresbitero: string = '';
-    private consEvangelista: string = '';
-    private localEvangelista: string = '';
-    private consPastor: string = '';
-    private localPastor: string = '';
-    private regCampo: string = '';
-    private regCadesgo: string = '';
-    private regCgadb: string = '';
 
     form = new FormGroup({
         prompt: new FormControl('', [Validators.required, CustomValidators.noWhiteSpace])
@@ -128,7 +112,6 @@ export class HomePage implements OnInit {
             regional: 'REGIONAL 04',
             options: [
                 { value: 'FAIÇALVILLE' },
-                { value: 'VILA BOA' },
                 { value: 'PEDRO LUDOVICO' },
                 { value: 'VILA ROSA' },
                 { value: 'SETOR DOS AFONSO' },
@@ -193,21 +176,6 @@ export class HomePage implements OnInit {
         }
     ];
 
-    public strMeses = [
-        { value: '01', nome: 'JANEIRO' },
-        { value: '02', nome: 'FEVEREIRO' },
-        { value: '03', nome: 'MARÇO' },
-        { value: '04', nome: 'ABRIL' },
-        { value: '05', nome: 'MAIO' },
-        { value: '06', nome: 'JUNHO' },
-        { value: '07', nome: 'JULHO' },
-        { value: '08', nome: 'AGOSTO' },
-        { value: '09', nome: 'SETEMBRO' },
-        { value: '10', nome: 'OUTUBRO' },
-        { value: '11', nome: 'NOVEMBRO' },
-        { value: '12', nome: 'DEZEMBRO' }
-    ];
-
     public strSexo = [
         { nome: 'MASCULINO' },
         { nome: 'FEMININO' }
@@ -218,11 +186,6 @@ export class HomePage implements OnInit {
         { nome: 'SOLTEIRO(a)' },
         { nome: 'DIVORCIADO(a)' },
         { nome: 'VIÚVO(a)' }
-    ]
-
-    public strNacionalidade = [
-        { nome: 'BRASILEIRO(a)' },
-        { nome: 'ESTRANGEIRO(a)' }
     ]
 
     public strEstados = [
@@ -278,43 +241,24 @@ export class HomePage implements OnInit {
         { value: 1, mensagem: 'Onde você congrega ?' },
         { value: 2, mensagem: 'Qual o número do seu CPF ?' },
         { value: 3, mensagem: 'Qual o número do seu RG ?' },
-        { value: 4, mensagem: 'Qual o orgao expedidor do RG e UF ?' },
-        { value: 5, mensagem: 'Qual o DIA do nascimento ?' },
-        { value: 6, mensagem: 'Qual o MÊS do nascimento ?' },
-        { value: 7, mensagem: 'Qual o ANO do nascimento ?' },
-        { value: 8, mensagem: 'Masculino ou Feminino ?' },
-        { value: 9, mensagem: 'Seu estado civil ?' },
-        { value: 10, mensagem: 'Sua nacionalidade ?' },
-        { value: 11, mensagem: 'Cidade que você nasceu ?' },
-        { value: 12, mensagem: 'Estado que você nasceu ?' },
-        { value: 13, mensagem: 'Qual o seu E-mail ?' },
-        { value: 14, mensagem: 'Nome completo da mãe ?' },
-        { value: 15, mensagem: 'Nome completo do pai ?' },
-        { value: 16, mensagem: 'Sua escolaridade ?' },
-        { value: 17, mensagem: 'Telefone para contato ?' },
-        { value: 18, mensagem: 'Whatsapp ?' },
-        { value: 19, mensagem: 'Qual o seu CEP ?' },
-        { value: 20, mensagem: 'Nome da sua rua ?' },
-        { value: 21, mensagem: 'Qual número da casa ?' },
-        { value: 22, mensagem: 'Nome do bairro ?' },
-        { value: 23, mensagem: 'Complemento (Especifique) ?' },
-        { value: 24, mensagem: 'Estado onde mora ?' },
-        { value: 25, mensagem: 'Cidade onde mora ?' },
-        { value: 26, mensagem: 'Qual a data batismo nas águas ?' },
-        { value: 27, mensagem: 'Qual a data batismo no Espirito Santo ?' },
-        { value: 28, mensagem: 'É obreiro ?' },
-        { value: 29, mensagem: 'Qual seu Cargo ?' },
-        { value: 30, mensagem: 'Qual data da consagração a Diácono ?' },
-        { value: 31, mensagem: 'Local da consagração a Diácono ?' },
-        { value: 32, mensagem: 'Qual data da consagração a Presbitero ?' },
-        { value: 33, mensagem: 'Local da consagração a Presbitero ?' },
-        { value: 34, mensagem: 'Qual data da consagração a Evangelista ?' },
-        { value: 35, mensagem: 'Local da consagração a Evangelista ?' },
-        { value: 36, mensagem: 'Qual data da consagração a Pastor ?' },
-        { value: 37, mensagem: 'Local da consagração a Pastor ?' },
-        { value: 38, mensagem: 'Data do Registro no campo Jardim América ?' },
-        { value: 39, mensagem: 'Data do Registro na CADESGO ?' },
-        { value: 40, mensagem: 'Data do Registro na CGADB ?' }
+        { value: 4, mensagem: 'Qual o data do nascimento ?' },
+        { value: 5, mensagem: 'Masculino ou Feminino ?' },
+        { value: 6, mensagem: 'Seu estado civil ?' },
+        { value: 7, mensagem: 'Sua profissão ?' },
+        { value: 9, mensagem: 'Cidade que você nasceu ?' },
+        { value: 9, mensagem: 'Estado que você nasceu ?' },
+        { value: 10, mensagem: 'Nome completo da mãe ?' },
+        { value: 11, mensagem: 'Nome completo do pai ?' },
+        { value: 12, mensagem: 'Sua escolaridade ?' },
+        { value: 13, mensagem: 'Número do Whatsapp ?' },
+        { value: 14, mensagem: 'Qual o seu CEP ?' },
+        { value: 15, mensagem: 'Nome da sua rua ?' },
+        { value: 16, mensagem: 'Qual número da casa ?' },
+        { value: 17, mensagem: 'Nome do bairro ?' },
+        { value: 18, mensagem: 'Estado onde mora ?' },
+        { value: 19, mensagem: 'Cidade onde mora ?' },
+        { value: 20, mensagem: 'Qual a data batismo nas águas ?' },
+        { value: 21, mensagem: 'É obreiro ?' },
     ];
 
     constructor(
@@ -361,7 +305,7 @@ export class HomePage implements OnInit {
 
     private loadLocalAssetToBase64() {
         this.http.get('./assets/images/header-igreja.png', { responseType: 'blob' })
-            .subscribe(res => {
+            .subscribe((res: Blob) => {
                 const reader = new FileReader();
                 reader.onloadend = () => {
                     this.logoData = reader.result;
@@ -384,106 +328,55 @@ export class HomePage implements OnInit {
                 content: ''
             };
             this.messages.push(userMsg);
-            this.typeText(String(prompt)?.toLocaleUpperCase());
+            this.typeText(String(prompt)?.toLocaleUpperCase().trim());
 
             const valoresVerificar = [2, 3, 5, 6, 7, 17, 18, 19];
             this.isUsaInput = valoresVerificar.includes(this.index) ? 'numeric' : 'text';
 
             if (this.index === 1) {
-                this.nome = String(prompt)?.toLocaleUpperCase();
+                this.nome = String(prompt)?.toLocaleUpperCase().trim();
             } else if (this.index === 2) {
-                this.congregacao = String(prompt)?.toLocaleUpperCase();
+                this.congregacao = String(prompt)?.toLocaleUpperCase().trim();
             } else if (this.index === 3) {
-                this.cpf = prompt;
+                this.cpf = prompt.trim();
             } else if (this.index === 4) {
-                this.rg = prompt;
+                this.rg = prompt.trim();
             } else if (this.index === 5) {
-                this.expedidorRg = String(prompt)?.toLocaleUpperCase();
-            } else if (this.index === 6 || this.index === 7 || this.index === 8) {
-                this.dataNascimento = (this.dataNascimento === '' ? String(prompt)?.toLocaleUpperCase() : this.dataNascimento.concat('/', String(prompt)?.toLocaleUpperCase())).replace('\n', '');
+                this.dataNascimento = String(prompt)?.toLocaleUpperCase().trim();
+            } else if (this.index === 6) {
+                this.sexo = String(prompt)?.toLocaleUpperCase().trim();
+            } else if (this.index === 7) {
+                this.estadoCivil = String(prompt)?.toLocaleUpperCase().trim();
+            } else if (this.index === 8) {
+                this.profissao = String(prompt)?.toLocaleUpperCase().trim();
             } else if (this.index === 9) {
-                this.sexo = String(prompt)?.toLocaleUpperCase();
+                this.naturalidade = String(prompt)?.toLocaleUpperCase().trim();
             } else if (this.index === 10) {
-                this.estadoCivil = String(prompt)?.toLocaleUpperCase();
+                this.uf = String(prompt)?.toLocaleUpperCase().trim();
             } else if (this.index === 11) {
-                this.nacionalidade = String(prompt)?.toLocaleUpperCase();
+                this.nomeMae = String(prompt)?.toLocaleUpperCase().trim();
             } else if (this.index === 12) {
-                this.naturalidade = String(prompt)?.toLocaleUpperCase();
+                this.nomePai = String(prompt)?.toLocaleUpperCase().trim();
             } else if (this.index === 13) {
-                this.uf = String(prompt)?.toLocaleUpperCase();
+                this.escolaridade = String(prompt)?.toLocaleUpperCase().trim();
             } else if (this.index === 14) {
-                this.email = prompt;
+                this.whatsapp = prompt.trim();
             } else if (this.index === 15) {
-                this.nomeMae = String(prompt)?.toLocaleUpperCase();
+                this.cep = prompt.trim();
             } else if (this.index === 16) {
-                this.nomePai = String(prompt)?.toLocaleUpperCase();
+                this.rua = String(prompt)?.toLocaleUpperCase().trim();
             } else if (this.index === 17) {
-                this.escolaridade = String(prompt)?.toLocaleUpperCase();
+                this.numero = String(prompt)?.toLocaleUpperCase().trim();
             } else if (this.index === 18) {
-                this.telefone1 = prompt;
+                this.bairro = String(prompt)?.toLocaleUpperCase().trim();
             } else if (this.index === 19) {
-                this.telefone2 = prompt;
+                this.estado = String(prompt)?.toLocaleUpperCase().trim();
             } else if (this.index === 20) {
-                this.cep = prompt;
+                this.cidade = String(prompt)?.toLocaleUpperCase().trim();
             } else if (this.index === 21) {
-                this.rua = String(prompt)?.toLocaleUpperCase();
+                this.batismoAgua = String(prompt)?.toLocaleUpperCase().trim();
             } else if (this.index === 22) {
-                this.numero = String(prompt)?.toLocaleUpperCase();
-            } else if (this.index === 23) {
-                this.bairro = String(prompt)?.toLocaleUpperCase();
-            } else if (this.index === 24) {
-                this.complemento = String(prompt)?.toLocaleUpperCase();
-            } else if (this.index === 25) {
-                this.estado = String(prompt)?.toLocaleUpperCase();
-            } else if (this.index === 26) {
-                this.cidade = String(prompt)?.toLocaleUpperCase();
-            } else if (this.index === 27) {
-                this.batismoAgua = String(prompt)?.toLocaleUpperCase();
-            } else if (this.index === 28) {
-                this.batismoEspiritoSanto = String(prompt)?.toLocaleUpperCase();
-            } else if (this.index === 29) {
-                this.isObreiro = String(prompt)?.toLocaleUpperCase();
-                if (prompt === 'NAO') {
-                    this.isEnabledButtons = true;
-                    this.form.disable();
-                    this.content.scrollEvents = false;
-                    this.mensagemBot.slice(0, 29);
-                    setTimeout(async () => {
-                        await this.presentToast('middle', 'Cadastro concluído com sucesso...');
-                        let botMsg: IMessage = {
-                            sender: 'bot',
-                            content: ''
-                        };
-                        this.messages.push(botMsg);
-                        this.typeText('Cadastro concluído com sucesso...');
-                        this.loading = false;
-                    }, 300);
-                    return
-                }
-            } else if (this.index === 30) {
-                this.obreiroCargo = String(prompt)?.toLocaleUpperCase();
-            } else if (this.index === 31) {
-                this.consDiacono = String(prompt)?.toLocaleUpperCase();
-            } else if (this.index === 32) {
-                this.localDiacono = String(prompt)?.toLocaleUpperCase();
-            } else if (this.index === 33) {
-                this.consPresbitero = String(prompt)?.toLocaleUpperCase();
-            } else if (this.index === 34) {
-                this.localPresbitero = String(prompt)?.toLocaleUpperCase();
-            } else if (this.index === 35) {
-                this.consEvangelista = String(prompt)?.toLocaleUpperCase();
-            } else if (this.index === 36) {
-                this.localEvangelista = String(prompt)?.toLocaleUpperCase();
-            } else if (this.index === 37) {
-                this.consPastor = String(prompt)?.toLocaleUpperCase();
-            } else if (this.index === 38) {
-                this.localPastor = String(prompt)?.toLocaleUpperCase();
-            } else if (this.index === 39) {
-                this.regCampo = String(prompt)?.toLocaleUpperCase();
-            } else if (this.index === 40) {
-                this.regCadesgo = String(prompt)?.toLocaleUpperCase();
-            } else if (this.index === 41) {
-                this.regCgadb = String(prompt)?.toLocaleUpperCase();
+                this.isObreiro = String(prompt)?.toLocaleUpperCase().trim();             
             }
 
             if (this.index >= 0 && this.index < this.mensagemBot.length) {
@@ -500,37 +393,29 @@ export class HomePage implements OnInit {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'CONGREGAÇÃO');
                         }, 300);
-                    } else if (this.index === 6) {
-                        setTimeout(() => {
-                            this.showAlert(this.mensagemBot[this.index].value, 'MÊS');
-                        }, 300);
-                    } else if (this.index === 8) {
+                    } else if (this.index === 5) {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'SEXO');
                         }, 300);
-                    } else if (this.index === 9) {
+                    } else if (this.index === 6) {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'ESTADO CIVIL');
                         }, 300);
-                    } else if (this.index === 10) {
-                        setTimeout(() => {
-                            this.showAlert(this.mensagemBot[this.index].value, 'NACIONALIDADE');
-                        }, 300);
-                    } else if (this.index === 12) {
+                    } else if (this.index === 9) {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'UF');
                         }, 300);
-                    } else if (this.index === 16) {
+                    } else if (this.index === 12) {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'ESCOLARIDADE');
                         }, 300);
-                    } else if (this.index === 24) {
+                    } else if (this.index === 18) {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'ESTADO');
                         }, 300);
-                    } else if (this.index === 28) {
+                    } else if (this.index === 21) {
                         setTimeout(() => {
-                            this.showAlert(this.mensagemBot[this.index].value, 'OBREIRO');
+                            this.showAlert(21, 'OBREIRO');
                         }, 300);
                     }
                     this.index++;
@@ -602,15 +487,7 @@ export class HomePage implements OnInit {
                     });
                 }
             }
-        } else if (numero === 7) {
-            for (const str of this.strMeses) {
-                inputs.push({
-                    type: 'radio',
-                    label: str.nome,
-                    value: str.value
-                });
-            }
-        } else if (numero === 9) {
+        } else if (numero === 6) {
             for (const str of this.strSexo) {
                 inputs.push({
                     type: 'radio',
@@ -618,7 +495,7 @@ export class HomePage implements OnInit {
                     value: str.nome
                 });
             }
-        } else if (numero === 10) {
+        } else if (numero === 7) {
             for (const str of this.strEstadoCivil) {
                 inputs.push({
                     type: 'radio',
@@ -626,15 +503,7 @@ export class HomePage implements OnInit {
                     value: str.nome
                 });
             }
-        } else if (numero === 11) {
-            for (const str of this.strNacionalidade) {
-                inputs.push({
-                    type: 'radio',
-                    label: str.nome,
-                    value: str.nome
-                });
-            }
-        } else if (numero === 13) {
+        } else if (numero === 10) {
             for (const str of this.strEstados) {
                 inputs.push({
                     type: 'radio',
@@ -642,7 +511,7 @@ export class HomePage implements OnInit {
                     value: str.sigla
                 });
             }
-        } else if (numero === 17) {
+        } else if (numero === 13) {
             for (const str of this.strEscolaridade) {
                 inputs.push({
                     type: 'radio',
@@ -650,7 +519,7 @@ export class HomePage implements OnInit {
                     value: str.nome
                 });
             }
-        } else if (numero === 25) {
+        } else if (numero === 19) {
             for (const str of this.strEstados) {
                 inputs.push({
                     type: 'radio',
@@ -658,7 +527,7 @@ export class HomePage implements OnInit {
                     value: str.nome
                 });
             }
-        } else if (numero === 29) {
+        } else if (numero === 21) {
             for (const str of this.strObreiro) {
                 inputs.push({
                     type: 'radio',
@@ -713,20 +582,23 @@ export class HomePage implements OnInit {
         }
 
         const docDefinition: any = {
-            header: {
-                // Definindo o cabeçalho com uma moldura
-                canvas: [
-                    {
-                        type: 'rect',
-                        x: 30, // Margem esquerda
-                        y: 35, // Margem superior
-                        w: 535, // Largura da moldura (595 - 30 - 30)
-                        h: 778, // Altura da moldura (842 - 32 - 32)
-                        lineWidth: 3, // Espessura da linha
-                        fill: 'none' // Sem preenchimento
-                    }
-                ],
-                absolutePosition: { x: 0, y: 0 } // Posição absoluta para garantir que a moldura fique no fundo
+            background: function(currentPage: number, pageSize: any) {
+                if (currentPage === 1) {
+                    return {
+                        canvas: [
+                            {
+                                type: 'rect',
+                                x: 30,
+                                y: 35,
+                                w: pageSize.width - 60,  // largura ajustada
+                                h: pageSize.height - 65, // altura ajustada
+                                lineWidth: 3,
+                                lineColor: 'black'       // aqui use lineColor (não color)
+                            }
+                        ]
+                    };
+                }
+                return null;
             },
             watermark: { text: 'AD MISSÃO JARDIM AMÉRICA', color: 'red', opacity: 0.05, bold: true },
             content: [
@@ -780,6 +652,12 @@ export class HomePage implements OnInit {
                                                 }
                                             ]
                                         ]
+                                    },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
                                     }
                                 },
                                 {
@@ -795,7 +673,7 @@ export class HomePage implements OnInit {
                                                 { text: 'CPF', bold: true, margin: [0, 0, 0, 0] },
                                                 {
                                                     table: {
-                                                        widths: [170],
+                                                        widths: [380],
                                                         heights: 13,
                                                         body: [
                                                             [
@@ -805,47 +683,13 @@ export class HomePage implements OnInit {
                                                             ]
                                                         ]
                                                     },
+                                                    layout: {
+                                                        hLineWidth: () => 0.5, // espessura horizontal
+                                                        vLineWidth: () => 0.5, // espessura vertical
+                                                        hLineColor: () => 'black',
+                                                        vLineColor: () => 'black'
+                                                    },
                                                     margin: [0, 0, 0, 5]
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            width: '30%',
-                                            stack: [
-                                                { text: 'RG', bold: true, margin: [0, 0, 0, 0] },
-                                                {
-                                                    table: {
-                                                        widths: [109],
-                                                        heights: 13,
-                                                        body: [
-                                                            [
-                                                                {
-                                                                    text: this.rg
-                                                                }
-                                                            ]
-                                                        ]
-                                                    },
-                                                    margin: [0, 0, 10, 0]
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            width: '20%',
-                                            stack: [
-                                                { text: 'ORG. EXPED.', bold: true, margin: [0, 0, 0, 0] },
-                                                {
-                                                    table: {
-                                                        widths: [70],
-                                                        heights: 13,
-                                                        body: [
-                                                            [
-                                                                {
-                                                                    text: this.expedidorRg.toUpperCase()
-                                                                }
-                                                            ]
-                                                        ]
-                                                    },
-                                                    margin: [0, 0, 10, 0]
                                                 }
                                             ]
                                         }
@@ -896,6 +740,12 @@ export class HomePage implements OnInit {
                             ]
                         ]
                     },
+                    layout: {
+                        hLineWidth: () => 0.5, // espessura horizontal
+                        vLineWidth: () => 0.5, // espessura vertical
+                        hLineColor: () => 'black',
+                        vLineColor: () => 'black'
+                    },
                     margin: [0, 0, 0, 5]
                 },
                 {
@@ -915,6 +765,12 @@ export class HomePage implements OnInit {
                                                 }
                                             ]
                                         ]
+                                    },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
                                     },
                                     margin: [0, 0, 10, 0]
                                 }
@@ -937,6 +793,12 @@ export class HomePage implements OnInit {
                                             ]
                                         ]
                                     },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
+                                    },
                                     margin: [0, 0, 10, 0]
                                 }
                             ]
@@ -958,6 +820,12 @@ export class HomePage implements OnInit {
                                             ]
                                         ]
                                     },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
+                                    },
                                     margin: [0, 0, 10, 0]
                                 }
                             ]
@@ -977,6 +845,12 @@ export class HomePage implements OnInit {
                                                 }
                                             ]
                                         ]
+                                    },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
                                     },
                                     margin: [0, 0, 0, 0]
                                 }
@@ -998,10 +872,16 @@ export class HomePage implements OnInit {
                                         body: [
                                             [
                                                 {
-                                                    text: this.nacionalidade.toUpperCase()
+                                                    text: 'BRASILEIRO(A)'
                                                 }
                                             ]
                                         ]
+                                    },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
                                     },
                                     margin: [0, 0, 10, 0]
                                 }
@@ -1023,6 +903,12 @@ export class HomePage implements OnInit {
                                             ]
                                         ]
                                     },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
+                                    },
                                     margin: [0, 0, 10, 0]
                                 }
                             ]
@@ -1043,6 +929,12 @@ export class HomePage implements OnInit {
                                             ]
                                         ]
                                     },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
+                                    },
                                     margin: [0, 0, 10, 0]
                                 }
                             ]
@@ -1058,10 +950,16 @@ export class HomePage implements OnInit {
                                         body: [
                                             [
                                                 {
-                                                    text: this.email?.slice(0, 30)
+                                                    text: ''
                                                 }
                                             ]
                                         ]
+                                    },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
                                     },
                                     margin: [0, 0, 0, 0]
                                 }
@@ -1088,6 +986,12 @@ export class HomePage implements OnInit {
                                             ]
                                         ]
                                     },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
+                                    },
                                     margin: [0, 0, 10, 0]
                                 }
                             ]
@@ -1107,6 +1011,12 @@ export class HomePage implements OnInit {
                                                 }
                                             ]
                                         ]
+                                    },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
                                     },
                                     margin: [0, 0, 0, 0]
                                 }
@@ -1133,6 +1043,12 @@ export class HomePage implements OnInit {
                                             ]
                                         ]
                                     },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
+                                    },
                                     margin: [0, 0, 10, 0]
                                 }
                             ]
@@ -1148,10 +1064,16 @@ export class HomePage implements OnInit {
                                         body: [
                                             [
                                                 {
-                                                    text: this.telefone1.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3')
+                                                    text: this.whatsapp.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3')
                                                 }
                                             ]
                                         ]
+                                    },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
                                     },
                                     margin: [0, 0, 10, 0]
                                 }
@@ -1168,10 +1090,16 @@ export class HomePage implements OnInit {
                                         body: [
                                             [
                                                 {
-                                                    text: this.telefone2.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3')
+                                                    text: ''
                                                 }
                                             ]
                                         ]
+                                    },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
                                     },
                                     margin: [0, 0, 0, 0]
                                 }
@@ -1208,6 +1136,12 @@ export class HomePage implements OnInit {
                                             ]
                                         ]
                                     },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
+                                    },
                                     margin: [0, 0, 10, 0]
                                 }
                             ]
@@ -1228,6 +1162,12 @@ export class HomePage implements OnInit {
                                             ]
                                         ]
                                     },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
+                                    },
                                     margin: [0, 0, 10, 0]
                                 }
                             ]
@@ -1247,6 +1187,12 @@ export class HomePage implements OnInit {
                                                 }
                                             ]
                                         ]
+                                    },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
                                     },
                                     margin: [0, 0, 0, 0]
                                 }
@@ -1273,6 +1219,12 @@ export class HomePage implements OnInit {
                                             ]
                                         ]
                                     },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
+                                    },
                                     margin: [0, 0, 10, 0]
                                 }
                             ]
@@ -1288,10 +1240,16 @@ export class HomePage implements OnInit {
                                         body: [
                                             [
                                                 {
-                                                    text: this.complemento.toUpperCase()
+                                                    text: ''
                                                 }
                                             ]
                                         ]
+                                    },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
                                     },
                                     margin: [0, 0, 0, 0]
                                 }
@@ -1318,6 +1276,12 @@ export class HomePage implements OnInit {
                                             ]
                                         ]
                                     },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
+                                    },
                                     margin: [0, 0, 10, 0]
                                 }
                             ]
@@ -1337,6 +1301,12 @@ export class HomePage implements OnInit {
                                                 }
                                             ]
                                         ]
+                                    },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
                                     },
                                     margin: [0, 0, 0, 0]
                                 }
@@ -1386,7 +1356,7 @@ export class HomePage implements OnInit {
                             width: '25%',
                             stack: [
                                 {
-                                    text: this.batismoEspiritoSanto.toUpperCase(),
+                                    text: '',
                                     color: 'gray',
                                     fontSize: 12,
                                     decoration: 'underline',
@@ -1430,6 +1400,12 @@ export class HomePage implements OnInit {
                                             ]
                                         ]
                                     },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
+                                    },
                                     margin: [0, 0, 10, 0]
                                 }
                             ]
@@ -1457,6 +1433,12 @@ export class HomePage implements OnInit {
                                             ]
                                         ]
                                     },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
+                                    },
                                     margin: [0, 0, 10, 0]
                                 }
                             ]
@@ -1478,10 +1460,16 @@ export class HomePage implements OnInit {
                                         body: [
                                             [
                                                 {
-                                                    text: this.obreiroCargo.toUpperCase()
+                                                    text: ''
                                                 }
                                             ]
                                         ]
+                                    },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
                                     },
                                     margin: [0, 0, 10, 0]
                                 }
@@ -1510,7 +1498,7 @@ export class HomePage implements OnInit {
                             width: '25%',
                             stack: [
                                 {
-                                    text: this.consDiacono.toUpperCase(),
+                                    text: '',
                                     color: 'gray',
                                     fontSize: 12,
                                     decoration: 'underline',
@@ -1536,10 +1524,16 @@ export class HomePage implements OnInit {
                                         body: [
                                             [
                                                 {
-                                                    text: this.localDiacono.toUpperCase()
+                                                    text: ''
                                                 }
                                             ]
                                         ]
+                                    },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
                                     },
                                     margin: [0, 0, 10, 0]
                                 }
@@ -1568,7 +1562,7 @@ export class HomePage implements OnInit {
                             width: '25%',
                             stack: [
                                 {
-                                    text: this.consPresbitero.toUpperCase(),
+                                    text: '',
                                     color: 'gray',
                                     fontSize: 12,
                                     decoration: 'underline',
@@ -1594,10 +1588,16 @@ export class HomePage implements OnInit {
                                         body: [
                                             [
                                                 {
-                                                    text: this.localPresbitero.toUpperCase()
+                                                    text: ''
                                                 }
                                             ]
                                         ]
+                                    },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
                                     },
                                     margin: [0, 0, 10, 0]
                                 }
@@ -1626,7 +1626,7 @@ export class HomePage implements OnInit {
                             width: '25%',
                             stack: [
                                 {
-                                    text: this.consEvangelista.toUpperCase(),
+                                    text: '',
                                     color: 'gray',
                                     fontSize: 12,
                                     decoration: 'underline',
@@ -1652,10 +1652,16 @@ export class HomePage implements OnInit {
                                         body: [
                                             [
                                                 {
-                                                    text: this.localEvangelista.toUpperCase()
+                                                    text: ''
                                                 }
                                             ]
                                         ]
+                                    },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
                                     },
                                     margin: [0, 0, 10, 0]
                                 }
@@ -1684,7 +1690,7 @@ export class HomePage implements OnInit {
                             width: '25%',
                             stack: [
                                 {
-                                    text: this.consPastor.toUpperCase(),
+                                    text: '',
                                     color: 'gray',
                                     fontSize: 12,
                                     decoration: 'underline',
@@ -1710,10 +1716,16 @@ export class HomePage implements OnInit {
                                         body: [
                                             [
                                                 {
-                                                    text: this.localPastor.toUpperCase()
+                                                    text: ''
                                                 }
                                             ]
                                         ]
+                                    },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
                                     },
                                     margin: [0, 0, 10, 0]
                                 }
@@ -1735,10 +1747,16 @@ export class HomePage implements OnInit {
                                         body: [
                                             [
                                                 {
-                                                    text: this.regCampo.toUpperCase()
+                                                    text: ''
                                                 }
                                             ]
                                         ]
+                                    },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
                                     },
                                     margin: [0, 0, 10, 0]
                                 }
@@ -1755,10 +1773,16 @@ export class HomePage implements OnInit {
                                         body: [
                                             [
                                                 {
-                                                    text: this.regCadesgo.toUpperCase()
+                                                    text: ''
                                                 }
                                             ]
                                         ]
+                                    },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
                                     },
                                     margin: [0, 0, 10, 0]
                                 }
@@ -1775,10 +1799,16 @@ export class HomePage implements OnInit {
                                         body: [
                                             [
                                                 {
-                                                    text: this.regCgadb.toUpperCase()
+                                                    text: ''
                                                 }
                                             ]
                                         ]
+                                    },
+                                    layout: {
+                                        hLineWidth: () => 0.5, // espessura horizontal
+                                        vLineWidth: () => 0.5, // espessura vertical
+                                        hLineColor: () => 'black',
+                                        vLineColor: () => 'black'
                                     },
                                     margin: [0, 0, 0, 0]
                                 }
@@ -1786,6 +1816,119 @@ export class HomePage implements OnInit {
                         }
                     ],
                     margin: [0, 0, 0, 5]
+                },
+                {
+                    text: 'TERMO DE CONSENTIMENTO PARA TRATAMENTO DE DADOS PESSOAIS',
+                    style: 'header',
+                    alignment: 'center',
+                    margin: [0, 30, 0, 5]
+                },
+                {
+                    text: '(Lei 13.709 – LGPD)',
+                    style: 'header',
+                    alignment: 'center',
+                    margin: [0, 10, 0, 5]
+                },
+                {
+                    width: '95%',
+                    table: {
+                        widths: ['*'],
+                        body: [
+                            [
+                                {
+                                text: [
+                                    { text: 'IGREJA EVANGELICA ASSEMBLEIA DE DEUS MINISTÉRIO MISSÃO - CAMPO JARDIM AMÉRICA, situada na Rua C-160, Qd 371, Lt 17/18, CEP 74255-130, Setor Jardim América, Goiânia-GO,', bold: true },
+                                    { text: ' doravante denominado(a)' },
+                                    { text: ' CONTROLADORA.', bold: true }
+                                ],
+                                alignment: 'justify',
+                                margin: [5, 5, 5, 5] // padding interno
+                                }
+                            ]
+                        ]
+                    },
+                    layout: {
+                        hLineWidth: () => 0.5, // espessura horizontal
+                        vLineWidth: () => 0.5, // espessura vertical
+                        hLineColor: () => 'black',
+                        vLineColor: () => 'black'
+                    },
+                    margin: [0, 30, 0, 0] // margem externa
+                },
+                {
+                    width: '95%',
+                    table: {
+                        widths: ['*'], // só uma célula ocupando 100%
+                        body: [
+                            [
+                                {
+                                stack: [
+                                    { text: `Nome: ${this.nome}`, bold: true, margin: [0, 2, 0, 2], alignment: 'left' },
+                                    { text: `nacionalidade: ${this.naturalidade}, estado civil: ${this.estadoCivil}`, margin: [0, 2, 0, 2], alignment: 'left' },
+                                    { text: `profissão: ${this.profissao}, RG nº: ${this.rg}, inscrito(a)`, margin: [0, 2, 0, 2], alignment: 'left' },
+                                    { text: `CPF/MF sob o nº: ${this.cpf}, residente e domiciliado(a) na`, margin: [0, 2, 0, 2], alignment: 'left' },
+                                    { text: `${this.rua}, ${this.bairro} ${this.numero}`, margin: [0, 2, 0, 2], alignment: 'left' },
+                                    { text: `Cidade/Estado: ${this.cidade}, ${this.estado} CEP: ${this.cep}`, margin: [0, 2, 0, 2], alignment: 'left' },
+                                    { text: 'doravante denominado(a) TITULAR.', margin: [0, 2, 0, 2], alignment: 'left' }
+                                ],
+                                margin: [5, 5, 5, 5] // padding dentro da moldura
+                                }
+                            ]
+                        ]
+                    },
+                    layout: {
+                        hLineWidth: () => 0.5, // espessura horizontal
+                        vLineWidth: () => 0.5, // espessura vertical
+                        hLineColor: () => 'black',
+                        vLineColor: () => 'black'
+                    },
+                    margin: [0, 30, 0, 0] // margem externa (fora do quadrado)
+                },
+                {
+                    text: 'Este termo de consentimento foi elaborado em conformidade com a lei geral de proteção de dados. Consoante ao artigo 5º inciso XII da Lei 13.709, este documento viabiliza a manifestação livre, informada e inequívoca, pela qual o titular/ responsável concorda com o tratamento de seus dados pessoais e os dados do menor sob os seus cuidados, para as finalidades a seguir determinadas:',
+                    italics: true,
+                    alignment: 'justify',
+                    margin: [50, 20, 0, 0]
+                },
+                ,
+                {
+                    text: 'PARÁGRAFO PRIMEIRO - DO CONSENTIMENTO',
+                    style: 'header',
+                    alignment: 'left',
+                    margin: [0, 20, 0, 5]
+                },
+                {
+                    text: [
+                        { text: '    Ao assinar este termo o '},
+                        { text: 'TITULAR ', bold: true },
+                        { text: 'concorda que a ' },
+                        { text: ' CONTROLADORA, ', bold: true },
+                        { text: 'proceda com o tratamento de seus dados.' },
+                    ],
+                    alignment: 'left',
+                    margin: [0, 10, 0, 5]
+                },
+                {
+                    text: 'Entende-se por tratamento de acordo com o artigo 5º inciso X, a coleta, produção, recepção, classificação, utilização, acesso, reprodução, transmissão, distribuição, processamento, arquivamento, armazenamento, eliminação, avaliação ou controle da informação, modificação, comunicação, transferência, difusão ou extração.',
+                    alignment: 'left',
+                    margin: [0, 10, 0, 5]
+                },
+                {
+                    text: 'PARÁGRAFO SEGUNDO - DADOS PESSOAIS',
+                    style: 'header',
+                    alignment: 'left',
+                    margin: [0, 10, 0, 5]
+                },
+                {
+                    text: 'Poderão ser tratados, mediante anuência expressa do titular/responsável, os seguintes dados pessoais, pelo(a) controlador(a):',
+                    alignment: 'left',
+                    margin: [0, 10, 0, 5]
+                },
+                {
+                    ul: [
+                        'Nome, RG, CPF, endereço, status civil, e-mail, telefone, histórico pessoal e congregacional.'
+                    ],
+                    margin: [20, 0, 0, 10] // indentação e espaçamento
                 }
             ],
 
@@ -1793,7 +1936,7 @@ export class HomePage implements OnInit {
             footer(currentPage: any, pageCount: any) {
                 return {
                     columns: [
-                        { text: 'APP a1000ton Tecnologia - Todos os direitos reservados Copyright' + ' | ' + new Date().toLocaleString(), alignment: 'center', fontSize: 6 }
+                        { text: 'AD Missão Jardim América - Todos os direitos reservados Copyright' + ' | ' + new Date().toLocaleString(), alignment: 'center', fontSize: 6 }
                     ]
                 };
             },
@@ -1904,37 +2047,20 @@ export class HomePage implements OnInit {
                 dataNascimento: this.dataNascimento,
                 sexo: this.sexo,
                 estadoCivil: this.estadoCivil,
-                nacionalidade: this.nacionalidade,
                 naturalidade: this.naturalidade,
                 uf: this.uf,
-                email: this.email,
                 nomeMae: this.nomeMae,
                 nomePai: this.nomePai,
                 escolaridade: this.escolaridade,
-                telefone1: this.telefone1,
-                telefone2: this.telefone2,
+                telefone1: this.whatsapp,
                 cep: this.cep,
                 rua: this.rua,
                 numero: this.numero,
                 bairro: this.bairro,
-                complemento: this.complemento,
                 estado: this.estado,
                 cidade: this.cidade,
                 batismoAgua: this.batismoAgua,
-                batismoEspiritoSanto: this.batismoEspiritoSanto,
-                isObreiro: this.isObreiro,
-                obreiroCargo: this.obreiroCargo,
-                consDiacono: this.consDiacono,
-                localDiacono: this.localDiacono,
-                consPresbitero: this.consPresbitero,
-                localPresbitero: this.localPresbitero,
-                consEvangelista: this.consEvangelista,
-                localEvangelista: this.localEvangelista,
-                consPastor: this.consPastor,
-                localPastor: this.localPastor,
-                regCampo: this.regCampo,
-                regCadesgo: this.regCadesgo,
-                regCgadb: this.regCgadb
+                isObreiro: this.isObreiro
             }),
         });
 
