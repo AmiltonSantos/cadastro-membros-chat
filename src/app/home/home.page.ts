@@ -1862,16 +1862,18 @@ export class HomePage implements OnInit {
                         body: [
                             [
                                 {
-                                stack: [
-                                    { text: `Nome: ${this.nome}`, bold: true, margin: [0, 2, 0, 2], alignment: 'left' },
-                                    { text: `nacionalidade: ${this.naturalidade}, estado civil: ${this.estadoCivil}`, margin: [0, 2, 0, 2], alignment: 'left' },
-                                    { text: `profissão: ${this.profissao}, RG nº: ${this.rg}, inscrito(a)`, margin: [0, 2, 0, 2], alignment: 'left' },
-                                    { text: `CPF/MF sob o nº: ${this.cpf}, residente e domiciliado(a) na`, margin: [0, 2, 0, 2], alignment: 'left' },
-                                    { text: `${this.rua}, ${this.bairro} ${this.numero}`, margin: [0, 2, 0, 2], alignment: 'left' },
-                                    { text: `Cidade/Estado: ${this.cidade}, ${this.estado} CEP: ${this.cep}`, margin: [0, 2, 0, 2], alignment: 'left' },
-                                    { text: 'doravante denominado(a) TITULAR.', margin: [0, 2, 0, 2], alignment: 'left' }
+                                text: [
+                                    { text: `Nome: ${this.nome} `, bold: true },
+                                    { text: `nacionalidade: BRASILEIRO(A), estado civil: ${this.estadoCivil} `},
+                                    { text: `profissão: ${this.profissao}, RG nº: ${this.rg}, inscrito(a) ` },
+                                    { text: `CPF/MF sob o nº: ${this.cpf}, residente e domiciliado(a) na ` },
+                                    { text: `${this.rua}, ${this.bairro} ${this.numero} ` },
+                                    { text: `Cidade/Estado: ${this.cidade}, ${this.estado} CEP: ${this.cep} ` },
+                                    { text: 'doravante denominado(a) ' },
+                                    { text: 'TITULAR.', bold: true }
                                 ],
-                                margin: [5, 5, 5, 5] // padding dentro da moldura
+                                alignment: 'justify',
+                                margin: [5, 5, 5, 5] // padding interno
                                 }
                             ]
                         ]
