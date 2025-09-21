@@ -1,6 +1,6 @@
 {
   "name": "cadastro-membros-chat",
-  "version": "0.0.1",
+  "version": "0.0.2 beta",
   "author": "Amilton Santos - node v18.18.2",
   "homepage": "https://ionicframework.com/",
   "scripts": {

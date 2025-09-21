@@ -330,7 +330,7 @@ export class HomePage implements OnInit {
             this.messages.push(userMsg);
             this.typeText(String(prompt)?.toLocaleUpperCase().trim());
 
-            const valoresVerificar = [2, 3, 7, 13, 14];
+            const valoresVerificar = [2, 13, 14];
             this.isUsaInput = valoresVerificar.includes(this.index) ? 'numeric' : 'text';
 
             if (this.index === 1) {
@@ -439,7 +439,9 @@ export class HomePage implements OnInit {
             }
 
             setTimeout(() => {
-                this.focustextarea?.setFocus();
+                if (![1,5,6,9,12,18,21].includes(this.index)) {
+                    this.focustextarea?.setFocus();
+                }
             }, 400);
 
             this.form.reset();
