@@ -2055,6 +2055,7 @@ export class HomePage implements OnInit {
         try {
             if (!this.imagemBase64) {
                 await this.presentToast('middle', 'Selecione e recorte uma imagem antes de salvar.');
+                await loading.dismiss();
                 return;
             }
 
