@@ -34,6 +34,7 @@ export class HomePage implements OnInit {
     public pdfObj!: pdfMake.TCreatedPdf;
     private logoData!: string | ArrayBuffer | null;
     public photoPreview: string = '';
+    private imagemBase64: string | null = null;
     public isEnabledButtons: boolean = false;
     public isUsaInput: string = 'text'
     public isDesabledPdf: boolean = true;
@@ -2044,7 +2045,42 @@ export class HomePage implements OnInit {
     }
 
     public async salvarGoogleSheets() {
+        try {
+            if (!this.imagemBase64) {
+                await this.presentToast('middle', 'Selecione e recorte uma imagem antes de salvar.');
+                return;
+            }
 
+            const body = {
+                nome: this.nome || "",
+                imageBase64: this.imagemBase64,     // imagem já em Base64
+                imageType: "image/jpeg",             // ou "image/png"
+                filename: "foto_cortada.jpg"         // nome do arquivo que será salvo no Drive
+            };
+
+            const response = await fetch("https://script.google.com/macros/s/AKfycbx_wyqhAQBSLsu0Ji5BcEb7urNslXybQff_7bbBeJYjrptaycvCTV3uUAr6I9fDidyX/exec", {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(body)
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                await this.presentToast('middle', 'Salvo com sucesso!');
+            } else {
+                await this.presentToast('middle', 'Erro ao cadastrar!');
+            }
+
+        } catch (err) {
+            console.error(err);
+            await this.presentToast('middle', 'Erro inesperado!');
+        }
+
+        /*
         const response = await fetch("https://sheetdb.io/api/v1/9lv20jihax310", {
             method: 'POST',
             mode: 'cors',
@@ -2078,6 +2114,7 @@ export class HomePage implements OnInit {
                 isObreiro: this.isObreiro
             }),
         });
+        
 
         const data = await response.json();
 
@@ -2086,6 +2123,7 @@ export class HomePage implements OnInit {
         } else {
             await this.presentToast('middle', 'Erro ao cadastrar!');
         }
+        */
     }
 
     async presentToast(position: 'top' | 'middle' | 'bottom', msg: string) {
@@ -2160,6 +2198,7 @@ export class HomePage implements OnInit {
             .then(blob => this.blobToBase64(blob))
             .then(base64Data => {
                 this.photoPreview = base64Data; 
+                this.imagemBase64 = base64Data; // <-- salva aqui!
             }).catch(error => {
                 console.error('Erro ao converter Blob para Base64:', error);
             });
@@ -2167,6 +2206,7 @@ export class HomePage implements OnInit {
             this.croppedImage = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
         } else {
             this.croppedImage = '';
+            this.imagemBase64 = null;
         }
     }
 
