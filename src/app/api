@@ -1,5 +1,12 @@
 // api/enviarImagem.js
 export default async function handler(req, res) {
+  if (req.method === 'OPTIONS') {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    return res.status(204).end(); // sem corpo, apenas OK
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, error: 'Method not allowed' });
   }
@@ -19,10 +26,13 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
+    // Retorna JSON para o front-end
+    res.setHeader('Access-Control-Allow-Origin', '*'); // importante para CORS
     return res.status(200).json(data);
 
   } catch (err) {
     console.error('Erro ao enviar para Apps Script:', err);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     return res.status(500).json({ success: false, error: err.toString() });
   }
 }
