@@ -2058,15 +2058,12 @@ export class HomePage implements OnInit {
                 filename: "foto_cortada.jpg"         // nome do arquivo que será salvo no Drive
             };
 
-            const response = await fetch("https://script.google.com/macros/s/AKfycbx_wyqhAQBSLsu0Ji5BcEb7urNslXybQff_7bbBeJYjrptaycvCTV3uUAr6I9fDidyX/exec", {
+            const response = await fetch('/api/enviarImagem', {
                 method: 'POST',
-                mode: 'cors',
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
             });
-
+            
             const data = await response.json();
 
             if (data.success) {

@@ -1,0 +1,28 @@
+// api/enviarImagem.js
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ success: false, error: 'Method not allowed' });
+  }
+
+  try {
+    const body = req.body; // { nome, imageBase64, imageType, filename }
+
+    // URL do seu Apps Script Web App
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx_wyqhAQBSLsu0Ji5BcEb7urNslXybQff_7bbBeJYjrptaycvCTV3uUAr6I9fDidyX/exec';
+
+    // Repassa para o Apps Script
+    const response = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    const data = await response.json();
+
+    return res.status(200).json(data);
+
+  } catch (err) {
+    console.error('Erro ao enviar para Apps Script:', err);
+    return res.status(500).json({ success: false, error: err.toString() });
+  }
+}
