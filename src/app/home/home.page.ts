@@ -2059,9 +2059,30 @@ export class HomePage implements OnInit {
             }
 
             const body = {
-                nome: this.nome || "",
-                imageBase64: this.imagemBase64,     // imagem já em Base64
-                imageType: "image/jpeg",             // ou "image/png"
+                nome: this.nome,
+                congregacao: this.congregacao,
+                cpf: this.cpf,
+                rg: this.rg,
+                expedidorRg: this.expedidorRg,
+                dataNascimento: this.dataNascimento,
+                sexo: this.sexo,
+                estadoCivil: this.estadoCivil,
+                naturalidade: this.naturalidade,
+                uf: this.uf,
+                nomeMae: this.nomeMae,
+                nomePai: this.nomePai,
+                escolaridade: this.escolaridade,
+                telefone1: this.whatsapp,
+                cep: this.cep,
+                rua: this.rua,
+                numero: this.numero,
+                bairro: this.bairro,
+                estado: this.estado,
+                cidade: this.cidade,
+                batismoAgua: this.batismoAgua,
+                isObreiro: this.isObreiro,
+                imageBase64: this.imagemBase64,                // imagem já em Base64
+                imageType: "image/jpeg",                       // ou "image/png"
                 filename: `${this.nome}-${this.cpf}.jpg`       // nome do arquivo que será salvo no Drive
             };
 
@@ -2085,51 +2106,6 @@ export class HomePage implements OnInit {
             console.error(err);
             await this.presentToast('middle', 'Erro inesperado!');
         }
-
-        /*
-        const response = await fetch("https://sheetdb.io/api/v1/9lv20jihax310", {
-            method: 'POST',
-            mode: 'cors',
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                id: "=ROW()-1",
-                datainscricao: (new Date().toLocaleString()).toString().replace(',', ''),
-                nome: this.nome,
-                congregacao: this.congregacao,
-                cpf: this.cpf,
-                rg: this.rg,
-                expedidorRg: this.expedidorRg,
-                dataNascimento: this.dataNascimento,
-                sexo: this.sexo,
-                estadoCivil: this.estadoCivil,
-                naturalidade: this.naturalidade,
-                uf: this.uf,
-                nomeMae: this.nomeMae,
-                nomePai: this.nomePai,
-                escolaridade: this.escolaridade,
-                telefone1: this.whatsapp,
-                cep: this.cep,
-                rua: this.rua,
-                numero: this.numero,
-                bairro: this.bairro,
-                estado: this.estado,
-                cidade: this.cidade,
-                batismoAgua: this.batismoAgua,
-                isObreiro: this.isObreiro
-            }),
-        });
-        
-
-        const data = await response.json();
-
-        if (response.ok) {
-            await this.presentToast('middle', `${data.created === 1 ? 'Salvo com sucesso' : 'Error ao cadastrar'}`);
-        } else {
-            await this.presentToast('middle', 'Erro ao cadastrar!');
-        }
-        */
     }
 
     async presentToast(position: 'top' | 'middle' | 'bottom', msg: string) {
