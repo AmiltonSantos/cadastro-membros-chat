@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IMessage } from '../models/methods.models';
-import { AlertController, IonContent, IonTextarea, Platform, ToastController, IonPopover } from '@ionic/angular';
+import { AlertController, IonContent, IonTextarea, Platform, ToastController, IonPopover, LoadingController } from '@ionic/angular';
 import { CustomValidators } from 'src/utils/custom-validators';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
@@ -269,6 +269,7 @@ export class HomePage implements OnInit {
         private toastController: ToastController,
         private sanitizer: DomSanitizer,
         private cd: ChangeDetectorRef,
+        private loadingController: LoadingController,
         public http: HttpClient) { }
 
     ngOnInit() {
@@ -2045,6 +2046,12 @@ export class HomePage implements OnInit {
     }
 
     public async salvarGoogleSheets() {
+        const loading = await this.loadingController.create({
+            message: 'Salvando...',
+            translucent: true,
+        });
+        await loading.present();
+
         try {
             if (!this.imagemBase64) {
                 await this.presentToast('middle', 'Selecione e recorte uma imagem antes de salvar.');
@@ -2055,10 +2062,10 @@ export class HomePage implements OnInit {
                 nome: this.nome || "",
                 imageBase64: this.imagemBase64,     // imagem já em Base64
                 imageType: "image/jpeg",             // ou "image/png"
-                filename: "foto_cortada.jpg"         // nome do arquivo que será salvo no Drive
+                filename: `${this.nome}-${this.cpf}.jpg`       // nome do arquivo que será salvo no Drive
             };
 
-            const response = await fetch('/api/enviarImagem', {
+            const response = await fetch('api/enviarImagem', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
@@ -2072,7 +2079,9 @@ export class HomePage implements OnInit {
                 await this.presentToast('middle', 'Erro ao cadastrar!');
             }
 
-        } catch (err) {
+            await loading.dismiss();
+        } catch  (err) {
+            await loading.dismiss();
             console.error(err);
             await this.presentToast('middle', 'Erro inesperado!');
         }
