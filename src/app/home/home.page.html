@@ -8,9 +8,9 @@
         Cadastro Chat
       </ion-col>
       <ion-col size="2">
-        <ion-chip style="background-color: #ffd900; color: black;" id="open-loading" (click)="recortarImagem($event)"
+        <ion-chip style="background-color: #ffd900; color: black;" id="open-loading" (click)="recortarImagem()"
           [disabled]="isMensage">
-          <span><b>Foto</b></span>
+          <span><b>Tirar Foto</b></span>
         </ion-chip>
       </ion-col>
       <ion-col size="2">
@@ -30,7 +30,7 @@
     <ion-icon class="chat-icon" src="assets/images/bot.svg"></ion-icon>
     <h4>Bem vindos ao <strong>Chat</strong> do cadastro de membros da Assembleia de Deus Missão - Jardim América...</h4>
   </div>
-    
+
   <ion-item lines="none" [ngClass]="{'bot': m.sender !== 'me'}"
     [class]="messages.length < 4 ? 'chat-item1' : 'chat-item'" *ngFor="let m of messages; index as i">
     <ion-badge slot="start" [color]="m.sender ===  'me' ? 'success' : 'light'" mode="ios">
@@ -42,46 +42,6 @@
       <ion-spinner *ngIf="loading && (i+1 === messages.length)" color="tertiary" name="dots"></ion-spinner>
     </ion-label>
   </ion-item>
-
-  <ion-popover #popOverImageCrop id="popoverDate" [side]="'bottom'" [alignment]="'start'" id="popoverDate" (ionPopoverDidDismiss)="clearImage()">
-    <ng-template>
-      <ion-header>
-        <ion-toolbar color="primary">
-          <ion-title style="text-align: center;">IMPORTAR IMAGEM</ion-title>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content>
-        <ion-row>
-          <ion-col>
-            <ion-button style="--border-radius: 30px !important;" color="success" expand="block" (click)="takePicture()">
-              <ion-icon name="camera"></ion-icon> TIRAR FOTO
-            </ion-button>
-          </ion-col>
-          <ion-col>
-            <input #exportimg type="file" (change)="fileChangeEvent($event)" accept="image/*" hidden="true" />
-            <ion-button (click)="exportimg.click()" style="--border-radius: 30px !important;" color="warning"
-              expand="block">
-              <span>GALERIA</span>
-              <ion-icon name="cloud-upload"></ion-icon>
-            </ion-button>
-          </ion-col>
-        </ion-row>
-        <image-cropper *ngIf="imageChangedEvent !== ''"
-          [imageChangedEvent]="imageChangedEvent" 
-          [maintainAspectRatio]="false" 
-          [aspectRatio]="4 / 3"
-          class="custom-cropper"
-          (imageCropped)="imageCropped($event)">
-        </image-cropper>
-        <ion-img *ngIf="imageChangedEvent === ''" src="./../../assets/images/foto.png" (click)="takePicture()"></ion-img>
-      </ion-content>
-      <ion-footer class="ion-padding" style="display: flex; justify-content: space-between;">
-        <ion-button shape="round" (click)="saveImageCropped()" [disabled]="imageChangedEvent === ''"> Salvar </ion-button>
-        <ion-button shape="round" (click)="limpaImageCropped()" [disabled]="imageChangedEvent === ''" color="warning"> LIMPAR </ion-button>
-      </ion-footer>
-    </ng-template>
-  </ion-popover>
-
 </ion-content>
 
 <ion-footer class="ion-padding">
@@ -106,9 +66,53 @@
         <ion-button expand="full" shape="round" (click)="createPdf()" type="submit"> Salvar </ion-button>
       </ion-col>
       <ion-col>
-        <ion-button [disabled]="isDesabledPdf" expand="full" shape="round" (click)="downloadPdf()" color="success"> PDF </ion-button>
+        <ion-button [disabled]="isDesabledPdf" expand="full" shape="round" (click)="downloadPdf()" color="success">
+          BAIXAR PDF </ion-button>
       </ion-col>
     </ion-row>
   </ion-toolbar>
-  <span style="display: flex; justify-content: center; padding-top: 5px; font-size: 10px; font-style: italic;"> Versão: 0.0.2 beta</span>
+  <span style="display: flex; justify-content: center; padding-top: 5px; font-size: 10px; font-style: italic;"> Versão:
+    2.0.0 beta</span>
 </ion-footer>
+
+<!-- Modal foto -->
+<ion-modal class="styleModalImageCrop" #modalImageCrop>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar color="primary">
+        <ion-row>
+          <ion-col>
+            <ion-button style="--border-radius: 30px !important;" color="success" expand="block"
+              (click)="takePicture()">
+              <ion-icon name="camera"></ion-icon> TIRAR FOTO
+            </ion-button>
+          </ion-col>
+          <ion-col>
+            <input #exportimg type="file" (change)="fileChangeEvent($event)" accept="image/*" hidden="true" />
+            <ion-button (click)="exportimg.click()" style="--border-radius: 30px !important;" color="warning"
+              expand="block">
+              <span>GALERIA</span>
+              <ion-icon name="cloud-upload"></ion-icon>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-no-padding">        
+      <image-cropper 
+        *ngIf="imageChangedEvent !== ''" 
+        [imageChangedEvent]="imageChangedEvent"
+        [maintainAspectRatio]="false" 
+        [aspectRatio]="4 / 3" 
+        class="custom-cropper"
+        (imageCropped)="imageCropped($event)">
+      </image-cropper>
+      <ion-img *ngIf="imageChangedEvent === ''" src="./../../assets/images/foto.png" (click)="takePicture()"></ion-img>
+    </ion-content>
+    <ion-footer class="ion-padding" style="display: flex; justify-content: space-between;">
+      <ion-button shape="round" (click)="saveImageCropped()" [disabled]="imageChangedEvent === ''"> Salvar </ion-button>
+      <ion-button shape="round" (click)="limpaImageCropped()" [disabled]="imageChangedEvent === ''" color="warning"> LIMPAR </ion-button>
+    </ion-footer>
+  </ng-template>
+</ion-modal>
