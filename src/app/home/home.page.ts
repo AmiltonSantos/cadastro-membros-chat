@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IMessage } from '../models/methods.models';
-import { AlertController, IonContent, IonTextarea, Platform, ToastController, IonPopover, LoadingController } from '@ionic/angular';
+import { IonModal, AlertController, IonContent, IonTextarea, Platform, ToastController, LoadingController } from '@ionic/angular';
 import { CustomValidators } from 'src/utils/custom-validators';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
@@ -22,8 +22,8 @@ import { ImageCroppedEvent } from 'ngx-image-cropper';
 export class HomePage implements OnInit {
     @ViewChild(IonContent, { static: false }) content!: IonContent;
     @ViewChild('focustextarea', { static: false }) focustextarea!: IonTextarea;
-    @ViewChild('popOverImageCrop', { static: false }) popOverImageCrop!: IonPopover;
-    
+    @ViewChild('modalImageCrop', { static: false }) modalImageCrop!: IonModal;
+
     imageChangedEvent: any = '';
     croppedImage: SafeUrl = '';
 
@@ -57,18 +57,21 @@ export class HomePage implements OnInit {
     private whatsapp: string = '';
     private cep: string = '';
     private rua: string = '';
+    private complemento: string = '';
     private numero: string = '';
     private bairro: string = '';
     private estado: string = '';
     private cidade: string = '';
     private batismoAgua: string = '';
+    private batismoEspSanto: string = '';
     private isObreiro: string = '';
+    private cargo: string = '';
 
     form = new FormGroup({
         prompt: new FormControl('', [Validators.required, CustomValidators.noWhiteSpace])
     })
 
-    public strCongregacao = [
+    private strCongregacao = [
         {
             regional: 'TEMPLO',
             options: [
@@ -177,19 +180,19 @@ export class HomePage implements OnInit {
         }
     ];
 
-    public strSexo = [
+    private strSexo = [
         { nome: 'MASCULINO' },
         { nome: 'FEMININO' }
     ];
 
-    public strEstadoCivil = [
+    private strEstadoCivil = [
         { nome: 'CASADO(a)' },
         { nome: 'SOLTEIRO(a)' },
         { nome: 'DIVORCIADO(a)' },
         { nome: 'VIÚVO(a)' }
     ]
 
-    public strEstados = [
+    private strEstados = [
         { sigla: 'GO', nome: 'GOIÁS' },
         { sigla: 'AC', nome: 'ACRE' },
         { sigla: 'AL', nome: 'ALAGOAS' },
@@ -219,7 +222,7 @@ export class HomePage implements OnInit {
         { sigla: 'TO', nome: 'TOCANTINS' }
     ];
 
-    public strEscolaridade = [
+    private strEscolaridade = [
         { nome: 'FUND. INCOMPLETO' },
         { nome: 'FUND. COMPLETO' },
         { nome: 'MÉDIO INCOMPLETO' },
@@ -232,9 +235,18 @@ export class HomePage implements OnInit {
         { nome: 'DOUTORADO' }
     ];
 
-    public strObreiro = [
+    private strObreiro = [
         { nome: 'SIM' },
         { nome: 'NAO' },
+    ];
+
+    private strCargo = [
+        { nome: 'MEMBRO' },
+        { nome: 'COOPERADOR' },
+        { nome: 'DIÁCONO' },
+        { nome: 'PRESBÍTERO' },
+        { nome: 'EVANGELISTA' },
+        { nome: 'PASTOR' }
     ];
 
     private mensagemBot = [
@@ -254,12 +266,15 @@ export class HomePage implements OnInit {
         { value: 13, mensagem: 'Número do Whatsapp ?' },
         { value: 14, mensagem: 'Qual o seu CEP ?' },
         { value: 15, mensagem: 'Nome da sua rua ?' },
-        { value: 16, mensagem: 'Qual número da casa ?' },
-        { value: 17, mensagem: 'Nome do bairro ?' },
-        { value: 18, mensagem: 'Estado onde mora ?' },
-        { value: 19, mensagem: 'Cidade onde mora ?' },
-        { value: 20, mensagem: 'Qual a data batismo nas águas ?' },
-        { value: 21, mensagem: 'É obreiro ?' },
+        { value: 16, mensagem: 'Complemento (Quadra, Lote) ?' },
+        { value: 17, mensagem: 'Qual número da casa ?' },
+        { value: 18, mensagem: 'Nome do bairro ?' },
+        { value: 19, mensagem: 'Estado onde mora ?' },
+        { value: 20, mensagem: 'Cidade onde mora ?' },
+        { value: 21, mensagem: 'Qual a data batismo nas águas ?' },
+        { value: 22, mensagem: 'Qual a data batismo no Espírito Santo ?' },
+        { value: 23, mensagem: 'É obreiro ?' },
+        { value: 24, mensagem: 'Cargo ?' },
     ];
 
     constructor(
@@ -368,17 +383,23 @@ export class HomePage implements OnInit {
             } else if (this.index === 16) {
                 this.rua = String(prompt)?.toLocaleUpperCase().trim();
             } else if (this.index === 17) {
-                this.numero = String(prompt)?.toLocaleUpperCase().trim();
+                this.complemento = String(prompt)?.toLocaleUpperCase().trim();
             } else if (this.index === 18) {
-                this.bairro = String(prompt)?.toLocaleUpperCase().trim();
+                this.numero = String(prompt)?.toLocaleUpperCase().trim();
             } else if (this.index === 19) {
-                this.estado = String(prompt)?.toLocaleUpperCase().trim();
+                this.bairro = String(prompt)?.toLocaleUpperCase().trim();
             } else if (this.index === 20) {
-                this.cidade = String(prompt)?.toLocaleUpperCase().trim();
+                this.estado = String(prompt)?.toLocaleUpperCase().trim();
             } else if (this.index === 21) {
-                this.batismoAgua = String(prompt)?.toLocaleUpperCase().trim();
+                this.cidade = String(prompt)?.toLocaleUpperCase().trim();
             } else if (this.index === 22) {
-                this.isObreiro = String(prompt)?.toLocaleUpperCase().trim();             
+                this.batismoAgua = String(prompt)?.toLocaleUpperCase().trim();
+            } else if (this.index === 23) {
+                this.batismoEspSanto = String(prompt)?.toLocaleUpperCase().trim();
+            } else if (this.index === 24) {
+                this.isObreiro = String(prompt)?.toLocaleUpperCase().trim();
+            } else if (this.index === 25) {
+                this.cargo = String(prompt)?.toLocaleUpperCase().trim();
             }
 
             if (this.index >= 0 && this.index < this.mensagemBot.length) {
@@ -394,7 +415,7 @@ export class HomePage implements OnInit {
                     if (this.index === 1) {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'CONGREGAÇÃO');
-                        }, 300);
+                        }, 300);                        
                     } else if (this.index === 5) {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'SEXO');
@@ -411,13 +432,17 @@ export class HomePage implements OnInit {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'ESCOLARIDADE');
                         }, 300);
-                    } else if (this.index === 18) {
+                    } else if (this.index === 19) {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'ESTADO');
                         }, 300);
-                    } else if (this.index === 21) {
+                    } else if (this.index === 23) {
                         setTimeout(() => {
-                            this.showAlert(21, 'OBREIRO');
+                            this.showAlert(this.mensagemBot[this.index].value, 'OBREIRO');
+                        }, 300);
+                    } else if (this.index === 24) {
+                        setTimeout(() => {
+                            this.showAlert(25, 'CARGO');
                         }, 300);
                     }
                     this.index++;
@@ -441,7 +466,7 @@ export class HomePage implements OnInit {
             }
 
             setTimeout(() => {
-                if (![1,5,6,9,12,18,21].includes(this.index)) {
+                if (![1, 5, 6, 9, 12, 18, 21].includes(this.index)) {
                     this.focustextarea?.setFocus();
                 }
             }, 400);
@@ -523,7 +548,7 @@ export class HomePage implements OnInit {
                     value: str.nome
                 });
             }
-        } else if (numero === 19) {
+        } else if (numero === 20) {
             for (const str of this.strEstados) {
                 inputs.push({
                     type: 'radio',
@@ -531,8 +556,16 @@ export class HomePage implements OnInit {
                     value: str.nome
                 });
             }
-        } else if (numero === 21) {
+        } else if (numero === 24) {
             for (const str of this.strObreiro) {
+                inputs.push({
+                    type: 'radio',
+                    label: str.nome,
+                    value: str.nome
+                });
+            }
+        } else if (numero === 25) {
+            for (const str of this.strCargo) {
                 inputs.push({
                     type: 'radio',
                     label: str.nome,
@@ -564,1456 +597,1812 @@ export class HomePage implements OnInit {
         await presentAlert.present();
     }
 
-    public createPdf() {
-        let logo = { image: this.logoData, width: 450, margin: [30, 0, 0, 0] };
+    public async createPdf() {
+        let content = [];
+        const loading = await this.loadingController.create({
+            message: 'Salvando...',
+            translucent: true,
+        });
+        await loading.present();
 
-        const content = [];
+        try {
+            if (!this.imagemBase64) {
+                await this.touchAlertSemImagem();
+                await loading.dismiss();
+                return;
+            }
 
-        // Verifica se this.photoPreview existe e é uma string não vazia
-        if (this.photoPreview) {
-            content.push({
-                image: this.photoPreview ?? '',
-                width: 98, // Largura da imagem
-                height: 115, // Altura da imagem
-                margin: [0, -115, 0, 0]
+            const logo = {
+                image: this.logoData,
+                width: 350,
+                margin: [20, -25, 0, 0]
+            };
+
+            const layoutTable = {
+                hLineWidth: () => 0.5, // espessura horizontal
+                vLineWidth: () => 0.5, // espessura vertical
+                hLineColor: () => 'black',
+                vLineColor: () => 'black'
+            };
+
+            const molduraFolha = () => ({
+                canvas: [
+                    {
+                        type: 'rect',
+                        x: 5,
+                        y: 5,
+                        w: 390,
+                        h: 555,
+                        lineWidth: 2,
+                        lineColor: 'black'
+                    }
+                ]
             });
-        } else {
-            content.push({
-                text: 'Imagem não disponível',
-                alignment: 'center',
-                margin: [0, -50, 0, 0]
-            });
-        }
 
-        const docDefinition: any = {
-            background: function(currentPage: number, pageSize: any) {
-                if (currentPage === 1) {
-                    return {
-                        canvas: [
-                            {
-                                type: 'rect',
-                                x: 30,
-                                y: 35,
-                                w: pageSize.width - 60,  // largura ajustada
-                                h: pageSize.height - 65, // altura ajustada
-                                lineWidth: 3,
-                                lineColor: 'black'       // aqui use lineColor (não color)
-                            }
-                        ]
-                    };
-                }
-                return null;
-            },
-            watermark: { text: 'AD MISSÃO JARDIM AMÉRICA', color: 'red', opacity: 0.05, bold: true },
-            content: [
-                {
-                    columns: [
-                        logo
-                    ]
-                },
-
-                { // Linha horizontal abaixo da imagem
-                    canvas: [
-                        {
-                            type: 'line',
-                            x1: 0,
-                            y1: 0,
-                            x2: 515, // largura da linha
-                            y2: 0,
-                            lineWidth: 1.5,
-                            lineColor: 'black' // cor da linha
-                        }
-                    ],
-                    margin: [0, 2, 0, 2] // margens em torno da linha
-                },
-
-                {
-                    text: 'FICHA DE CADASTRO',
-                    style: 'header',
+            // Verifica se this.photoPreview existe e é uma string não vazia
+            if (this.photoPreview) {
+                content.push({
+                    image: this.photoPreview ?? '',
+                    width: 80, // Largura da imagem
+                    height: 100, // Altura da imagem
+                    margin: [9, -100, 0, -15]
+                });
+            } else {
+                content.push({
+                    text: 'Imagem não disponível',
                     alignment: 'center',
-                    margin: [0, 5, 0, 5]
-                },
+                    margin: [15, -70, 0, 0]
+                });
+            }
 
-                // Inicio dos Inputs table de cadastro
-                {
-                    columns: [
-                        {
-                            width: '80%', // Ajuste a largura conforme necessário
-                            stack: [
-                                {
-                                    text: 'CONGREGAÇÃO',
-                                    bold: true,
-                                    margin: [0, 0, 0, 2]
-                                },
-                                {
-                                    table: {
-                                        widths: [380],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: this.congregacao.toUpperCase()
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    }
-                                },
-                                {
-                                    text: 'Dados Pessoais',
-                                    bold: true,
-                                    margin: [0, 5, 0, 8]
-                                },
-                                {
-                                    columns: [
-                                        {
-                                            width: '45%',
-                                            stack: [
-                                                { text: 'CPF', bold: true, margin: [0, 0, 0, 0] },
-                                                {
-                                                    table: {
-                                                        widths: [380],
-                                                        heights: 13,
-                                                        body: [
-                                                            [
-                                                                {
-                                                                    text: this.cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4')
-                                                                }
-                                                            ]
-                                                        ]
-                                                    },
-                                                    layout: {
-                                                        hLineWidth: () => 0.5, // espessura horizontal
-                                                        vLineWidth: () => 0.5, // espessura vertical
-                                                        hLineColor: () => 'black',
-                                                        vLineColor: () => 'black'
-                                                    },
-                                                    margin: [0, 0, 0, 5]
-                                                }
-                                            ]
-                                        }
-                                    ],
-                                    margin: [0, 0, 0, 5]
-                                }
-                            ]
-                        },
-                        // Quadrado da foto
-                        {
-                            width: '20%', // Ajuste a largura conforme necessário
-                            stack: [
-                                {
-                                    canvas: [
-                                        {
-                                            type: 'rect',
-                                            x: 0,
-                                            y: 0,
-                                            w: 98, // Largura do quadrado
-                                            h: 115, // Altura do quadrado
-                                            lineWidth: 1,
-                                            lineColor: 'black',
-                                            fill: 'none' // Sem preenchimento
-                                        }
-                                    ],
-                                    margin: [0, 0, 0, 0] // Margem à direita do quadrado
-                                },
-                                // Variavel da imagem
-                                content
-                            ]
-                        }
-                    ],
-                    margin: [0, 0, 0, 0] // Margem em torno do conjunto de colunas
-                },
-                {
-                    text: 'Nome',
+            const docDefinition: any = {
+                pageOrientation: 'landscape',
+                pageMargins: [10, 10, 10, 10], // Margens aumentadas
+
+                watermark: {
+                    text: 'AD MISSÃO JARDIM AMÉRICA',
+                    color: 'red',
+                    opacity: 0.05,
                     bold: true
                 },
-                {
-                    table: {
-                        widths: [500],
-                        heights: 13,
-                        body: [
-                            [
-                                {
-                                    text: this.nome.toUpperCase()
-                                }
-                            ]
-                        ]
-                    },
-                    layout: {
-                        hLineWidth: () => 0.5, // espessura horizontal
-                        vLineWidth: () => 0.5, // espessura vertical
-                        hLineColor: () => 'black',
-                        vLineColor: () => 'black'
-                    },
-                    margin: [0, 0, 0, 5]
-                },
-                {
-                    columns: [
-                        {
-                            width: '35%',
-                            stack: [
-                                { text: 'Data de Nascimento', bold: true, margin: [0, 0, 0, 0] },
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: this.dataNascimento.toUpperCase()
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 10, 0]
-                                }
-                            ]
-                        },
-                        {
-                            width: '15%',
-                            stack: [
-                                { text: 'Masculino', bold: true, margin: [0, 0, 0, 0] },
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: this.sexo === 'MASCULINO' ? 'X' : '',
-                                                    alignment: 'center'
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 10, 0]
-                                }
-                            ]
-                        },
-                        {
-                            width: '15%',
-                            stack: [
-                                { text: 'Feminino', bold: true, margin: [0, 0, 0, 0] },
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: this.sexo === 'FEMININO' ? 'X' : '',
-                                                    alignment: 'center'
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 10, 0]
-                                }
-                            ]
-                        },
-                        {
-                            width: '34%',
-                            stack: [
-                                { text: 'Estado Civil', bold: true, margin: [0, 0, 0, 0] },
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: this.estadoCivil.toUpperCase()
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 0, 0]
-                                }
-                            ]
-                        }
-                    ],
-                    margin: [0, 0, 0, 5]
-                },
-                {
-                    columns: [
-                        {
-                            width: '20%',
-                            stack: [
-                                { text: 'Nacionalidade', bold: true, margin: [0, 0, 0, 0] },
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: 'BRASILEIRO(A)'
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 10, 0]
-                                }
-                            ]
-                        },
-                        {
-                            width: '35%',
-                            stack: [
-                                { text: 'Naturalidade', bold: true, margin: [0, 0, 0, 0] },
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: this.naturalidade.toUpperCase()
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 10, 0]
-                                }
-                            ]
-                        },
-                        {
-                            width: '10%',
-                            stack: [
-                                { text: 'UF', bold: true, margin: [0, 0, 0, 0] },
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: this.uf.toUpperCase()
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 10, 0]
-                                }
-                            ]
-                        },
-                        {
-                            width: '34%',
-                            stack: [
-                                { text: 'E-mail', bold: true, margin: [0, 0, 0, 0] },
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: ''
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 0, 0]
-                                }
-                            ]
-                        }
-                    ],
-                    margin: [0, 0, 0, 5]
-                },
-                {
-                    columns: [
-                        {
-                            width: '49.5%',
-                            stack: [
-                                { text: 'Nome Mãe', bold: true, margin: [0, 0, 0, 0] },
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: this.nomeMae.toUpperCase()
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 10, 0]
-                                }
-                            ]
-                        },
-                        {
-                            width: '49.5%',
-                            stack: [
-                                { text: 'Nome Pai', bold: true, margin: [0, 0, 0, 0] },
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: this.nomePai.toUpperCase()
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 0, 0]
-                                }
-                            ]
-                        }
-                    ],
-                    margin: [0, 0, 0, 5]
-                },
-                {
-                    columns: [
-                        {
-                            width: '37%',
-                            stack: [
-                                { text: 'Escolaridade', bold: true, margin: [0, 0, 0, 0] },
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: this.escolaridade.toUpperCase()
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 10, 0]
-                                }
-                            ]
-                        },
-                        {
-                            width: '31%',
-                            stack: [
-                                { text: 'Telefone 1', bold: true, margin: [0, 0, 0, 0] },
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: this.whatsapp.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3')
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 10, 0]
-                                }
-                            ]
-                        },
-                        {
-                            width: '31%',
-                            stack: [
-                                { text: 'Telefone 2', bold: true, margin: [0, 0, 0, 0] },
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: ''
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 0, 0]
-                                }
-                            ]
-                        }
-                    ],
-                    margin: [0, 0, 0, 5]
-                },
 
-                { // Linha horizontal abaixo da imagem
-                    canvas: this.createDottedLine(0, 0, 515, 0, 5),
-                    margin: [0, 2, 0, 2] // margens em torno da linha
-                },
-                {
-                    text: 'Endereço',
-                    bold: true,
-                    margin: [0, 0, 0, 5]
-                },
-                {
-                    columns: [
-                        {
-                            width: '30%',
-                            stack: [
-                                { text: 'Cep', bold: true, margin: [0, 0, 0, 0] },
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: this.cep.replace(/^(\d{5})(\d{3})$/, '$1-$2')
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 10, 0]
-                                }
-                            ]
-                        },
-                        {
-                            width: '49%',
-                            stack: [
-                                { text: 'Rua', bold: true, margin: [0, 0, 0, 0] },
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: this.rua.toUpperCase()
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 10, 0]
-                                }
-                            ]
-                        },
-                        {
-                            width: '20%',
-                            stack: [
-                                { text: 'Número', bold: true, margin: [0, 0, 0, 0] },
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: this.numero.toUpperCase()
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 0, 0]
-                                }
-                            ]
-                        }
-                    ],
-                    margin: [0, 0, 0, 5]
-                },
-                {
-                    columns: [
-                        {
-                            width: '39.5%',
-                            stack: [
-                                { text: 'Bairro', bold: true, margin: [0, 0, 0, 0] },
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: this.bairro.toUpperCase()
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 10, 0]
-                                }
-                            ]
-                        },
-                        {
-                            width: '59.5%',
-                            stack: [
-                                { text: 'Complemento', bold: true, margin: [0, 0, 0, 0] },
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: ''
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 0, 0]
-                                }
-                            ]
-                        }
-                    ],
-                    margin: [0, 0, 0, 5]
-                },
-                {
-                    columns: [
-                        {
-                            width: '39.5%',
-                            stack: [
-                                { text: 'Estado', bold: true, margin: [0, 0, 0, 0] },
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: this.estado.toUpperCase()
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 10, 0]
-                                }
-                            ]
-                        },
-                        {
-                            width: '59.5%',
-                            stack: [
-                                { text: 'Cidade', bold: true, margin: [0, 0, 0, 0] },
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: this.cidade.toUpperCase()
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 0, 0]
-                                }
-                            ]
-                        }
-                    ],
-                    margin: [0, 0, 0, 5]
-                },
+                content: [
+                    // CONTEÚDO PRINCIPAL EM 2 COLUNAS
+                    // === PRIMEIRA PÁGINA ===
+                    {
+                        columns: [
+                            // COLUNA 1 (ESQUERDA) - FICHA DE CADASTRO
+                            {
+                                width: '49%',
+                                margin: [5, 5, 5, 5], // Margem interna da coluna
+                                stack: [
+                                    molduraFolha(),
 
-                { // Linha horizontal abaixo da imagem
-                    canvas: this.createDottedLine(0, 0, 515, 0, 5),
-                    margin: [0, 2, 0, 2] // margens em torno da linha
-                },
-                {
-                    text: 'Ministério',
-                    bold: true,
-                    margin: [0, 0, 0, 10]
-                },
-                {
-                    columns: [
-                        {
-                            width: '21%',
-                            stack: [
-                                { text: 'Batismo nas águas:', bold: true, margin: [0, 0, 0, 0] },
-                            ]
-                        },
-                        {
-                            width: '27%',
-                            stack: [
-                                {
-                                    text: this.batismoAgua.toUpperCase(),
-                                    color: 'gray',
-                                    fontSize: 12,
-                                    decoration: 'underline',
-                                    bold: true,
-                                    margin: [0, 0, 0, 0]
-                                },
-                            ]
-                        },
-                        {
-                            width: '28%',
-                            stack: [
-                                { text: 'Batismo no Espírito Santo:', bold: true, margin: [0, 0, 0, 0] },
-                            ]
-                        },
-                        {
-                            width: '25%',
-                            stack: [
-                                {
-                                    text: '',
-                                    color: 'gray',
-                                    fontSize: 12,
-                                    decoration: 'underline',
-                                    bold: true,
-                                    margin: [0, 0, 0, 0]
-                                },
-                            ]
-                        },
-                    ],
-                    margin: [0, 0, 0, 5]
-                },
-                {
-                    columns: [
-                        {
-                            width: '15%',
-                            bold: true,
-                            stack: [
-                                { text: 'Obreiro?', margin: [0, 5, 0, 0] }
-                            ]
-                        },
-                        {
-                            width: '5%',
-                            bold: true,
-                            stack: [
-                                { text: 'Sim', margin: [0, 5, 0, 0] }
-                            ]
-                        },
-                        {
-                            width: '8%',
-                            stack: [
-                                {
-                                    table: {
-                                        widths: [25],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: this.isObreiro === 'SIM' ? 'X' : '',
-                                                    alignment: 'center'
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 10, 0]
-                                }
-                            ]
-                        },
-                        {
-                            width: '5%',
-                            bold: true,
-                            stack: [
-                                { text: 'Não', margin: [0, 5, 0, 0] }
-                            ]
-                        },
-                        {
-                            width: '20%',
-                            stack: [
-                                {
-                                    table: {
-                                        widths: [25],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: this.isObreiro === 'NAO' ? 'X' : '',
-                                                    alignment: 'center'
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 10, 0]
-                                }
-                            ]
-                        },
-                        {
-                            width: '8%',
-                            bold: true,
-                            stack: [
-                                { text: 'Cargo:', margin: [0, 5, 0, 0] }
-                            ]
-                        },
-                        {
-                            width: '40.5%',
-                            stack: [
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: ''
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 10, 0]
-                                }
-                            ]
-                        }
-                    ],
-                    margin: [0, 0, 0, 5]
-                },
-                {
-                    columns: [
-                        {
-                            width: '15%',
-                            bold: true,
-                            stack: [
-                                { text: 'Diácono', margin: [0, 5, 0, 0] }
-                            ]
-                        },
-                        {
-                            width: '13%',
-                            bold: true,
-                            stack: [
-                                { text: 'Data Início:', margin: [0, 5, 0, 0] }
-                            ]
-                        },
-                        {
-                            width: '25%',
-                            stack: [
-                                {
-                                    text: '',
-                                    color: 'gray',
-                                    fontSize: 12,
-                                    decoration: 'underline',
-                                    bold: true,
-                                    margin: [0, 3, 0, 0]
-                                }
-                            ]
-                        },
-                        {
-                            width: '6.5%',
-                            bold: true,
-                            stack: [
-                                { text: 'Local:', margin: [0, 5, 0, 0] }
-                            ]
-                        },
-                        {
-                            width: '42%',
-                            stack: [
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: ''
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 10, 0]
-                                }
-                            ]
-                        }
-                    ],
-                    margin: [0, 0, 0, 5]
-                },
-                {
-                    columns: [
-                        {
-                            width: '15%',
-                            bold: true,
-                            stack: [
-                                { text: 'Presbítero', margin: [0, 5, 0, 0] }
-                            ]
-                        },
-                        {
-                            width: '13%',
-                            bold: true,
-                            stack: [
-                                { text: 'Data Início:', margin: [0, 5, 0, 0] }
-                            ]
-                        },
-                        {
-                            width: '25%',
-                            stack: [
-                                {
-                                    text: '',
-                                    color: 'gray',
-                                    fontSize: 12,
-                                    decoration: 'underline',
-                                    bold: true,
-                                    margin: [0, 3, 0, 0]
-                                }
-                            ]
-                        },
-                        {
-                            width: '6.5%',
-                            bold: true,
-                            stack: [
-                                { text: 'Local:', margin: [0, 5, 0, 0] }
-                            ]
-                        },
-                        {
-                            width: '42%',
-                            stack: [
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: ''
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 10, 0]
-                                }
-                            ]
-                        }
-                    ],
-                    margin: [0, 0, 0, 5]
-                },
-                {
-                    columns: [
-                        {
-                            width: '15%',
-                            bold: true,
-                            stack: [
-                                { text: 'Evangelista', margin: [0, 5, 0, 0] }
-                            ]
-                        },
-                        {
-                            width: '13%',
-                            bold: true,
-                            stack: [
-                                { text: 'Data Início:', margin: [0, 5, 0, 0] }
-                            ]
-                        },
-                        {
-                            width: '25%',
-                            stack: [
-                                {
-                                    text: '',
-                                    color: 'gray',
-                                    fontSize: 12,
-                                    decoration: 'underline',
-                                    bold: true,
-                                    margin: [0, 3, 0, 0]
-                                }
-                            ]
-                        },
-                        {
-                            width: '6.5%',
-                            bold: true,
-                            stack: [
-                                { text: 'Local:', margin: [0, 5, 0, 0] }
-                            ]
-                        },
-                        {
-                            width: '42%',
-                            stack: [
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: ''
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 10, 0]
-                                }
-                            ]
-                        }
-                    ],
-                    margin: [0, 0, 0, 5]
-                },
-                {
-                    columns: [
-                        {
-                            width: '15%',
-                            bold: true,
-                            stack: [
-                                { text: 'Pastor', margin: [0, 5, 0, 0] }
-                            ]
-                        },
-                        {
-                            width: '13%',
-                            bold: true,
-                            stack: [
-                                { text: 'Data Início:', margin: [0, 5, 0, 0] }
-                            ]
-                        },
-                        {
-                            width: '25%',
-                            stack: [
-                                {
-                                    text: '',
-                                    color: 'gray',
-                                    fontSize: 12,
-                                    decoration: 'underline',
-                                    bold: true,
-                                    margin: [0, 3, 0, 0]
-                                }
-                            ]
-                        },
-                        {
-                            width: '6.5%',
-                            bold: true,
-                            stack: [
-                                { text: 'Local:', margin: [0, 5, 0, 0] }
-                            ]
-                        },
-                        {
-                            width: '42%',
-                            stack: [
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: ''
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 10, 0]
-                                }
-                            ]
-                        }
-                    ],
-                    margin: [0, 0, 0, 10]
-                },
-                {
-                    columns: [
-                        {
-                            width: '33%',
-                            stack: [
-                                { text: 'Registro Campo Jd. América', bold: true, margin: [0, 0, 0, 0] },
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: ''
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 10, 0]
-                                }
-                            ]
-                        },
-                        {
-                            width: '33%',
-                            stack: [
-                                { text: 'Registro CADESGO', bold: true, margin: [0, 0, 0, 0] },
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: ''
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 10, 0]
-                                }
-                            ]
-                        },
-                        {
-                            width: '33.5%',
-                            stack: [
-                                { text: 'Registro CGADB', bold: true, margin: [0, 0, 0, 0] },
-                                {
-                                    table: {
-                                        widths: ['*'],
-                                        heights: 13,
-                                        body: [
-                                            [
-                                                {
-                                                    text: ''
-                                                }
-                                            ]
-                                        ]
-                                    },
-                                    layout: {
-                                        hLineWidth: () => 0.5, // espessura horizontal
-                                        vLineWidth: () => 0.5, // espessura vertical
-                                        hLineColor: () => 'black',
-                                        vLineColor: () => 'black'
-                                    },
-                                    margin: [0, 0, 0, 0]
-                                }
-                            ]
-                        }
-                    ],
-                    margin: [0, 0, 0, 5]
-                },
-                {
-                    text: 'TERMO DE CONSENTIMENTO PARA TRATAMENTO DE DADOS PESSOAIS',
-                    style: 'header',
-                    alignment: 'center',
-                    margin: [0, 30, 0, 5]
-                },
-                {
-                    text: '(Lei 13.709 – LGPD)',
-                    style: 'header',
-                    alignment: 'center',
-                    margin: [0, 10, 0, 5]
-                },
-                {
-                    width: '95%',
-                    table: {
-                        widths: ['*'],
-                        body: [
-                            [
-                                {
-                                text: [
-                                    { text: 'IGREJA EVANGELICA ASSEMBLEIA DE DEUS MINISTÉRIO MISSÃO - CAMPO JARDIM AMÉRICA, situada na Rua C-160, Qd 371, Lt 17/18, CEP 74255-130, Setor Jardim América, Goiânia-GO,', bold: true },
-                                    { text: ' doravante denominado(a)' },
-                                    { text: ' CONTROLADORA.', bold: true }
-                                ],
-                                alignment: 'justify',
-                                margin: [5, 5, 5, 5] // padding interno
-                                }
-                            ]
-                        ]
+                                    // Conteúdo da coluna 1
+                                    {
+                                        stack: [
+                                            // CONGREGAÇÃO
+                                            {
+                                                columns: [
+                                                    logo
+                                                ]
+                                            },
+                                            { // Linha horizontal abaixo da imagem
+                                                canvas: [
+                                                    {
+                                                        type: 'line',
+                                                        x1: 0,
+                                                        y1: 0,
+                                                        x2: 390, // largura da linha
+                                                        y2: 0,
+                                                        lineWidth: 1.5,
+                                                        lineColor: 'black' // cor da linha
+                                                    }
+                                                ],
+                                                margin: [5, 2, 0, 2] // margens em torno da linha
+                                            },
+
+                                            {
+                                                text: 'FICHA DE CADASTRO',
+                                                fontSize: 10,
+                                                style: 'header',
+                                                alignment: 'center',
+                                                margin: [0, 2, 0, 0]
+                                            },
+
+                                            // BLOCO DA LINHA 2
+                                            {
+                                                columns: [
+                                                    {
+                                                        width: '79%', // Ajuste a largura conforme necessário
+                                                        stack: [
+                                                            // LINHA 2
+                                                            {
+                                                                text: 'CONGREGAÇÃO',
+                                                                fontSize: 10,
+                                                            },
+                                                            {
+                                                                table: {
+                                                                    widths: [289],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: this.congregacao.toUpperCase(),
+                                                                                fontSize: 10,
+                                                                                bold: true,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable
+                                                            },
+                                                            {
+                                                                text: 'Dados Pessoais',
+                                                                bold: true,
+                                                                fontSize: 10,
+                                                                margin: [0, 2, 0, 2]
+                                                            },
+
+                                                            // LINHA 
+                                                            {
+                                                                columns: [
+                                                                    {
+                                                                        width: '31%',
+                                                                        stack: [
+                                                                            {
+                                                                                text: 'CPF',
+                                                                                fontSize: 10
+                                                                            },
+                                                                            {
+                                                                                table: {
+                                                                                    widths: [73],
+                                                                                    heights: 12,
+                                                                                    body: [
+                                                                                        [
+                                                                                            {
+                                                                                                text: this.cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4').slice(0, 14),
+                                                                                                fontSize: 10,
+                                                                                                bold: true,
+                                                                                                heights: 12
+                                                                                            }
+                                                                                        ]
+                                                                                    ]
+                                                                                },
+                                                                                layout: layoutTable,
+                                                                                margin: [0, 0, 0, 0]
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        width: '62%',
+                                                                        stack: [
+                                                                            {
+                                                                                text: 'RG',
+                                                                                fontSize: 10
+                                                                            },
+                                                                            {
+                                                                                table: {
+                                                                                    widths: [139],
+                                                                                    heights: 12,
+                                                                                    body: [
+                                                                                        [
+                                                                                            {
+                                                                                                text: this.rg.toUpperCase().slice(0, 25),
+                                                                                                fontSize: 10,
+                                                                                                bold: true,
+                                                                                                heights: 12
+                                                                                            }
+                                                                                        ]
+                                                                                    ]
+                                                                                },
+                                                                                layout: layoutTable,
+                                                                                margin: [0, 0, 0, 0]
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        width: '6%',
+                                                                        stack: [
+                                                                            {
+                                                                                text: 'M',
+                                                                                fontSize: 10,
+                                                                                margin: [10, 0, 0, 0]
+                                                                            },
+                                                                            {
+                                                                                table: {
+                                                                                    widths: [20],
+                                                                                    heights: 12,
+                                                                                    body: [
+                                                                                        [
+                                                                                            {
+                                                                                                text: this.sexo === 'MASCULINO' ? 'X' : '',
+                                                                                                alignment: 'center',
+                                                                                                fontSize: 10,
+                                                                                                bold: true,
+                                                                                                heights: 12
+                                                                                            }
+                                                                                        ]
+                                                                                    ]
+                                                                                },
+                                                                                layout: layoutTable,
+                                                                                margin: [0, 0, 0, 0]
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        width: '6%',
+                                                                        stack: [
+                                                                            {
+                                                                                text: 'F',
+                                                                                fontSize: 10,
+                                                                                margin: [10, 0, 0, 0]
+                                                                            },
+                                                                            {
+                                                                                table: {
+                                                                                    widths: [20],
+                                                                                    heights: 12,
+                                                                                    body: [
+                                                                                        [
+                                                                                            {
+                                                                                                text: this.sexo === 'FEMININO' ? 'X' : '',
+                                                                                                alignment: 'center',
+                                                                                                fontSize: 10,
+                                                                                                bold: true,
+                                                                                                heights: 12
+                                                                                            }
+                                                                                        ]
+                                                                                    ]
+                                                                                },
+                                                                                layout: layoutTable,
+                                                                                margin: [0, 0, 0, 0]
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                ],
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    },
+                                                    // Quadrado da foto
+                                                    {
+                                                        width: '25%', // Ajuste a largura conforme necessário
+                                                        stack: [
+                                                            {
+                                                                canvas: [
+                                                                    {
+                                                                        type: 'rect',
+                                                                        x: 10,
+                                                                        y: -17,
+                                                                        w: 80, // Largura do quadrado
+                                                                        h: 100, // Altura do quadrado
+                                                                        lineWidth: 1,
+                                                                        lineColor: 'black',
+                                                                        fill: 'none' // Sem preenchimento
+                                                                    }
+                                                                ],
+                                                                margin: [0, 0, 0, 0] // Margem à direita do quadrado
+                                                            },
+                                                            // Variavel da imagem
+                                                            content
+                                                        ]
+                                                    }
+                                                ],
+                                                margin: [9, 5, 10, 1] // Margem em torno do conjunto de colunas
+                                            },
+
+                                            // LINHA 3
+                                            {
+                                                columns: [
+                                                    {
+                                                        width: '27%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Data de Nascimento',
+                                                                fontSize: 10
+                                                            },
+                                                            {
+                                                                table: {
+                                                                    widths: [86],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: this.dataNascimento.toUpperCase().slice(0, 10),
+                                                                                fontSize: 10,
+                                                                                bold: true,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '77%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Nome',
+                                                                fontSize: 10
+                                                            },
+                                                            {
+                                                                table: {
+                                                                    widths: [272],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: this.nome.toUpperCase().slice(0, 46),
+                                                                                fontSize: 10,
+                                                                                bold: true,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    }
+                                                ],
+                                                margin: [9, 0, 0, 2],
+                                                columnGap: 0 // Remove espaço entre colunas
+                                            },
+
+                                            // LINHA 4
+                                            {
+                                                columns: [
+                                                    {
+                                                        width: '53%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Nome Mãe',
+                                                                fontSize: 10
+                                                            },
+                                                            {
+                                                                table: {
+                                                                    widths: [185],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: this.nomeMae.toUpperCase().slice(0, 31),
+                                                                                fontSize: 10,
+                                                                                bold: true,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '51%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Nome Pai',
+                                                                fontSize: 10,
+                                                                margin: [0, 0, 0, 0]
+                                                            },
+                                                            {
+                                                                table: {
+                                                                    widths: [175],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: this.nomePai.toUpperCase().slice(0, 31),
+                                                                                fontSize: 10,
+                                                                                bold: true,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    }
+                                                ],
+                                                margin: [9, 0, 0, 2],
+                                                columnGap: 0 // Remove espaço entre colunas
+                                            },
+
+                                            // LINHA 5
+                                            {
+                                                columns: [
+                                                    {
+                                                        width: '23%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Nacionalidade',
+                                                                fontSize: 10
+                                                            },
+                                                            {
+                                                                table: {
+                                                                    widths: [71],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: 'BRASILEIRO(A)',
+                                                                                fontSize: 10,
+                                                                                bold: true,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 10, 0]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '70%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Naturalidade',
+                                                                fontSize: 10
+                                                            },
+                                                            {
+                                                                table: {
+                                                                    widths: [248],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: this.naturalidade.toUpperCase().slice(0, 46),
+                                                                                fontSize: 10,
+                                                                                bold: true,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '10%',
+                                                        stack: [
+                                                            {
+                                                                text: 'UF',
+                                                                fontSize: 10
+                                                            },
+                                                            {
+                                                                table: {
+                                                                    widths: [25],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: this.uf.toUpperCase(),
+                                                                                fontSize: 10,
+                                                                                bold: true,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    }
+                                                ],
+                                                margin: [9, 0, 0, 2],
+                                                columnGap: 0 // Remove espaço entre colunas
+                                            },
+
+                                            // LINHA 6
+                                            {
+                                                columns: [
+                                                    {
+                                                        width: '23%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Estado Civil',
+                                                                fontSize: 10
+                                                            },
+                                                            {
+                                                                table: {
+                                                                    widths: [73],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: this.estadoCivil.toUpperCase(),
+                                                                                fontSize: 10,
+                                                                                bold: true,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '30%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Escolaridade',
+                                                                fontSize: 10
+                                                            },
+                                                            {
+                                                                table: {
+                                                                    widths: [100],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: this.escolaridade.toUpperCase(),
+                                                                                fontSize: 10,
+                                                                                bold: true,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 10, 0]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '25%',
+                                                        stack: [
+                                                            {
+                                                                text: 'WhatsApp',
+                                                                fontSize: 10
+                                                            },
+                                                            {
+                                                                table: {
+                                                                    widths: [80],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: this.whatsapp.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3').slice(0, 15),
+                                                                                fontSize: 10,
+                                                                                bold: true,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 10, 0]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '28%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Telefone 2',
+                                                                fontSize: 10
+                                                            },
+                                                            {
+                                                                table: {
+                                                                    widths: [81],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: '',
+                                                                                bold: true,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 10, 0]
+                                                            }
+                                                        ]
+                                                    }
+                                                ],
+                                                margin: [9, 0, 0, 2],
+                                                columnGap: 0 // Remove espaço entre colunas
+                                            },
+
+                                            // ENDEREÇO ===========================================================================================================
+                                            { // Linha horizontal abaixo da imagem
+                                                canvas: this.createDottedLine(0, 0, 383, 0, 5),
+                                                margin: [9, 2, 0, 2] // margens em torno da linha
+                                            },
+                                            {
+                                                text: 'Endereço',
+                                                bold: true,
+                                                fontSize: 10,
+                                                margin: [9, 0, 0, 1]
+                                            },
+
+                                            // COLUNA 1
+                                            {
+                                                columns: [
+                                                    {
+                                                        width: '24%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Cep',
+                                                                fontSize: 10
+                                                            },
+                                                            {
+                                                                table: {
+                                                                    widths: [76],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: this.cep.replace(/^(\d{5})(\d{3})$/, '$1-$2').slice(0, 9),
+                                                                                fontSize: 10,
+                                                                                bold: true,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '68%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Rua',
+                                                                fontSize: 10
+                                                            },
+                                                            {
+                                                                table: {
+                                                                    widths: [242],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: this.rua.toUpperCase().slice(0, 41),
+                                                                                fontSize: 10,
+                                                                                bold: true,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '11%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Número',
+                                                                fontSize: 10
+                                                            },
+                                                            {
+                                                                table: {
+                                                                    widths: [29],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: this.numero.toUpperCase().slice(0, 4),
+                                                                                fontSize: 10,
+                                                                                bold: true,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    }
+                                                ],
+                                                margin: [9, 0, 0, 2],
+                                                columnGap: 0 // Remove espaço entre colunas
+                                            },
+
+                                            // COLUNA 2
+                                            {
+                                                columns: [
+                                                    {
+                                                        width: '51%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Bairro',
+                                                                fontSize: 10
+                                                            },
+                                                            {
+                                                                table: {
+                                                                    widths: [177],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: this.bairro.toUpperCase().slice(0, 31),
+                                                                                fontSize: 10,
+                                                                                bold: true,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 10, 0]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '51%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Complemento (QUADRA, LOTE)',
+                                                                fontSize: 10
+                                                            },
+                                                            {
+                                                                table: {
+                                                                    widths: [182],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: this.complemento.toUpperCase().slice(0, 34),
+                                                                                fontSize: 10,
+                                                                                bold: true,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    }
+                                                ],
+                                                margin: [9, 0, 0, 2],
+                                                columnGap: 0 // Remove espaço entre colunas
+                                            },
+
+                                            // COLUNA 3
+                                            {
+                                                columns: [
+                                                    {
+                                                        width: '40%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Estado',
+                                                                fontSize: 10
+                                                            },
+                                                            {
+                                                                table: {
+                                                                    widths: [135],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: this.estado.toUpperCase(),
+                                                                                fontSize: 10,
+                                                                                bold: true,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 10, 0]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '65%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Cidade',
+                                                                fontSize: 10
+                                                            },
+                                                            {
+                                                                table: {
+                                                                    widths: [223],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: this.cidade.toUpperCase().slice(0, 39),
+                                                                                fontSize: 10,
+                                                                                bold: true,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    }
+                                                ],
+                                                margin: [9, 0, 0, 2],
+                                                columnGap: 0 // Remove espaço entre colunas
+                                            },
+
+                                            // MINISTERIO =========================================================================================
+                                            { // Linha horizontal abaixo da imagem
+                                                canvas: this.createDottedLine(0, 0, 383, 0, 5),
+                                                margin: [9, 2, 0, 2] // margens em torno da linha
+                                            },
+                                            {
+                                                text: 'Ministério',
+                                                bold: true,
+                                                fontSize: 10,
+                                                margin: [9, 0, 0, 2]
+                                            },
+
+                                            // LINHA 1
+                                            {
+                                                columns: [
+                                                    // Primeiro grupo - Batismo Águas
+                                                    {
+                                                        width: '25%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Batismo nas águas:',
+                                                                fontSize: 10,
+                                                                margin: [0, 3, 2, 0] // Ajuste vertical fino
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '23%',
+                                                        stack: [
+                                                            {
+                                                                table: {
+                                                                    widths: [70],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: this.batismoAgua.toUpperCase().slice(0, 10),
+                                                                                fontSize: 10,
+                                                                                bold: true,
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0] // Reduz margem direita
+                                                            }
+                                                        ]
+                                                    },
+                                                    // Segundo grupo - Batismo Espírito Santo
+                                                    {
+                                                        width: '33%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Batismo no Espírito Santo:',
+                                                                fontSize: 10,
+                                                                margin: [0, 3, 2, 0] // Ajuste vertical fino
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '24%',
+                                                        stack: [
+                                                            {
+                                                                table: {
+                                                                    widths: [70],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: this.batismoEspSanto.toUpperCase().slice(0, 10),
+                                                                                fontSize: 10,
+                                                                                bold: true,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0] // Sem margem direita
+                                                            }
+                                                        ]
+                                                    }
+                                                ],
+                                                margin: [9, 0, 0, 3],
+                                                columnGap: 0 // Remove espaço entre colunas
+                                            },
+
+                                            // LINHA 2
+                                            {
+                                                columns: [
+                                                    {
+                                                        width: '11%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Obreiro:',
+                                                                fontSize: 10,
+                                                                margin: [0, 3, 2, 0] // Ajuste vertical fino
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '15%',
+                                                        stack: [
+                                                            {
+                                                                table: {
+                                                                    widths: [25],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: this.isObreiro,
+                                                                                alignment: 'center',
+                                                                                bold: true,
+                                                                                fontSize: 10,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '9%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Cargo:',
+                                                                fontSize: 10,
+                                                                margin: [0, 3, 2, 0] // Ajuste vertical fino
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '70%',
+                                                        stack: [
+                                                            {
+                                                                table: {
+                                                                    widths: [242],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: this.cargo.toUpperCase(),
+                                                                                fontSize: 10,
+                                                                                bold: true,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    }
+                                                ],
+                                                margin: [9, 0, 0, 3],
+                                                columnGap: 0 // Remove espaço entre colunas
+                                            },
+
+                                            // LINHA 3
+                                            {
+                                                columns: [
+                                                    {
+                                                        width: '25%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Data há Diácono:',
+                                                                fontSize: 10,
+                                                                margin: [0, 3, 2, 0] // Ajuste vertical fino
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '27%',
+                                                        stack: [
+                                                            {
+                                                                table: {
+                                                                    widths: [80],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: '',
+                                                                                fontSize: 10,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '8%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Local:',
+                                                                fontSize: 10,
+                                                                margin: [0, 3, 2, 0] // Ajuste vertical fino
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '44%',
+                                                        stack: [
+                                                            {
+                                                                table: {
+                                                                    widths: [149],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: '',
+                                                                                fontSize: 10,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    }
+                                                ],
+                                                margin: [9, 0, 0, 3],
+                                                columnGap: 0 // Remove espaço entre colunas
+                                            },
+
+                                            // LINHA 4
+                                            {
+                                                columns: [
+                                                    {
+                                                        width: '25%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Data há Presbítero:',
+                                                                fontSize: 10,
+                                                                margin: [0, 3, 2, 0] // Ajuste vertical fino
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '27%',
+                                                        stack: [
+                                                            {
+                                                                table: {
+                                                                    widths: [80],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: '',
+                                                                                fontSize: 10,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '8%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Local:',
+                                                                fontSize: 10,
+                                                                margin: [0, 3, 2, 0] // Ajuste vertical fino
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '44%',
+                                                        stack: [
+                                                            {
+                                                                table: {
+                                                                    widths: [149],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: '',
+                                                                                fontSize: 10,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    }
+                                                ],
+                                                margin: [9, 0, 0, 3],
+                                                columnGap: 0 // Remove espaço entre colunas
+                                            },
+
+                                            // LINHA 5
+                                            {
+                                                columns: [
+                                                    {
+                                                        width: '25%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Data há Evangelista:',
+                                                                fontSize: 10,
+                                                                margin: [0, 3, 2, 0] // Ajuste vertical fino
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '27%',
+                                                        stack: [
+                                                            {
+                                                                table: {
+                                                                    widths: [80],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: '',
+                                                                                fontSize: 10,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '8%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Local:',
+                                                                fontSize: 10,
+                                                                margin: [0, 3, 2, 0] // Ajuste vertical fino
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '44%',
+                                                        stack: [
+                                                            {
+                                                                table: {
+                                                                    widths: [149],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: '',
+                                                                                fontSize: 10,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    }
+                                                ],
+                                                margin: [9, 0, 0, 3],
+                                                columnGap: 0 // Remove espaço entre colunas
+                                            },
+
+                                            // LINHA 6
+                                            {
+                                                columns: [
+                                                    {
+                                                        width: '25%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Data há Pastor: ',
+                                                                fontSize: 10,
+                                                                margin: [0, 3, 2, 0] // Ajuste vertical fino
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '27%',
+                                                        stack: [
+                                                            {
+                                                                table: {
+                                                                    widths: [80],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: '',
+                                                                                fontSize: 10,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '8%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Local:',
+                                                                fontSize: 10
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '44%',
+                                                        stack: [
+                                                            {
+                                                                table: {
+                                                                    widths: [149],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: '',
+                                                                                fontSize: 10,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    }
+                                                ],
+                                                margin: [9, 0, 0, 3],
+                                                columnGap: 0 // Remove espaço entre colunas
+                                            },
+
+                                            // LINHA 7
+                                            {
+                                                columns: [
+                                                    {
+                                                        width: '36%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Registro Campo Jd. América',
+                                                                fontSize: 10
+                                                            },
+                                                            {
+                                                                table: {
+                                                                    widths: [123],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: '',
+                                                                                fontSize: 10,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    },
+
+                                                    {
+                                                        width: '33%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Registro CADESGO',
+                                                                fontSize: 10
+                                                            },
+                                                            {
+                                                                table: {
+                                                                    widths: [112],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: '',
+                                                                                fontSize: 10,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        width: '35%',
+                                                        stack: [
+                                                            {
+                                                                text: 'Registro CGADB',
+                                                                fontSize: 10
+                                                            },
+                                                            {
+                                                                table: {
+                                                                    widths: [115],
+                                                                    heights: 12,
+                                                                    body: [
+                                                                        [
+                                                                            {
+                                                                                text: '',
+                                                                                fontSize: 10,
+                                                                                heights: 12
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                layout: layoutTable,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ]
+                                                    }
+                                                ],
+                                                margin: [9, 0, 0, 2],
+                                                columnGap: 0 // Remove espaço entre colunas
+                                            },
+                                        ],
+                                        // Margem interna do conteúdo dentro da moldura
+                                        margin: [0, -520, 0, 0] // Ajustado para nova altura
+                                    }
+                                ]
+                            },
+
+                            // COLUNA 2 (DIREITA) - TERMO DE AUTORIZAÇÃO
+                            {
+                                width: '49%',
+                                margin: [5, 5, 5, 5], // Margem interna da coluna
+                                stack: [
+                                    // Moldura para a coluna 2
+                                    molduraFolha(),
+
+                                    // Conteúdo da coluna 2
+                                    {
+                                        stack: [
+                                            {
+                                                text: '(Continuação da Ficha de Cadastro para Obreiros e Membros da IEADMM-Jd. América..............Fl 02)',
+                                                alignment: 'center',
+                                                bold: true,
+                                                fontSize: 8.3,
+                                                decoration: 'underline',
+                                                margin: [9, 0, -10, 40]
+                                            },
+                                            {
+                                                text: 'DECLARAÇÃO E TERMO DE AUTORIZAÇÃO',
+                                                bold: true,
+                                                style: 'header',
+                                                alignment: 'center',
+                                                margin: [9, 0, 0, 40]
+                                            },
+                                            {
+                                                text: 'I – DÍZIMOS, OFERTAS E DOAÇÕES',
+                                                bold: true,
+                                                style: 'header',
+                                                margin: [20, 0, 0, 20]
+                                            },
+                                            {
+                                                text: 'Pelo presente termo, eu acima identificado, declaro para os devidos fins e a quem possa interessar que as contribuições como os dízimos, as ofertas e outras doações feitas por mim à Igreja Evangélica Assembleia de Deus Ministério Missão – Jardim América, são voluntárias, e que em hipótese alguma, nem no presente e no futuro, reclamarei a devolução do que por mim foi doado.',
+                                                alignment: 'justify',
+                                                margin: [20, 0, 0, 20]
+                                            },
+                                            {
+                                                text: 'II – USO DE IMAGEM, VOZ E CESSÃO DE DIREITO',
+                                                bold: true,
+                                                style: 'header',
+                                                margin: [20, 0, 0, 20]
+                                            },
+                                            {
+                                                text: 'Declaro ainda, com base no art. 29 da Lei de Direitos Autorais, que AUTORIZO de forma gratuita e sem qualquer ônus, a Igreja Evangélica Assembleia de Deus Ministério Missão – Jardim América, a utilização de minha(s) imagem(ns) e/ou voz e/ou de informações pessoais na obra, e em sua divulgação, se houver, em todos os meios de divulgação possíveis, quer sejam na mídia impressa (livros, catálogos, revistas, jornais, entre outros), televisiva (propagandas para televisão aberta e/ou fechas, vídeos, filmes, entre outros), radiofônica (programas de rádio/podcasts), internet, banco de dados informatizados, multimídia, entre outros, e nos meios de comunicação interna, como jornais e periódicos em geral, na forma de impresso, voz e imagem.',
+                                                alignment: 'justify',
+                                                margin: [20, 0, 0, 10]
+                                            },
+                                            {
+                                                text: 'A presente autorização e cessão são de natureza gratuita, firmadas em caráter irrevogável e irretratável e por prazo indeterminado, cujos direitos e obrigações vinculam seus respectivos herdeiros e sucessores consoante as regras previstas na Lei 9.610/98 (Lei sobre Direitos Autorais e outras providências).',
+                                                alignment: 'justify',
+                                                margin: [20, 0, 0, 0]
+                                            }
+                                        ],
+                                        // Margem interna do conteúdo dentro da moldura
+                                        margin: [0, -550, 0, 0] // Ajustado para nova altura
+                                    }
+                                ]
+                            }
+                        ],
+                        // Espaço entre as colunas
+                        columnGap: 20
                     },
-                    layout: {
-                        hLineWidth: () => 0.5, // espessura horizontal
-                        vLineWidth: () => 0.5, // espessura vertical
-                        hLineColor: () => 'black',
-                        vLineColor: () => 'black'
+
+                    // === QUEBRA DE PÁGINA ===
+                    {
+                        text: '',
+                        pageBreak: 'after'
                     },
-                    margin: [0, 30, 0, 0] // margem externa
+
+                    // === SEGUNDA PÁGINA ===
+                    {
+                        columns: [
+                            // COLUNA 1 (ESQUERDA) - SEGUNDA PÁGINA
+                            {
+                                width: '49%',
+                                margin: [5, 5, 5, 5],
+                                stack: [
+                                    molduraFolha(),
+
+                                    {
+                                        stack: [
+                                            {
+                                                text: 'TERMO DE CONSENTIMENTO PARA TRATAMENTO DE DADOS PESSOAIS',
+                                                style: 'header',
+                                                fontSize: 11,
+                                                alignment: 'center',
+                                                margin: [9, 0, 0, 5]
+                                            },
+                                            {
+                                                text: '(Lei 13.709 – LGPD)',
+                                                style: 'header',
+                                                fontSize: 11,
+                                                alignment: 'center',
+                                                margin: [9, 0, 0, 10]
+                                            },
+                                            {
+                                                width: '95%',
+                                                table: {
+                                                    widths: ['*'],
+                                                    body: [
+                                                        [
+                                                            {
+                                                                text: [
+                                                                    { text: 'IGREJA EVANGELICA ASSEMBLEIA DE DEUS MINISTÉRIO MISSÃO - CAMPO JARDIM AMÉRICA, situada na Rua C-160, Qd 371, Lt 17/18, CEP 74255-130, Setor Jardim América, Goiânia-GO,', bold: true },
+                                                                    { text: ' doravante denominado(a)' },
+                                                                    { text: ' CONTROLADORA.', bold: true }
+                                                                ],
+                                                                alignment: 'justify',
+                                                                margin: [2, 2, 2, 2]
+                                                            }
+                                                        ]
+                                                    ]
+                                                },
+                                                layout: layoutTable,
+                                                margin: [15, 0, 0, 5]
+                                            },
+                                            {
+                                                width: '95%',
+                                                table: {
+                                                    widths: ['*'],
+                                                    body: [
+                                                        [
+                                                            {
+                                                                text: [
+                                                                    { text: `Nome: ${this.nome.toUpperCase().slice(0, 46)} `, bold: true },
+                                                                    { text: 'nacionalidade: BRASILEIRO(A), estado civil: ' },
+                                                                    { text: this.estadoCivil, bold: true },
+                                                                    { text: ' profissão: ' },
+                                                                    { text: this.profissao.toUpperCase(), bold: true },
+                                                                    { text: ' , RG nº: ' },
+                                                                    { text: this.rg, bold: true },
+                                                                    { text: ' inscrito(a) CPF/MF sob o nº ' },
+                                                                    { text: this.cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4').slice(0, 14), bold: true },
+                                                                    { text: ' residente e domiciliado(a) na ' },
+                                                                    { text: `${this.rua.toUpperCase().slice(0, 41)}, ${this.bairro.slice(0, 31)}, ${this.numero}`, bold: true },
+                                                                    { text: ' Cidade: ' },
+                                                                    { text: this.cidade, bold: true },
+                                                                    { text: ' Estado: ' },
+                                                                    { text: this.estado, bold: true },
+                                                                    { text: ' CEP: ' },
+                                                                    { text: this.cep.replace(/^(\d{5})(\d{3})$/, '$1-$2').slice(0, 9), bold: true },
+                                                                    { text: ' doravante denominado(a) ' },
+                                                                    { text: 'TITULAR.', bold: true }
+                                                                ],
+                                                                alignment: 'justify',
+                                                                margin: [2, 2, 2, 2]
+                                                            }
+                                                        ]
+                                                    ]
+                                                },
+                                                layout: layoutTable,
+                                                margin: [15, 0, 0, 5]
+                                            },
+                                            {
+                                                text: 'Este termo de consentimento foi elaborado em conformidade com a lei geral de proteção de dados. Consoante ao artigo 5º inciso XII da Lei 13.709, este documento viabiliza a manifestação livre, informada e inequívoca, pela qual o titular/ responsável concorda com o tratamento de seus dados pessoais e os dados do menor sob os seus cuidados, para as finalidades a seguir determinadas:',
+                                                italics: true,
+                                                alignment: 'justify',
+                                                margin: [50, 0, 0, 5]
+                                            },
+                                            {
+                                                text: 'PARÁGRAFO PRIMEIRO - DO CONSENTIMENTO',
+                                                style: 'header',
+                                                alignment: 'left',
+                                                margin: [15, 0, 0, 5]
+                                            },
+                                            {
+                                                text: [
+                                                    { text: 'Ao assinar este termo o ' },
+                                                    { text: 'TITULAR ', bold: true },
+                                                    { text: 'concorda que a ' },
+                                                    { text: ' CONTROLADORA, ', bold: true },
+                                                    { text: 'proceda com o tratamento de seus dados.' },
+                                                ],
+                                                alignment: 'justify',
+                                                margin: [15, 0, 0, 5]
+                                            },
+                                            {
+                                                text: 'Entende-se por tratamento de acordo com o artigo 5º inciso X, a coleta, produção, recepção, classificação, utilização, acesso, reprodução, transmissão, distribuição, processamento, arquivamento, armazenamento, eliminação, avaliação ou controle da informação, modificação, comunicação, transferência, difusão ou extração.',
+                                                alignment: 'justify',
+                                                margin: [15, 0, 0, 5]
+                                            },
+                                            {
+                                                text: 'PARÁGRAFO SEGUNDO - DADOS PESSOAIS',
+                                                style: 'header',
+                                                alignment: 'left',
+                                                margin: [15, 0, 0, 5]
+                                            },
+                                            {
+                                                text: 'Poderão ser tratados, mediante anuência expressa do titular/responsável, os seguintes dados pessoais, pelo(a) controlador(a):',
+                                                alignment: 'justify',
+                                                margin: [15, 0, 0, 5]
+                                            },
+                                            {
+                                                ul: [
+                                                    'Nome, RG, CPF, endereço, status civil, e-mail, telefone, histórico pessoal e congregacional.'
+                                                ],
+                                                margin: [15, 0, 0, 10]
+                                            }
+                                            // ADICIONE MAIS CONTEÚDO AQUI SE NECESSÁRIO
+                                        ],
+                                        margin: [0, -550, 0, 0]
+                                    }
+                                ]
+                            },
+
+                            // COLUNA 2 (DIREITA) - SEGUNDA PÁGINA
+                            {
+                                width: '49%',
+                                margin: [5, 5, 5, 5],
+                                stack: [
+                                    molduraFolha(),
+
+                                    {
+                                        stack: [
+                                            {
+                                                text: '(Cont. do termo de consentimento para tratamento de dados pessoais (lei 13.709-LGPD)........Fl 02)',
+                                                alignment: 'center',
+                                                bold: true,
+                                                fontSize: 8.1,
+                                                decoration: 'underline',
+                                                margin: [15, 0, -10, 20]
+                                            },
+                                            {
+                                                text: 'PARÁGRAFO TERCEIRO - FINALIDADE DO TRATAMENTO',
+                                                style: 'header',
+                                                alignment: 'left',
+                                                margin: [15, 0, 0, 10]
+                                            },
+                                            {
+                                                text: 'Em atendimento ao artigo 8º §4 este termo guarda finalidade determinada, sendo que os dados serão utilizados especificamente para fins de:',
+                                                alignment: 'justify',
+                                                margin: [15, 0, 0, 5]
+                                            },
+                                            {
+                                                ul: [
+                                                    'Cadastro.'
+                                                ],
+                                                margin: [15, 0, 0, 5]
+                                            },
+                                            {
+                                                ul: [
+                                                    'Elaboração de relatórios e pareceres informativos.'
+                                                ],
+                                                margin: [15, 0, 0, 5]
+                                            },
+                                            {
+                                                ul: [
+                                                    'Quando necessário para atender aos interesses legítimos do controlador ou de terceiros, exceto no caso de prevalecerem direitos e liberdades fundamentais do titular que exijam a proteção dos dados pessoais;'
+                                                ],
+                                                margin: [15, 0, 0, 5]
+                                            },
+                                            {
+                                                ul: [
+                                                    'Para a utilização e divulgação em mídia impressa ou digital, exceto os dados sensíveis, com vistas à promoção da pregação do evangelho bem como à realização dos trabalhos relacionados à comunidade religiosa da qual o titular faça parte;'
+                                                ],
+                                                margin: [15, 0, 0, 5]
+                                            },
+                                            {
+                                                ul: [
+                                                    'Para o exercício regular de direitos em processo judicial, administrativo ou arbitral;'
+                                                ],
+                                                margin: [15, 0, 0, 5]
+                                            },
+                                            {
+                                                ul: [
+                                                    'Para a proteção da vida ou da incolumidade física do titular ou de terceiros.'
+                                                ],
+                                                margin: [15, 0, 0, 10]
+                                            },
+                                            {
+                                                text: 'PARÁGRAFO QUARTO - SEGURANÇA DOS DADOS',
+                                                style: 'header',
+                                                alignment: 'left',
+                                                margin: [15, 0, 0, 5]
+                                            },
+                                            {
+                                                text: 'A Controladora responsabiliza-se pela manutenção de medidas de segurança, técnicas e administrativas aptas a proteger os dados pessoais de acessos não autorizados e de situações acidentais ou ilícitas de destruição, perda, alteração, comunicação ou qualquer forma de tratamento inadequado ou ilícito.',
+                                                alignment: 'justify',
+                                                margin: [15, 0, 0, 10]
+                                            },
+                                            {
+                                                text: [
+                                                    {
+                                                        text: `${this.cidade} - ${this.estado}`,
+                                                        decoration: 'underline'
+                                                    },
+                                                    { text: ', ' },
+                                                    {
+                                                        text: new Date().toLocaleDateString('pt-BR', { day: 'numeric' }),
+                                                        decoration: 'underline'
+                                                    },
+                                                    { text: ' DE ' },
+                                                    {
+                                                        text: new Date().toLocaleDateString('pt-BR', { month: 'long' }).toUpperCase(),
+                                                        decoration: 'underline'
+                                                    },
+                                                    { text: ' DE ' },
+                                                    {
+                                                        text: new Date().toLocaleDateString('pt-BR', { year: 'numeric' }),
+                                                        decoration: 'underline'
+                                                    }
+                                                ],
+                                                alignment: 'right',
+                                                fontSize: 10,
+                                                margin: [0, 0, 0, 20]
+                                            },
+                                            {
+                                                columns: [
+                                                    {
+                                                        width: '50%',
+                                                        stack: [
+                                                            {
+                                                                text: '_____________________________', // Linha para assinatura
+                                                                alignment: 'center',
+                                                                margin: [0, 0, 0, 2]
+                                                            },
+                                                            {
+                                                                text: 'DIRIGENTE/SECRETÁRIO',
+                                                                alignment: 'center',
+                                                                fontSize: 10,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ],
+                                                        alignment: 'center'
+                                                    },
+                                                    {
+                                                        width: '50%',
+                                                        stack: [
+                                                            {
+                                                                text: '_____________________________', // Linha para assinatura
+                                                                alignment: 'center',
+                                                                margin: [0, 0, 0, 0]
+                                                            },
+                                                            {
+                                                                text: 'OBREIRO/MEMBRO',
+                                                                alignment: 'center',
+                                                                fontSize: 10,
+                                                                margin: [0, 0, 0, 0]
+                                                            }
+                                                        ],
+                                                        alignment: 'center'
+                                                    }
+                                                ],
+                                                margin: [10, 0, 0, 20],
+                                                columnGap: 0 // Remove espaço entre colunas
+                                            },
+                                            {
+                                                stack: [
+                                                    {
+                                                        text: '_________________________', // Linha para assinatura
+                                                        alignment: 'center',
+                                                        margin: [9, 0, 0, 0]
+                                                    },
+                                                    {
+                                                        text: 'IEADMM-JD AMÉRICA',
+                                                        alignment: 'center',
+                                                        fontSize: 10,
+                                                        margin: [9, 0, 0, 0]
+                                                    }
+                                                ],
+                                                alignment: 'center'
+                                            }
+                                        ],
+                                        margin: [0, -550, 0, 0]
+                                    }
+                                ]
+                            }
+                        ],
+                        columnGap: 20
+                    }
+                ],
+
+                // Rodapé
+                footer(currentPage: any, pageCount: any) {
+                    return {
+                        columns: [
+                            {
+                                text: 'AD Missão Jardim América Goiânia - GO. Todos os direitos reservados' + ' | ' + new Date().toLocaleString(),
+                                alignment: 'center',
+                                fontSize: 6,
+                                margin: [0, -7, 0, 0]
+                            }
+                        ],
+                        columnGap: 20
+                    };
                 },
-                {
-                    width: '95%',
-                    table: {
-                        widths: ['*'], // só uma célula ocupando 100%
-                        body: [
-                            [
-                                {
-                                text: [
-                                    { text: `Nome: ${this.nome} `, bold: true },
-                                    { text: 'nacionalidade: BRASILEIRO(A), estado civil: '},
-                                    { text: this.estadoCivil, bold: true},
-                                    { text: ' profissão: ' },
-                                    { text: this.profissao, bold: true },
-                                    { text: ' , RG nº: '},
-                                    { text: this.rg, bold: true },
-                                    { text: ' inscrito(a) CPF/MF sob o nº '},
-                                    { text: this.cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4'), bold: true },
-                                    { text: ' residente e domiciliado(a) na '},
-                                    { text: `${this.rua}, ${this.bairro}, ${this.numero}`, bold: true },
-                                    { text: ' Cidade: ' },
-                                    { text: this.cidade, bold: true },
-                                    { text: ' Estado: '},
-                                    { text: this.estado, bold: true },
-                                    { text: ' CEP: ' },
-                                    { text: this.cep.replace(/^(\d{5})(\d{3})$/, '$1-$2'), bold: true },
-                                    { text: ' doravante denominado(a) '},
-                                    { text: 'TITULAR.', bold: true }
-                                ],
-                                alignment: 'justify',
-                                margin: [5, 5, 5, 5] // padding interno
-                                }
-                            ]
-                        ]
-                    },
-                    layout: {
-                        hLineWidth: () => 0.5, // espessura horizontal
-                        vLineWidth: () => 0.5, // espessura vertical
-                        hLineColor: () => 'black',
-                        vLineColor: () => 'black'
-                    },
-                    margin: [0, 30, 0, 0] // margem externa (fora do quadrado)
-                },
-                {
-                    text: 'Este termo de consentimento foi elaborado em conformidade com a lei geral de proteção de dados. Consoante ao artigo 5º inciso XII da Lei 13.709, este documento viabiliza a manifestação livre, informada e inequívoca, pela qual o titular/ responsável concorda com o tratamento de seus dados pessoais e os dados do menor sob os seus cuidados, para as finalidades a seguir determinadas:',
-                    italics: true,
-                    alignment: 'justify',
-                    margin: [50, 20, 0, 0]
-                },
-                ,
-                {
-                    text: 'PARÁGRAFO PRIMEIRO - DO CONSENTIMENTO',
-                    style: 'header',
-                    alignment: 'left',
-                    margin: [0, 20, 0, 5]
-                },
-                {
-                    text: [
-                        { text: '    Ao assinar este termo o '},
-                        { text: 'TITULAR ', bold: true },
-                        { text: 'concorda que a ' },
-                        { text: ' CONTROLADORA, ', bold: true },
-                        { text: 'proceda com o tratamento de seus dados.' },
-                    ],
-                    alignment: 'left',
-                    margin: [0, 10, 0, 5]
-                },
-                {
-                    text: 'Entende-se por tratamento de acordo com o artigo 5º inciso X, a coleta, produção, recepção, classificação, utilização, acesso, reprodução, transmissão, distribuição, processamento, arquivamento, armazenamento, eliminação, avaliação ou controle da informação, modificação, comunicação, transferência, difusão ou extração.',
-                    alignment: 'left',
-                    margin: [0, 10, 0, 5]
-                },
-                {
-                    text: 'PARÁGRAFO SEGUNDO - DADOS PESSOAIS',
-                    style: 'header',
-                    alignment: 'left',
-                    margin: [0, 10, 0, 5]
-                },
-                {
-                    text: 'Poderão ser tratados, mediante anuência expressa do titular/responsável, os seguintes dados pessoais, pelo(a) controlador(a):',
-                    alignment: 'left',
-                    margin: [0, 10, 0, 5]
-                },
-                {
-                    ul: [
-                        'Nome, RG, CPF, endereço, status civil, e-mail, telefone, histórico pessoal e congregacional.'
-                    ],
-                    margin: [20, 0, 0, 10] // indentação e espaçamento
+                styles: {
+                    header: {
+                        fontSize: 12,
+                        bold: true
+                    }
                 }
-            ],
+            };
 
-            // Rodapé
-            footer(currentPage: any, pageCount: any) {
-                return {
-                    columns: [
-                        { text: 'AD Missão Jardim América - Todos os direitos reservados Copyright' + ' | ' + new Date().toLocaleString(), alignment: 'center', fontSize: 6 }
-                    ]
-                };
-            },
-            styles: {
-                header: {
-                    fontSize: 14,
-                    bold: true,
-                    margin: [0, 15, 0, 0]
-                },
-                subheader: {
-                    fontSize: 14,
-                    bold: true,
-                    margin: [0, 15, 0, 0]
-                }
-            }
+            setTimeout(async () => {
+                await this.salvarGoogleSheets();
+            }, 100);
+
+            this.urlPdf = '';
+            this.pdfObj = pdfMake.createPdf(docDefinition);
+
+            setTimeout(() => {
+                this.pdfObj.getBuffer(async (buffer) => {
+                    const blob = new Blob([buffer], { type: 'application/pdf' });
+                    this.urlPdf = URL.createObjectURL(blob);
+                    this.isDesabledPdf = false;
+                });
+            }, 100);
+
+            await loading.dismiss();
+        } catch (err) {
+            await loading.dismiss();
+            console.error(err);
+            await this.presentToast('middle', 'Erro ao gerar pdf!');
         }
-        setTimeout(async () => {
-            await this.salvarGoogleSheets();
-        }, 100);
-        this.urlPdf = '';
-        this.pdfObj = pdfMake.createPdf(docDefinition);
-        setTimeout(async () => {
-            await this.pdfObj.getBuffer(async (buffer) => {
-                const blob = new Blob([buffer], { type: 'application/pdf' });
-                this.urlPdf = URL.createObjectURL(blob);
-                this.isDesabledPdf = false;
-            });
-        }, 100);
-    }
-
-    public downloadPdf() {
-        if (this.plt.is('cordova')) {
-            this.pdfObj.getBase64(async (data) => {
-                try {
-                    let path = `pdf/myletter_${Date.now()}.pdf`;
-
-                    const result = await Filesystem.writeFile({
-                        path,
-                        data: data,
-                        directory: Directory.Documents,
-                        recursive: true
-                        // encoding: Encoding.UTF8
-                    });
-                    this.fileOpener.open(`${result.uri}`, 'application/pdf');
-
-                } catch (e) {
-                    console.error('Unable to write file', e);
-                }
-            });
-        } else {
-            const newTab = window.open(this.urlPdf, '_blank');
-            if (newTab) {
-                newTab.focus();
-            } else { // O bloqueador de pop-ups pode estar ativo
-                setTimeout(async () => {
-                    await this.presentToast('middle', 'Por favor, permita pop-ups para visualizar o PDF.');
-                }, 100);
-            }
-        }
-        this.novoCadastro();
     }
 
     // Função para criar uma linha pontilhada
@@ -2041,24 +2430,12 @@ export class HomePage implements OnInit {
         return lines;
     }
 
-    public async recortarImagem(event: MouseEvent) {
-        await this.popOverImageCrop.present(event); 
+    public async recortarImagem() {
+        await this.modalImageCrop.present();
     }
 
-    public async salvarGoogleSheets() {
-        const loading = await this.loadingController.create({
-            message: 'Salvando...',
-            translucent: true,
-        });
-        await loading.present();
-
+    private async salvarGoogleSheets() {
         try {
-            if (!this.imagemBase64) {
-                await this.presentToast('middle', 'Selecione e recorte uma imagem antes de salvar.');
-                await loading.dismiss();
-                return;
-            }
-
             const body = {
                 nome: this.nome,
                 congregacao: this.congregacao,
@@ -2092,7 +2469,7 @@ export class HomePage implements OnInit {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
             });
-            
+
             const data = await response.json();
 
             if (data.success) {
@@ -2100,16 +2477,13 @@ export class HomePage implements OnInit {
             } else {
                 await this.presentToast('middle', 'Erro ao cadastrar!');
             }
-
-            await loading.dismiss();
-        } catch  (err) {
-            await loading.dismiss();
+        } catch (err) {
             console.error(err);
-            await this.presentToast('middle', 'Erro inesperado!');
+            await this.presentToast('middle', 'Erro ao salvar no google drive!');
         }
     }
 
-    async presentToast(position: 'top' | 'middle' | 'bottom', msg: string) {
+    private async presentToast(position: 'top' | 'middle' | 'bottom', msg: string) {
         const toast = await this.toastController.create({
             message: msg,
             duration: 1500,
@@ -2119,7 +2493,7 @@ export class HomePage implements OnInit {
         await toast.present();
     }
 
-    async takePicture() {
+    public async takePicture() {
         try {
             const image = await Camera.getPhoto({
                 quality: 90,
@@ -2138,7 +2512,7 @@ export class HomePage implements OnInit {
             input.accept = 'image/*';
 
             // Adicionar o listener de evento
-            input.addEventListener('change', (event: any) => {                
+            input.addEventListener('change', (event: any) => {
                 this.fileChangeEvent(event);
                 this.cd.detectChanges();
             });
@@ -2171,41 +2545,58 @@ export class HomePage implements OnInit {
         }
     }
 
-    fileChangeEvent(event: any): void {
+    public fileChangeEvent(event: any): void {
         this.imageChangedEvent = event; // Armazena o evento da imagem
     }
 
-    imageCropped(event: ImageCroppedEvent) {
+    public async imageCropped(event: ImageCroppedEvent) {
         if (event.objectUrl) {
-            fetch(event.objectUrl).then(response => response.blob())
-            .then(blob => this.blobToBase64(blob))
-            .then(base64Data => {
-                this.photoPreview = base64Data; 
-                this.imagemBase64 = base64Data; // <-- salva aqui!
-            }).catch(error => {
-                console.error('Erro ao converter Blob para Base64:', error);
-            });
-
-            this.croppedImage = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
+            try {
+                const response = await fetch(event.objectUrl);
+                const blob = await response.blob();
+                const base64Data = await this.blobToBase64(blob);
+                
+                // Comprimir apenas se for maior que 500KB
+                const tamanhoOriginal = this.getTamanhoArquivo(base64Data);
+                if (tamanhoOriginal > 500) {
+                    this.imagemBase64 = await this.comprimirImagem(base64Data, 800, 600, 0.7);
+                } else {
+                    this.imagemBase64 = base64Data;
+                }
+                
+                this.photoPreview = this.imagemBase64;
+                this.croppedImage = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
+            } catch (error) {
+                console.error('Erro ao processar imagem:', error);
+                // Fallback rápido
+                fetch(event.objectUrl).then(response => response.blob())
+                    .then(blob => this.blobToBase64(blob))
+                    .then(base64Data => {
+                        this.photoPreview = base64Data;
+                        this.imagemBase64 = base64Data;
+                    });
+            }
         } else {
             this.croppedImage = '';
             this.imagemBase64 = null;
+            this.photoPreview = '';
         }
     }
 
-    saveImageCropped() {
+    public saveImageCropped() {
         this.imageChangedEvent = '';
-        this.popOverImageCrop.dismiss();
+        this.modalImageCrop.dismiss();
         setTimeout(async () => {
             await this.presentToast('middle', 'Imagem salva com sucesso...');
         }, 200);
     }
 
-    limpaImageCropped() {
+    public limpaImageCropped() {
         this.imageChangedEvent = '';
+        this.imagemBase64 = null;
     }
 
-    blobToBase64(blob: Blob): Promise<string> {
+    private blobToBase64(blob: Blob): Promise<string> {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = () => resolve(reader.result as string);
@@ -2214,7 +2605,141 @@ export class HomePage implements OnInit {
         });
     }
 
-    clearImage() {
+    private async touchAlertSemImagem() {
+        const alert = await this.alertController.create({
+            message: 'Adicionar uma foto no casdastro!',
+            backdropDismiss: false,
+            buttons: [
+                {
+                    text: 'TIRAR FOTO',
+                    cssClass: 'salvarButton',
+                    handler: () => {
+                        this.modalImageCrop.present().then(() => {
+                            this.clearImage();
+                        });
+                    }
+                }
+            ]
+        });
+
+        await alert.present();
+    }
+
+    public clearImage() {
         this.imageChangedEvent = '';
+    }
+
+    public downloadPdf() {
+        if (this.plt.is('cordova')) {
+            this.pdfObj.getBase64(async (data) => {
+                try {
+                    let path = `pdf/${new Date().toLocaleString('pt-BR').replace(/[/:]/g, '_')}.pdf`;
+                    const result = await Filesystem.writeFile({
+                        path,
+                        data: data,
+                        directory: Directory.Documents,
+                        recursive: true
+                    });
+                    this.fileOpener.open(`${result.uri}`, 'application/pdf');
+                } catch (e) {
+                    console.error('Não foi possível gravar o arquivo', e);
+                }
+            });
+        } else {
+            this.downloadPdfBrowser();
+        }
+    }
+
+    private downloadPdfBrowser() {
+        if (this.urlPdf && (this.plt.is('mobile') || this.plt.is('android') || this.plt.is('ios'))) {
+            this.downloadFromUrl(this.urlPdf);
+        } else {
+            this.abrirUrlNavegador();
+        }
+    }
+
+    private downloadFromUrl(url: string) {
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.download = `${this.nome}_${new Date().toLocaleString('pt-BR').replace(/[/:]/g, '_')}.pdf`;
+
+        // Para mobile, precisamos adicionar ao DOM e simular click
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    public abrirUrlNavegador() {
+        const newTab = window.open(this.urlPdf, '_blank');
+        if (newTab) {
+            newTab.focus();
+        } else { // O bloqueador de pop-ups pode estar ativo
+            setTimeout(async () => {
+                await this.presentToast('middle', 'Por favor, permita pop-ups para visualizar o PDF.');
+            }, 100);
+        }
+    }
+
+    private getTamanhoArquivo(base64String: string): number {
+        // Remove o cabeçalho data:image/...;base64,
+        const base64 = base64String.split(',')[1];
+        // Calcula o tamanho aproximado em bytes
+        const tamanhoBytes = (base64.length * 3) / 4;
+        return Math.round(tamanhoBytes / 1024); // Retorna em KB
+    }
+
+    public async comprimirImagem(base64Image: string, maxWidth: number = 800, maxHeight: number = 600, quality: number = 0.7): Promise<string> {
+        return new Promise((resolve, reject) => {
+            // Criar uma imagem para manipulação
+            const img = new Image();
+
+            img.onload = () => {
+                // Calcular novas dimensões mantendo o aspect ratio
+                let width = img.width;
+                let height = img.height;
+        
+                if (width > height) {
+                    if (width > maxWidth) {
+                        height = Math.round((height * maxWidth) / width);
+                        width = maxWidth;
+                    }
+                } else {
+                    if (height > maxHeight) {
+                        width = Math.round((width * maxHeight) / height);
+                        height = maxHeight;
+                    }
+                }
+        
+                // Criar canvas para redimensionar
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+        
+                const ctx = canvas.getContext('2d');
+                if (!ctx) {
+                    reject('Erro ao criar contexto do canvas');
+                    return;
+                }
+        
+                // Desenhar imagem redimensionada
+                ctx.drawImage(img, 0, 0, width, height);
+        
+                // Comprimir a imagem
+                try {
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+                    resolve(compressedBase64);
+                } catch (error) {
+                    reject('Erro ao comprimir imagem: ' + error);
+                }
+            };
+        
+            img.onerror = () => {
+                reject('Erro ao carregar imagem');
+            };
+        
+            // Carregar a imagem
+            img.src = base64Image;
+        });
     }
 }
