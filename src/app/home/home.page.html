@@ -4,19 +4,19 @@
       <ion-col size="2">
         <ion-img src="assets/images/bot.svg" style="height: 30px;"></ion-img>
       </ion-col>
-      <ion-col size="5" style="text-align: left; padding-top: 12px;">
+      <ion-col size="4" style="text-align: left; padding-top: 12px;">
         Cadastro Chat
       </ion-col>
-      <ion-col size="2">
+      <ion-col size="3.5">
         <ion-chip style="background-color: #ffd900; color: black;" id="open-loading" (click)="recortarImagem()"
           [disabled]="isMensage">
           <span><b>Tirar Foto</b></span>
         </ion-chip>
       </ion-col>
-      <ion-col size="2">
+      <ion-col size="1.5">
         <ion-chip style="background-color: #ffffff; color: black;" id="open-loading" (click)="novoCadastro()"
           [disabled]="isMensage">
-          <span><b>Reiniciar</b></span>
+          <span><b>Reset</b></span>
         </ion-chip>
         <ion-loading class="custom-loading" trigger="open-loading" message="Iniciando..." [duration]="1000"
           spinner="dots"></ion-loading>
