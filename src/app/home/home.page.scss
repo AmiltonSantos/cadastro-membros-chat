@@ -52,6 +52,10 @@ ion-badge {
   align-items: center;
 }
 
-#popoverDate {
-  --width: 340px;  /* Defina a largura desejada */
+.styleModalImageCrop {
+  --min-width: 60%;
+  --border-radius: 16px;
+  --border-color: #244381;
+  --border-width: 1px;
+  --border-style: solid;
 }
