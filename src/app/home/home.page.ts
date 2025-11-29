@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IMessage } from '../models/methods.models';
-import { IonModal, AlertController, IonContent, IonTextarea, Platform, ToastController, LoadingController } from '@ionic/angular';
+import { IonModal, AlertController, IonContent, Platform, ToastController, LoadingController } from '@ionic/angular';
 import { CustomValidators } from 'src/utils/custom-validators';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
@@ -21,7 +21,6 @@ import { ImageCroppedEvent } from 'ngx-image-cropper';
 })
 export class HomePage implements OnInit {
     @ViewChild(IonContent, { static: false }) content!: IonContent;
-    @ViewChild('focustextarea', { static: false }) focustextarea!: IonTextarea;
     @ViewChild('modalImageCrop', { static: false }) modalImageCrop!: IonModal;
 
     imageChangedEvent: any = '';
@@ -318,7 +317,6 @@ export class HomePage implements OnInit {
             this.isUsaInput = 'text';
             this.index++;
             this.form.enable();
-            this.focustextarea?.setFocus();
         }, 3000);
     }
 
@@ -472,12 +470,6 @@ export class HomePage implements OnInit {
                     this.loading = false;
                 }, 300);
             }
-
-            setTimeout(() => {
-                if (![1, 5, 6, 9, 12, 18, 21].includes(this.index)) {
-                    this.focustextarea?.setFocus();
-                }
-            }, 400);
 
             this.form.reset();
         }
