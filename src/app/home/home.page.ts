@@ -339,6 +339,15 @@ export class HomePage implements OnInit {
                 console.error('O prompt está vazio ou é inválido');
                 return;
             }
+            
+            if (this.index === 3) {
+                (async () => {
+                    this.cpf = prompt.trim();
+                    this.bodySheet = await this.carregaBodySheet();
+                    await this.newLoading('Verificando CPF...');
+                    await this.salvarGoogleSheets(this.bodySheet);
+                })();
+            }
 
             let userMsg: IMessage = {
                 sender: 'me',
@@ -354,8 +363,6 @@ export class HomePage implements OnInit {
                 this.nome = String(prompt)?.toLocaleUpperCase().trim();
             } else if (this.index === 2) {
                 this.congregacao = String(prompt)?.toLocaleUpperCase().trim();
-            } else if (this.index === 3) {
-                this.cpf = prompt.trim();
             } else if (this.index === 4) {
                 this.rg = prompt.trim();
             } else if (this.index === 5) {
@@ -416,12 +423,6 @@ export class HomePage implements OnInit {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'CONGREGAÇÃO');
                         }, 300);  
-                    } else if (this.index === 3) {
-                        (async () => {
-                            this.bodySheet = await this.carregaBodySheet();
-                            await this.newLoading('Carregando...');
-                            await this.salvarGoogleSheets(this.bodySheet);
-                        })();                                              
                     } else if (this.index === 5) {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'SEXO');
