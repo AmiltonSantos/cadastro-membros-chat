@@ -66,6 +66,8 @@ export class HomePage implements OnInit {
     private batismoEspSanto: string = '';
     private isObreiro: string = '';
     private cargo: string = '';
+    private bodySheet: any;
+    private loadingApp: any;
 
     form = new FormGroup({
         prompt: new FormControl('', [Validators.required, CustomValidators.noWhiteSpace])
@@ -415,7 +417,13 @@ export class HomePage implements OnInit {
                     if (this.index === 1) {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'CONGREGAÇÃO');
-                        }, 300);                        
+                        }, 300);  
+                    } else if (this.index === 3) {
+                        (async () => {
+                            this.bodySheet = await this.carregaBodySheet();
+                            await this.newLoading('Carregando...');
+                            await this.salvarGoogleSheets(this.bodySheet);
+                        })();                                              
                     } else if (this.index === 5) {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'SEXO');
@@ -597,18 +605,55 @@ export class HomePage implements OnInit {
         await presentAlert.present();
     }
 
-    public async createPdf() {
-        let content = [];
-        const loading = await this.loadingController.create({
-            message: 'Salvando...',
+    private  async carregaBodySheet(): Promise<any> {
+        const body = {
+            nome: this.nome,
+            congregacao: this.congregacao,
+            cpf: this.cpf,
+            rg: this.rg,
+            expedidorRg: this.expedidorRg,
+            dataNascimento: this.dataNascimento,
+            sexo: this.sexo,
+            estadoCivil: this.estadoCivil,
+            naturalidade: this.naturalidade,
+            uf: this.uf,
+            nomeMae: this.nomeMae,
+            nomePai: this.nomePai,
+            escolaridade: this.escolaridade,
+            telefone1: this.whatsapp,
+            cep: this.cep,
+            rua: this.rua,
+            numero: this.numero,
+            bairro: this.bairro,
+            estado: this.estado,
+            cidade: this.cidade,
+            batismoAgua: this.batismoAgua,
+            isObreiro: this.isObreiro,
+            imageBase64: this.imagemBase64,                // imagem já em Base64
+            imageType: "image/jpeg",                       // ou "image/png"
+            filename: `${this.nome}-${this.cpf}.jpg`       // nome do arquivo que será salvo no Drive
+        };
+ 
+        return body;
+    }
+
+    private async newLoading(message: string) {
+        this.loadingApp = await this.loadingController.create({
+            message: message,
             translucent: true,
         });
-        await loading.present();
+        await this.loadingApp?.present();
+    }
 
+    public async createPdf() {
+        let content = [];
+
+        await this.newLoading('Salvando...');
+       
         try {
             if (!this.imagemBase64) {
                 await this.touchAlertSemImagem();
-                await loading.dismiss();
+                await this.loadingApp?.dismiss();
                 return;
             }
 
@@ -2382,9 +2427,7 @@ export class HomePage implements OnInit {
                 }
             };
 
-            setTimeout(async () => {
-                await this.salvarGoogleSheets();
-            }, 100);
+            await this.salvarGoogleSheets(this.bodySheet);
 
             this.urlPdf = '';
             this.pdfObj = pdfMake.createPdf(docDefinition);
@@ -2397,9 +2440,9 @@ export class HomePage implements OnInit {
                 });
             }, 100);
 
-            await loading.dismiss();
+            await this.loadingApp.dismiss();
         } catch (err) {
-            await loading.dismiss();
+            await this.loadingApp.dismiss();
             console.error(err);
             await this.presentToast('middle', 'Erro ao gerar pdf!');
         }
@@ -2434,36 +2477,8 @@ export class HomePage implements OnInit {
         await this.modalImageCrop.present();
     }
 
-    private async salvarGoogleSheets() {
+    private async salvarGoogleSheets(body: any) {
         try {
-            const body = {
-                nome: this.nome,
-                congregacao: this.congregacao,
-                cpf: this.cpf,
-                rg: this.rg,
-                expedidorRg: this.expedidorRg,
-                dataNascimento: this.dataNascimento,
-                sexo: this.sexo,
-                estadoCivil: this.estadoCivil,
-                naturalidade: this.naturalidade,
-                uf: this.uf,
-                nomeMae: this.nomeMae,
-                nomePai: this.nomePai,
-                escolaridade: this.escolaridade,
-                telefone1: this.whatsapp,
-                cep: this.cep,
-                rua: this.rua,
-                numero: this.numero,
-                bairro: this.bairro,
-                estado: this.estado,
-                cidade: this.cidade,
-                batismoAgua: this.batismoAgua,
-                isObreiro: this.isObreiro,
-                imageBase64: this.imagemBase64,                // imagem já em Base64
-                imageType: "image/jpeg",                       // ou "image/png"
-                filename: `${this.nome}-${this.cpf}.jpg`       // nome do arquivo que será salvo no Drive
-            };
-
             const response = await fetch('api/enviarImagem', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -2474,11 +2489,32 @@ export class HomePage implements OnInit {
 
             if (data.success) {
                 await this.presentToast('middle', 'Salvo com sucesso!');
+                await this.loadingApp?.dismiss();
             } else {
-                await this.presentToast('middle', 'Erro ao cadastrar!');
+                if (data?.cpf !== '') {
+                    await this.loadingApp?.dismiss();
+                    const alert = await this.alertController.create({
+                        message: `${data?.message}`,
+                        backdropDismiss: false,
+                        buttons: [
+                            {
+                                text: 'NOVO CADASTRO',
+                                cssClass: 'salvarButton',
+                                handler: () => {
+                                    this.novoCadastro();
+                                }
+                            }
+                        ]
+                    });
+                    await alert.present();
+                } else {
+                    await this.presentToast('middle', 'Erro ao cadastrar!');
+                    await this.loadingApp?.dismiss();
+                }
             }
         } catch (err) {
             console.error(err);
+            await this.loadingApp?.dismiss();
             await this.presentToast('middle', 'Erro ao salvar no google drive!');
         }
     }
