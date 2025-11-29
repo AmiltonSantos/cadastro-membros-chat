@@ -433,7 +433,7 @@ export class HomePage implements OnInit {
                         }, 300);
                     } else if (this.index === 9) {
                         setTimeout(() => {
-                            this.showAlert(this.mensagemBot[this.index].value, 'UF');
+                            this.showAlert(this.mensagemBot[this.index].value, 'ESTADO ONDE NASCEU');
                         }, 300);
                     } else if (this.index === 12) {
                         setTimeout(() => {
@@ -2484,7 +2484,7 @@ export class HomePage implements OnInit {
                 await this.presentToast('middle', 'Salvo com sucesso!');
                 await this.loadingApp?.dismiss();
             } else {
-                if (data?.cpf !== '') {
+                if (data?.status === 1) {
                     await this.loadingApp?.dismiss();
                     const alert = await this.alertController.create({
                         message: `${data?.message}`,
@@ -2500,6 +2500,9 @@ export class HomePage implements OnInit {
                         ]
                     });
                     await alert.present();
+                } else if (data?.status === 2) {
+                    await this.loadingApp?.dismiss();
+                    return;
                 } else {
                     await this.presentToast('middle', 'Erro ao cadastrar!');
                     await this.loadingApp?.dismiss();

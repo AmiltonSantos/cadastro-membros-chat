@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     const body = req.body; // { nome, imageBase64, imageType, filename }
 
     // URL do seu Apps Script Web App 
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzaHVr_sTb7xZbhIi7N49G4pmejy8mEczAeWjm5xZLEG_5IAiX3HTtUr8TZpKJjOldhEA/exec';
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbza87TU266-H1tdJ9LxR-UuTXGvlpoD4s-voHiy4w3PXsjCFXqyIzzGRDq7yWUdE_96Gg/exec';
 
     // Repassa para o Apps Script
     const response = await fetch(APPS_SCRIPT_URL, {
