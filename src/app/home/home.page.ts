@@ -422,7 +422,7 @@ export class HomePage implements OnInit {
                     if (this.index === 1) {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'CONGREGAÇÃO');
-                        }, 300);  
+                        }, 300);
                     } else if (this.index === 5) {
                         setTimeout(() => {
                             this.showAlert(this.mensagemBot[this.index].value, 'SEXO');
@@ -653,7 +653,7 @@ export class HomePage implements OnInit {
             const logo = {
                 image: this.logoData,
                 width: 350,
-                margin: [20, -25, 0, 0]
+                margin: [20, -30, 0, 3]
             };
 
             const layoutTable = {
@@ -2108,18 +2108,26 @@ export class HomePage implements OnInit {
                                     {
                                         stack: [
                                             {
+                                                text: '(Continuação da Ficha de Cadastro para Obreiros e Membros da IEADMM-Jd. América..............Fl 03)',
+                                                alignment: 'center',
+                                                bold: true,
+                                                fontSize: 8.1,
+                                                decoration: 'underline',
+                                                margin: [9, 0, -10, 1]
+                                            },
+                                            {
                                                 text: 'TERMO DE CONSENTIMENTO PARA TRATAMENTO DE DADOS PESSOAIS',
                                                 style: 'header',
                                                 fontSize: 11,
                                                 alignment: 'center',
-                                                margin: [9, 0, 0, 5]
+                                                margin: [9, 0, 0, 2]
                                             },
                                             {
                                                 text: '(Lei 13.709 – LGPD)',
                                                 style: 'header',
                                                 fontSize: 11,
                                                 alignment: 'center',
-                                                margin: [9, 0, 0, 10]
+                                                margin: [9, 0, 0, 5]
                                             },
                                             {
                                                 width: '95%',
@@ -2241,12 +2249,12 @@ export class HomePage implements OnInit {
                                     {
                                         stack: [
                                             {
-                                                text: '(Cont. do termo de consentimento para tratamento de dados pessoais (lei 13.709-LGPD)........Fl 02)',
+                                                text: '(Cont. do termo de consentimento para tratamento de dados pessoais (lei 13.709-LGPD)........Fl 04)',
                                                 alignment: 'center',
                                                 bold: true,
                                                 fontSize: 8.1,
                                                 decoration: 'underline',
-                                                margin: [15, 0, -10, 20]
+                                                margin: [9, 0, -10, 20]
                                             },
                                             {
                                                 text: 'PARÁGRAFO TERCEIRO - FINALIDADE DO TRATAMENTO',
